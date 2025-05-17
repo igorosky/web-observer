@@ -5,6 +5,7 @@ import {HOME_ROUTE} from '../app.routes';
 import {FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
 import {AuthData} from '../auth/models/auth-data';
+import {HomeLoaderService} from '../home/home-loader.service';
 
 const ANIMATION_HOLD_MS = 3000;
 
@@ -34,9 +35,9 @@ const ANIMATION_HOLD_MS = 3000;
         animate(
           `${ANIMATION_HOLD_MS}ms ease-in`,
           keyframes([
-            style({ opacity: 0, zIndex: -1, offset: 0 }),
-            style({ opacity: 1, zIndex: 1000, offset: 0.15 }),
-            style({ opacity: 1, zIndex: 1000, offset: 1 }),
+            style({opacity: 0, zIndex: -1, offset: 0}),
+            style({opacity: 1, zIndex: 1000, offset: 0.15}),
+            style({opacity: 1, zIndex: 1000, offset: 1}),
           ])
         )
       ]),
@@ -48,12 +49,12 @@ export class LogInComponent implements OnInit {
   private router: Router = inject(Router);
   protected logInForm?: FormGroup = undefined;
 
-  constructor(private fb: NonNullableFormBuilder) {
+  constructor(private fb: NonNullableFormBuilder, private homeLoaderService: HomeLoaderService) {
     this.renderLogInForm();
   }
 
   ngOnInit() {
-    if(this.authService.isLoggedIn()) void this.router.navigate([HOME_ROUTE]);
+    if (this.authService.isLoggedIn()) void this.router.navigate([HOME_ROUTE]);
   }
 
   private renderLogInForm() {
@@ -66,15 +67,15 @@ export class LogInComponent implements OnInit {
   protected welcomeMessage?: string = undefined;
   protected logInErrorMessage?: string = undefined;
 
-  submitLogInForm(){
-    if(this.logInForm === undefined || this.logInForm.invalid) return;
+  submitLogInForm() {
+    if (this.logInForm === undefined || this.logInForm.invalid) return;
     const logInData = this.logInForm.value;
     this.authService.attemptLogIn(logInData).subscribe({
       next: async (authData: AuthData) => {
         this.logInErrorMessage = undefined;
         this.welcomeMessage = `Welcome back ${authData.username}!`
-
-        await this.triggerLogInAnimation(); //todo fetch home data here
+        this.homeLoaderService.preloadHomeView(authData);
+        await this.triggerLogInAnimation();
         void this.router.navigate([HOME_ROUTE]);
       },
       error: (errorMessage: string) => {
@@ -87,10 +88,10 @@ export class LogInComponent implements OnInit {
   protected animationState: string = 'start';
 
   private async triggerLogInAnimation(): Promise<void> {
-    if(this.isAnimating) return;
+    if (this.isAnimating) return;
     this.isAnimating = true;
     this.animationState = 'end';
-    await new Promise(resolve => setTimeout(resolve,  ANIMATION_HOLD_MS));
+    await new Promise(resolve => setTimeout(resolve, ANIMATION_HOLD_MS));
     this.isAnimating = false;
   }
 
