@@ -16,6 +16,10 @@ export class StorageService {
     return JSON.parse(data) as AuthData;
   }
 
+  public isAuthDataSet(): boolean {
+    return localStorage.getItem(AUTH_DATA_KEY) !== null;
+  }
+
   public setAuthData(data: AuthData): boolean {
     if(localStorage.getItem(AUTH_DATA_KEY) !== null) return false;
     localStorage.setItem(AUTH_DATA_KEY, JSON.stringify(data));

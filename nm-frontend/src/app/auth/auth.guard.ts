@@ -11,16 +11,12 @@ export class AuthGuard implements CanActivate {
   constructor(@Inject(PLATFORM_ID) private platformId: object, private authService: AuthService, private router: Router) {
   }
 
-  canActivate(): Observable<boolean> {
+  canActivate(): boolean {
     if (isPlatformBrowser(this.platformId)) {
-      return this.authService.isLoggedIn().pipe(
-        tap(status => {
-          if (!status) {
-            alert('You must be logged in to access this page.');
-          }
-        })
-      )
+      if (this.authService.isLoggedIn()) return true;
+      alert('You must be logged in to access this page.');
+      return false;
     }
-    return of(true);
+    return true;
   }
 }

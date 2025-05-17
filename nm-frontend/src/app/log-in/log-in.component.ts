@@ -16,19 +16,30 @@ const ANIMATION_LENGTH_MS = 500;
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.css',
   animations: [
-    trigger('rankUpAnimation', [
-      state('start', style({})),
-      state('end', style({
-        width: '300vw',
-        height: '300vh',
-        opacity: 1,
-        zIndex: 1000,
-      })),
+    trigger('logInAnimation', [
+      state(
+        'start',
+        style({
+          width: '0',
+          height: '0',
+          opacity: 0,
+          zIndex: -1,
+        })
+      ),
+      state(
+        'end',
+        style({
+          width: '100vw',
+          height: '100vh',
+          opacity: 1,
+          zIndex: 1000,
+        })
+      ),
       transition('start => end', [
-        animate(`${ANIMATION_LENGTH_MS}ms ease-in`)
+        animate(`${ANIMATION_LENGTH_MS}ms ease-in-out`)
       ]),
-    ])
-  ],
+    ]),
+  ]
 })
 export class LogInComponent implements OnInit {
   private authService: AuthService = inject(AuthService);
@@ -40,13 +51,7 @@ export class LogInComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.isLoggedIn().subscribe(
-      {
-          next: (status) => {
-            if (status) void this.router.navigate([HOME_ROUTE]);
-          }
-      }
-    )
+    if(this.authService.isLoggedIn()) void this.router.navigate([HOME_ROUTE]);
   }
 
   private renderLogInForm() {

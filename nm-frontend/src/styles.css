@@ -18,7 +18,7 @@
   justify-content: center;
   align-items: center;
 }
-/*Button and input from Uiverse.io by Rodrypaladin, colours changed*/
+/*Base button and input from Uiverse.io by Rodrypaladin, colours changed, parts modified*/
 
 /*<button class="s_button">*/
 /*<div class="s_button__int">*/
@@ -31,6 +31,7 @@
   border: none;
   font-size: 1.2em;
   border-radius: 0;
+  font-family: 'Red Hat Display', sans-serif;
   padding: 4px;
   transition: border-top-left-radius 0.2s ease-in,
   border-top-right-radius 0.2s ease-in 0.15s,
@@ -42,7 +43,7 @@
 
 .s_button__int {
   background-color: #212121;
-  color: rgba(253, 207, 114, 0.99);
+  color: white;
   border-radius: 0;
   padding: 10px 40px;
   transition: all 0.2s ease-in,
@@ -80,6 +81,15 @@
     -15px 10px 30px -5px rgba(248, 140, 6, 0.8);
 }
 
+.s_button:disabled .s_button__int {
+  box-shadow:
+    -15px -10px 30px -5px rgba(157, 2, 8, 0.1),
+    15px -10px 30px -5px rgba(106, 4, 15, 0.1),
+    15px 10px 30px -5px rgba(220, 47, 2, 0.1),
+    -15px 10px 30px -5px rgba(248, 140, 6, 0.1);
+  background-image: linear-gradient(to right bottom, rgba(157, 2, 8, 0.1), rgba(106, 4, 15, 0.1), rgba(220, 47, 2, 0.1), rgba(143, 83, 3, 0.1), rgba(248, 140, 6, 0.1));
+}
+
 /*<div class="box-input">*/
 /*<div class="border">*/
 /*<input type="text" name="text" class="input" placeholder="placeholder">*/
@@ -107,9 +117,10 @@
   height: 40px;
   padding: 0 19px 0 10px;
   font-size: 1.1em;
+  font-family: 'Red Hat Display', sans-serif;
   position: relative;
   border: none;
-  color: rgba(253, 207, 114, 0.99);
+  color: white;
   outline: 0;
   overflow: hidden;
 }
@@ -140,4 +151,11 @@
 .input:focus::placeholder {
   padding-left: 165px;
   transform: translateY(-50px);
+}
+
+.error-box {
+  font-size: 0.8em;
+  color: #daa520;
+  z-index: 1;
+  text-align: center;
 }

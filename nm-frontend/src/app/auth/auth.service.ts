@@ -16,8 +16,8 @@ export class AuthService {
   constructor(private http: HttpClient, private storageService: StorageService) {
   }
 
-  isLoggedIn(): Observable<boolean> {
-    throw new Error('Method not implemented.');
+  isLoggedIn(): boolean {
+    return this.storageService.isAuthDataSet();
   }
 
   attemptLogIn(logInData: LogInData): Observable<AuthData> {
