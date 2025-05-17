@@ -21,4 +21,8 @@ export class StorageService {
     localStorage.setItem(AUTH_DATA_KEY, JSON.stringify(data));
     return true;
   }
+
+  public clearOnLogOut(): void {
+    LOG_OUT_CLEAR_KEYS.forEach(key => localStorage.removeItem(key));
+  }
 }

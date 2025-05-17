@@ -25,7 +25,7 @@ export class AuthService {
       .pipe(
         map((response: LogInResponse): AuthData => {
           return {
-            username: response.username,
+            ...response,
             email: logInData.email
           } as AuthData;
         }),
@@ -34,7 +34,7 @@ export class AuthService {
             return from(this.attemptLogOut()).pipe(
               switchMap(() => {
                 if (this.storageService.setAuthData(authData)) return of(authData);
-                else return throwError(() => new Error('Failed to override authentication data'));
+                else return throwError(() => new Error('Failed to save authentication data. Please clear local cache manually.'));
               })
             );
           }
@@ -46,6 +46,9 @@ export class AuthService {
 
   attemptLogOut(): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, null, {withCredentials: true})
-      .pipe(catchError(handleError));
+      .pipe(
+        tap(() => this.storageService.clearOnLogOut()),
+        catchError(handleError)
+      );
   }
 }

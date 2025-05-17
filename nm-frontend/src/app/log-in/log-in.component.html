@@ -3,4 +3,14 @@
     {{welcomeMessage}}
   }
 </div>
-<p>log-in works!</p>
+<div id="main">
+  <div id="logo">
+
+  </div>
+  @if (logInForm){
+    <div id="form" [formGroup]="logInForm" (ngSubmit)="submitLogInForm()">
+
+      <button type="submit">Log In</button>
+    </div>
+  }
+</div>

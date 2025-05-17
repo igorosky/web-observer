@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {AuthService} from '../auth/auth.service';
 import {Router} from '@angular/router';
 import {HOME_ROUTE} from '../app.routes';
-import {FormGroup, NonNullableFormBuilder, Validators} from '@angular/forms';
+import {FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {AuthData} from '../auth/models/auth-data';
 
@@ -10,7 +10,9 @@ const ANIMATION_LENGTH_MS = 500;
 
 @Component({
   selector: 'app-log-in',
-  imports: [],
+  imports: [
+    ReactiveFormsModule
+  ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.css',
   animations: [
