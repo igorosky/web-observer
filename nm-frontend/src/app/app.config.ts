@@ -4,7 +4,6 @@ import {provideRouter} from '@angular/router';
 import {routes} from './app.routes';
 import {provideHttpClient, withFetch, withInterceptorsFromDi} from '@angular/common/http';
 import {provideAnimations} from '@angular/platform-browser/animations';
-import {provideClientHydration, withEventReplay} from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [

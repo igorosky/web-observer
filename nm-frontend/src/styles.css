@@ -13,11 +13,12 @@
   justify-content: center;
 }
 
-.centerVH{
+.centerVH {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 /*Base button and input from Uiverse.io by Rodrypaladin, colours changed, parts modified*/
 
 /*<button class="s_button">*/
@@ -54,11 +55,10 @@
   padding 0.2s ease-in;
   font-weight: 600;
   z-index: -1;
-  box-shadow:
-    -15px -10px 30px -5px rgba(157, 2, 8, 0.5),
-    15px -10px 30px -5px rgba(106, 4, 15, 0.5),
-    15px 10px 30px -5px rgba(220, 47, 2, 0.5),
-    -15px 10px 30px -5px rgba(248, 140, 6, 0.5);
+  box-shadow: -15px -10px 30px -5px rgba(157, 2, 8, 0.5),
+  15px -10px 30px -5px rgba(106, 4, 15, 0.5),
+  15px 10px 30px -5px rgba(220, 47, 2, 0.5),
+  -15px 10px 30px -5px rgba(248, 140, 6, 0.5);
 }
 
 .s_button:active .s_button__int {
@@ -71,22 +71,34 @@
 
 .s_button:hover .s_button__int {
   border-radius: 1.3em;
+  box-shadow: -15px -10px 30px -5px rgba(157, 2, 8, 0.8),
+  15px -10px 30px -5px rgba(106, 4, 15, 0.8),
+  15px 10px 30px -5px rgba(220, 47, 2, 0.8),
+  -15px 10px 30px -5px rgba(248, 140, 6, 0.8);
 }
 
-.s_button:hover .s_button__int {
-  box-shadow:
-    -15px -10px 30px -5px rgba(157, 2, 8, 0.8),
-    15px -10px 30px -5px rgba(106, 4, 15, 0.8),
-    15px 10px 30px -5px rgba(220, 47, 2, 0.8),
-    -15px 10px 30px -5px rgba(248, 140, 6, 0.8);
+.s_button:disabled:hover .s_button__int {
+  pointer-events: none;
+  cursor: not-allowed;
+  transition: none;
+  border-radius: 0;
 }
+
 
 .s_button:disabled .s_button__int {
-  box-shadow:
-    -15px -10px 30px -5px rgba(157, 2, 8, 0.1),
-    15px -10px 30px -5px rgba(106, 4, 15, 0.1),
-    15px 10px 30px -5px rgba(220, 47, 2, 0.1),
-    -15px 10px 30px -5px rgba(248, 140, 6, 0.1);
+  box-shadow: -15px -10px 30px -5px rgba(157, 2, 8, 0.1),
+  15px -10px 30px -5px rgba(106, 4, 15, 0.1),
+  15px 10px 30px -5px rgba(220, 47, 2, 0.1),
+  -15px 10px 30px -5px rgba(248, 140, 6, 0.1);
+}
+
+.s_button:disabled:hover {
+  border-radius: 0;
+}
+
+.s_button:disabled {
+  transition: none;
+  border-radius: 0;
   background-image: linear-gradient(to right bottom, rgba(157, 2, 8, 0.1), rgba(106, 4, 15, 0.1), rgba(220, 47, 2, 0.1), rgba(143, 83, 3, 0.1), rgba(248, 140, 6, 0.1));
 }
 
@@ -103,11 +115,10 @@
 
 .border {
   background-image: linear-gradient(to right bottom, #370617, #6A040F, #DC2F02, #E85D04, #F48C06);
-  box-shadow:
-    -15px -10px 30px -5px rgba(157, 2, 8, 0.5),
-    15px -10px 30px -5px rgba(106, 4, 15, 0.5),
-    15px 10px 30px -5px rgba(220, 47, 2, 0.5),
-    -15px 10px 30px -5px rgba(248, 140, 6, 0.5);
+  box-shadow: -15px -10px 30px -5px rgba(157, 2, 8, 0.5),
+  15px -10px 30px -5px rgba(106, 4, 15, 0.5),
+  15px 10px 30px -5px rgba(220, 47, 2, 0.5),
+  -15px 10px 30px -5px rgba(248, 140, 6, 0.5);
   padding: 4px;
 }
 

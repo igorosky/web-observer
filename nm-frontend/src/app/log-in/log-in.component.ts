@@ -91,5 +91,8 @@ export class LogInComponent implements OnInit {
     this.isAnimating = false;
   }
 
+  get logInFormPristine(): boolean {
+    return this.logInForm?.pristine ?? true;
+  }
 
 }
