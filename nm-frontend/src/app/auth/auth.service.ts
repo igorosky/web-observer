@@ -11,7 +11,7 @@ import {AuthData} from './models/auth-data';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly baseUrl = 'http://localhost:8080/DELETEME';
+  private readonly baseUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient, private storageService: StorageService) {
   }

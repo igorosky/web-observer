@@ -3,10 +3,10 @@ import {AuthService} from '../auth/auth.service';
 import {Router} from '@angular/router';
 import {HOME_ROUTE} from '../app.routes';
 import {FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
 import {AuthData} from '../auth/models/auth-data';
 
-const ANIMATION_LENGTH_MS = 500;
+const ANIMATION_HOLD_MS = 3000;
 
 @Component({
   selector: 'app-log-in',
@@ -20,23 +20,25 @@ const ANIMATION_LENGTH_MS = 500;
       state(
         'start',
         style({
-          width: '0',
-          height: '0',
           opacity: 0,
-          zIndex: -1,
         })
       ),
       state(
         'end',
         style({
-          width: '100vw',
-          height: '100vh',
           opacity: 1,
           zIndex: 1000,
         })
       ),
       transition('start => end', [
-        animate(`${ANIMATION_LENGTH_MS}ms ease-in-out`)
+        animate(
+          `${ANIMATION_HOLD_MS}ms ease-in`,
+          keyframes([
+            style({ opacity: 0, zIndex: -1, offset: 0 }),
+            style({ opacity: 1, zIndex: 1000, offset: 0.15 }),
+            style({ opacity: 1, zIndex: 1000, offset: 1 }),
+          ])
+        )
       ]),
     ]),
   ]
@@ -71,6 +73,7 @@ export class LogInComponent implements OnInit {
       next: async (authData: AuthData) => {
         this.logInErrorMessage = undefined;
         this.welcomeMessage = `Welcome back ${authData.username}!`
+
         await this.triggerLogInAnimation(); //todo fetch home data here
         void this.router.navigate([HOME_ROUTE]);
       },
@@ -87,7 +90,7 @@ export class LogInComponent implements OnInit {
     if(this.isAnimating) return;
     this.isAnimating = true;
     this.animationState = 'end';
-    await new Promise(resolve => setTimeout(resolve, ANIMATION_LENGTH_MS));
+    await new Promise(resolve => setTimeout(resolve,  ANIMATION_HOLD_MS));
     this.isAnimating = false;
   }
 

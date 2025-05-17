@@ -1,11 +1,11 @@
-<div id="logInAnimation" [@logInAnimation]="animationState">
+<div id="logInAnimation" class="centerVH" [@logInAnimation]="animationState">
   @if (welcomeMessage) {
     {{welcomeMessage}}
   }
 </div>
 <div id="main" class="column">
-  <div id="logo">Notify me!</div>
   @if (logInForm){
+    <div id="logo">Notify me!</div>
     <form [formGroup]="logInForm" (ngSubmit)="submitLogInForm()" class="column">
       <div class="box-input">
         <div class="border">
