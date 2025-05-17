@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AuthData } from './models/auth-data';
 const AUTH_DATA_KEY = 'auth_data';
 const LOG_OUT_CLEAR_KEYS = [AUTH_DATA_KEY]
 

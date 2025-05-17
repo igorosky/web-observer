@@ -5,6 +5,7 @@ import {HttpClient} from '@angular/common/http';
 import {LogInResponse} from './models/log-in-response';
 import {StorageService} from './storage.service';
 import {handleError} from '../shared/error-handling';
+import {AuthData} from './models/auth-data';
 
 @Injectable({
   providedIn: 'root'
@@ -32,11 +33,8 @@ export class AuthService {
           if (!this.storageService.setAuthData(authData)) {
             return from(this.attemptLogOut()).pipe(
               switchMap(() => {
-                if (this.storageService.setAuthData(authData)) {
-                  return of(authData);
-                } else {
-                  return throwError(() => new Error('Failed to override authentication data'));
-                }
+                if (this.storageService.setAuthData(authData)) return of(authData);
+                else return throwError(() => new Error('Failed to override authentication data'));
               })
             );
           }
@@ -48,6 +46,6 @@ export class AuthService {
 
   attemptLogOut(): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, null, {withCredentials: true})
-    .pipe(catchError(handleError));
+      .pipe(catchError(handleError));
   }
 }

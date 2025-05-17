@@ -1,4 +1,4 @@
-interface AuthData {
+export interface AuthData {
   username: string;
   email: string;
 }
