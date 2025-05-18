@@ -1,1 +1,27 @@
-<p>home-view works!</p>
+<div class="main">
+  <div class="header row">
+    <div id="logo">Notify me!</div>
+    <!--    buttons here-->
+  </div>
+  <div class="updateCol column">
+    <div id="counter">
+      <div id="counter-bar"></div>
+    </div>
+    @if (displayedUpdates !== null) {
+      @if (displayedUpdates.errorMessage !== null) {
+        <span class="error-box">{{ displayedUpdates.errorMessage }}</span>
+      } @else {
+        <div id="updateContainer">
+          @for (update of displayedUpdates.updates; track $index) {
+            <app-update-box [update]="update"></app-update-box>
+          }
+        </div>
+      }
+    } @else {
+      <span class="error-box">No new updates found.</span>
+    }
+  </div>
+  <div class="contentDiv">
+    <router-outlet></router-outlet>
+  </div>
+</div>
