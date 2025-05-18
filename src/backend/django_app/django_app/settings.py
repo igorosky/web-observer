@@ -15,18 +15,20 @@ from dotenv import load_dotenv  # <--- dodaj to
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(dotenv_path=BASE_DIR.parent / ".env")  # <--- to dodaj
-
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = bool(int(os.getenv("DEBUG", default=1)))  # poprawna konwersja na bool
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
+AUTH_USER_MODEL = 'users.User'
 
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    'django.contrib.sessions',
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "api.apps.ApiConfig",
+    "users",
+    "tracking",
     "rest_framework"
 ]
 

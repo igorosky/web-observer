@@ -1,19 +1,6 @@
 import uuid
 from django.db import models
-
-
-class User(models.Model):
-    class Meta:
-        db_table = "users"
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.CharField(max_length=255, unique=True)
-    username = models.CharField(max_length=100)
-    password_hash = models.TextField()
-    last_login_at = models.DateTimeField(auto_now=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
+from users.models import User
 class TrackedWebsite(models.Model):
     class Meta:
         db_table = "tracked_websites"
