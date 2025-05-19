@@ -5,16 +5,21 @@ export interface Site {
   lastUpdateAt: string;
 }
 
-export interface UpdateEntry {
+export interface UpdateEntryPreview {
   siteId: string;
   siteUrl: string;
   siteName: string;
   registeredAt: string;
 }
 
+export interface BareUpdateEntry {
+  registeredAt: string;
+  change: string;
+}
+
 export interface SiteDetails {
   siteInfo: Site;
-  updates: UpdateEntry[];
+  updates: BareUpdateEntry[];
   trackedSince: string;
-  //whatever else will be needed
+  description: string;
 }

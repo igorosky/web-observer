@@ -1,12 +1,12 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {AuthData} from '../auth/models/auth-data';
-import {UpdateEntry} from './models/site';
-import {BehaviorSubject, catchError, interval, map, of, Subject, takeUntil} from 'rxjs';
-import {logAndExtractMessage} from '../shared/error-handling';
+import {SiteDetails, UpdateEntryPreview} from './models/site';
+import {BehaviorSubject, catchError, interval, map, Observable, of, Subject, takeUntil} from 'rxjs';
+import {handleError, logAndExtractMessage} from '../shared/error-handling';
 
 export interface UpdatesState {
-  updates: UpdateEntry[] | null;
+  updates: UpdateEntryPreview[] | null;
   errorMessage: string | null;
 }
 
@@ -51,9 +51,8 @@ export class HomeLoaderService implements OnDestroy {
 
 
   private refetchUpdates(forUsername: string) {
-    const params = new HttpParams();
-    params.set('username', forUsername);
-    this.http.get<UpdateEntry[]>(`${this.baseUrl}/updates`, {params: params})
+    const params = new HttpParams().set('username', forUsername);
+    this.http.get<UpdateEntryPreview[]>(`${this.baseUrl}/updates`, {params: params})
       .pipe(
         map(updates => {
           return updates.length > 0 ? {updates: updates, errorMessage: null} : null;
@@ -67,6 +66,12 @@ export class HomeLoaderService implements OnDestroy {
 
   get updates$() {
     return this.updatesSubject.asObservable();
+  }
+
+  fetchSiteInfo(siteId: string): Observable<SiteDetails> {
+    const params = new HttpParams().set('siteId', siteId);
+    return this.http.get<SiteDetails>(`${this.baseUrl}/site`, {params: params})
+      .pipe(catchError(handleError));
   }
 
 }

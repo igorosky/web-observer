@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UpdateBoxComponent } from './update-box.component';
+import { UpdatePreviewBoxComponent } from './update-preview-box.component';
 
 describe('UpdateBoxComponent', () => {
-  let component: UpdateBoxComponent;
-  let fixture: ComponentFixture<UpdateBoxComponent>;
+  let component: UpdatePreviewBoxComponent;
+  let fixture: ComponentFixture<UpdatePreviewBoxComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UpdateBoxComponent]
+      imports: [UpdatePreviewBoxComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(UpdateBoxComponent);
+    fixture = TestBed.createComponent(UpdatePreviewBoxComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

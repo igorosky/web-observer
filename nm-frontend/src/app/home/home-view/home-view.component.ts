@@ -3,14 +3,14 @@ import {HomeLoaderService, UpdatesState} from '../home-loader.service';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../../auth/auth.service';
 import {Router, RouterOutlet} from '@angular/router';
-import {UpdateBoxComponent} from '../update-box/update-box.component';
-import {UpdateEntry} from '../models/site';
+import {UpdateEntryPreview} from '../models/site';
+import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-box.component';
 
 @Component({
   selector: 'app-home-view',
   imports: [
     RouterOutlet,
-    UpdateBoxComponent
+    UpdatePreviewBoxComponent
   ],
   templateUrl: './home-view.component.html',
   styleUrl: './home-view.component.css',
@@ -34,18 +34,25 @@ export class HomeViewComponent implements OnInit, OnDestroy {
     this.updatesSubscription = this.homeLoaderService
       .updates$
       .subscribe((fetchingResult: UpdatesState | null) => {
-        const update: UpdateEntry = {
-          siteId: "rr112412312",
+        const update: UpdateEntryPreview = {
+          siteId: "123",
           siteUrl: "https://test/url.com",
-          siteName: "testSite name here",
+          siteName: "my site exists",
+          registeredAt: "2025-01-01T00:00:00.000Z",
+        }
+        const nonExistUpdate: UpdateEntryPreview = {
+          siteId: "124",
+          siteUrl: "https://test/url.com",
+          siteName: "my site doesn't exist",
           registeredAt: "2025-01-01T00:00:00.000Z",
         }
         let dummyUpdates: UpdatesState = {
           errorMessage: null,
           updates: []
         }
-        for (let i = 0; i < 8; i++) {
-          dummyUpdates.updates!.push(update);
+        for (let i = 0; i < 5; i++) {
+          dummyUpdates.updates!.push(update); //todo
+          dummyUpdates.updates!.push(nonExistUpdate);
         }
         this.displayedUpdates = dummyUpdates;
       });

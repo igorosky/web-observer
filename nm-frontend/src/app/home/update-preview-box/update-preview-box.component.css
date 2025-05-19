@@ -3,13 +3,11 @@
   width: 100%;
   font-size: 1em;
   background-color: #6A040F;
-  margin-left: 1em;
-  margin-right: 1em;
   text-align: center;
   align-self: center;
   display: flex;
   flex-direction: column;
-  padding: 0.3em;
+  padding: 0.3em 0.5em;
   border-radius: 0.3em;
   color: rgba(202, 243, 243, 0.65);
 }

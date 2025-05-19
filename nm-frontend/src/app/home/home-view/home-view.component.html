@@ -13,7 +13,9 @@
     </div>
     @if (displayedUpdates !== null) {
       @if (displayedUpdates.errorMessage !== null) {
-        <span class="error-box">{{ displayedUpdates.errorMessage }}</span>
+        <div style="flex: 0 0 80%" class="error-box centerVH">
+          <span>{{ displayedUpdates.errorMessage  }}</span>
+        </div>
       } @else {
         <div id="updateContainer">
           @for (update of displayedUpdates.updates; track $index) {
@@ -22,7 +24,9 @@
         </div>
       }
     } @else {
-      <span class="error-box">No new updates found.</span>
+      <div style="flex: 0 0 80%" class="error-box centerVH">
+        <span>No new updates found.</span>
+      </div>
     }
   </div>
   <div class="contentDiv">
