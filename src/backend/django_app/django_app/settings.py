@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
+
+from django.conf.global_settings import CSRF_COOKIE_SAMESITE, SESSION_COOKIE_SAMESITE, CSRF_COOKIE_HTTPONLY, \
+    SESSION_COOKIE_HTTPONLY
 from dotenv import load_dotenv  # <--- dodaj to
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,8 +45,21 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
+CSRF_COOKIE_SAMESITE='Strict'
+SESSION_COOKIE_SAMESITE='Strict'
+CSRF_COOKIE_HTTPONLY=False
+SESSION_COOKIE_HTTPONLY=True
 ROOT_URLCONF = "django_app.urls"
+
+REST_FRAMEWORK ={
+    'DEFAULT_RENDERER_CLASSES':[
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
+
 
 TEMPLATES = [
     {
