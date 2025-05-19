@@ -1,0 +1,27 @@
+<div id="siteViewOuterBox" class="centerVH">
+  @if (currentSite !== undefined) {
+    <div class="main">
+      <div class="siteInfoDiv"></div>
+      <div class="siteUpdatesDiv column">
+        <div id="siteUpdatesContainer">
+          @for (update of currentSite.updates; track $index) {
+            <app-bare-update-box [update]="update"></app-bare-update-box>
+          }
+        </div>
+        <button class="s_button" style="flex: 0 0 10%" type="button" (click)="refetchCurrentSiteDetails()">
+          <div class="s_button__int">
+            <span>Refresh updates</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  } @else {
+    <span class="error-box centerVH" style="font-size: 1.4em">
+    @if (siteFetchErrorMessage !== undefined) {
+      {{siteFetchErrorMessage}}
+    } @else {
+      Couldn't load the site details. Please try again later.
+    }
+  </span>
+  }
+</div>
