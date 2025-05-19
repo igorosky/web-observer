@@ -2,8 +2,8 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {AuthData} from '../auth/models/auth-data';
 import {UpdateEntry} from './models/site';
-import {BehaviorSubject, catchError, interval, map, of, Subject, Subscription, takeUntil} from 'rxjs';
-import {handleError, logAndExtractMessage} from '../shared/error-handling';
+import {BehaviorSubject, catchError, interval, map, of, Subject, takeUntil} from 'rxjs';
+import {logAndExtractMessage} from '../shared/error-handling';
 
 export interface UpdatesState {
   updates: UpdateEntry[] | null;

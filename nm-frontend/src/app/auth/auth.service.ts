@@ -3,7 +3,7 @@ import {catchError, from, map, Observable, of, switchMap, tap, throwError} from 
 import {LogInDto, LogInResponse} from './models/log-in-dto';
 import {HttpClient} from '@angular/common/http';
 import {StorageService} from './storage.service';
-import {handleError, convertMessageToError, logErrorMessage} from '../shared/error-handling';
+import {handleError, convertMessageToError} from '../shared/error-handling';
 import {AuthData} from './models/auth-data';
 import {LOG_IN_ROUTE} from '../app.routes';
 import {Router} from '@angular/router';

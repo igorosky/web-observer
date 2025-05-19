@@ -1,4 +1,4 @@
-import {Site, UpdateEntry} from './site';
+import {Site} from './site';
 
 // export interface LastUpdatesResponseDto {
 //   lastUpdates: UpdateEntry[];

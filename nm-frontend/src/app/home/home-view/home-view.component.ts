@@ -1,11 +1,10 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {HomeLoaderService, UpdatesState} from '../home-loader.service';
 import {Subscription} from 'rxjs';
-import {StorageService} from '../../auth/storage.service';
 import {AuthService} from '../../auth/auth.service';
 import {Router, RouterOutlet} from '@angular/router';
-import {UpdateEntry} from '../models/site';
 import {UpdateBoxComponent} from '../update-box/update-box.component';
+import {UpdateEntry} from '../models/site';
 
 @Component({
   selector: 'app-home-view',
@@ -35,9 +34,18 @@ export class HomeViewComponent implements OnInit, OnDestroy {
     this.updatesSubscription = this.homeLoaderService
       .updates$
       .subscribe((fetchingResult: UpdatesState | null) => {
-        const dummyUpdates: UpdatesState = {
+        const update: UpdateEntry = {
+          siteId: "rr112412312",
+          siteUrl: "https://test/url.com",
+          siteName: "testSite name here",
+          registeredAt: "2025-01-01T00:00:00.000Z",
+        }
+        let dummyUpdates: UpdatesState = {
           errorMessage: null,
           updates: []
+        }
+        for (let i = 0; i < 8; i++) {
+          dummyUpdates.updates!.push(update);
         }
         this.displayedUpdates = dummyUpdates;
       });

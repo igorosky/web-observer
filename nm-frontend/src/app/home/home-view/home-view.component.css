@@ -17,9 +17,11 @@
 .header { grid-area: header; }
 
 #counter {
-  width: 100%;
+  flex: 0 0 8%;
+  width: 90%;
   height: 100%;
   background-color: #00081e;
+  border-radius: 1em;
   position: relative;
   overflow: hidden;
 }
@@ -43,8 +45,11 @@
 
 
 .updateCol {
-  border: 1px solid #370617;
+  background-color: #020e51;
+  border-radius: 0.6em;
   grid-area: updateCol;
+  width: 100%;
+  padding: 0.3em;
 }
 
 .contentDiv { grid-area: contentDiv; }
@@ -52,11 +57,12 @@
 #updateContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 90%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 0 0 80%;
   width: 100%;
-  border: goldenrod 1px solid;
+  gap: 0.5em;
+  padding-top: 0.2em;
 }
 
 #logo {
