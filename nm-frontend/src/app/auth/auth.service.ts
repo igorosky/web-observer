@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {catchError, from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {LogInData} from './models/log-in-data';
+import {LogInDto, LogInResponse} from './models/log-in-dto';
 import {HttpClient} from '@angular/common/http';
-import {LogInResponse} from './models/log-in-response';
 import {StorageService} from './storage.service';
-import {handleError} from '../shared/error-handling';
+import {handleError, convertMessageToError} from '../shared/error-handling';
 import {AuthData} from './models/auth-data';
+import {LOG_IN_ROUTE} from '../app.routes';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +14,15 @@ import {AuthData} from './models/auth-data';
 export class AuthService {
   private readonly baseUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient, private storageService: StorageService) {
+  constructor(private http: HttpClient, private storageService: StorageService, private router: Router) {
   }
 
   isLoggedIn(): boolean {
     return this.storageService.isAuthDataSet();
   }
 
-  attemptLogIn(logInData: LogInData): Observable<AuthData> {
-    return this.http.post<LogInResponse>(`${this.baseUrl}/login`, logInData, {withCredentials: true})
+  attemptLogIn(logInData: LogInDto): Observable<AuthData> {
+    return this.http.post<LogInResponse>(`${this.baseUrl}/login`, logInData)
       .pipe(
         map((response: LogInResponse): AuthData => {
           return {
@@ -45,10 +46,21 @@ export class AuthService {
   }
 
   attemptLogOut(): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/logout`, null, {withCredentials: true})
+    return this.http.post<void>(`${this.baseUrl}/logout`, null)
       .pipe(
         tap(() => this.storageService.clearOnLogOut()),
         catchError(handleError)
       );
   }
+
+  getCurrentUserData(): Observable<AuthData> {
+    const data = this.storageService.getAuthData();
+    if(data === null){
+      this.attemptLogOut();
+      void this.router.navigate([LOG_IN_ROUTE]);
+      return convertMessageToError('User data was cleared during session. Please log in again.')
+    }
+    return of(data);
+  }
+
 }

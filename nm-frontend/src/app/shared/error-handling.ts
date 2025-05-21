@@ -7,11 +7,17 @@ export const handleError = (error: HttpErrorResponse): Observable<never> => {
 
 export const logAndExtractMessage = (error: HttpErrorResponse): string => {
   if (error.error instanceof ErrorEvent) {
-    console.error('A client error occurred:', error.error.message);
-    return `An unexpected client error occurred: ${error.error.message}`;
+    logErrorMessage(`An unexpected client error occurred: ${error.message}`);
+    return `An unexpected client error occurred: ${error.message}`;
   } else {
-    const errorMessage = error.message;
-    console.error(errorMessage);
+    const errorMessage = error.error.message;
+    logErrorMessage(errorMessage);
     return errorMessage;
   }
 }
+
+export const logErrorMessage = (message: string)=> console.error(message);
+
+export const convertMessageToError = (message: string) => {
+  return throwError(() => logErrorMessage(message))
+};
