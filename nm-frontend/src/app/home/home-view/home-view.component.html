@@ -30,6 +30,16 @@
     }
   </div>
   <div class="contentDiv">
+    @if (isDefaultView){
+      <div class="column" style="color: white;">
+        <b class="infoBox">Welcome to Notify me!</b>
+        <span>On the left side of the screen, you can track the latest updates.</span>
+        <span>Click any of the to go to the respective site view and get more details.</span>
+        <span>To navigate to any site, use the search menu above.</span>
+        <span>To create a new site, click the "Add site" button.</span>
+        <span>To securely log out, please use the "Log out" button.</span>
+      </div>
+    }
     <router-outlet></router-outlet>
   </div>
 </div>
