@@ -1,0 +1,28 @@
+.bareBox-main {
+  cursor: pointer;
+  width: 100%;
+  font-size: 1em;
+  text-align: center;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  padding: 0.3em 0.5em;
+  border-radius: 0.3em;
+  color: rgba(202, 243, 243, 0.65);
+}
+
+.bareBox-main:hover {
+  box-shadow: 0 0 10px 2px #969db6;
+}
+
+.serverEU {
+  background-color: #6A040F;
+}
+
+.clientEU {
+  background-color: #654201;
+}
+
+.successU {
+  background-color: #313c01;
+}

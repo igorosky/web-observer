@@ -2,7 +2,6 @@
   cursor: pointer;
   width: 100%;
   font-size: 1em;
-  background-color: #6A040F;
   text-align: center;
   align-self: center;
   display: flex;
@@ -14,4 +13,16 @@
 
 .updateBoxContainer:hover{
   box-shadow: 0 0 10px 2px #969db6;
+}
+
+.serverEU{
+  background-color: #6A040F;
+}
+
+.clientEU{
+  background-color: #654201;
+}
+
+.successU{
+  background-color: #313c01;
 }

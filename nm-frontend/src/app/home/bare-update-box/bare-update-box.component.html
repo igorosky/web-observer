@@ -1,4 +1,4 @@
-<div class="bareBox-main column">
-  <span>{{update.change}}</span>
+<div class="bareBox-main column" [ngClass]="getStatusClass(update.statusCode)">
+  <span>{{update.change}}: {{update.statusCode}}</span>
   <span>{{update.registeredAt}}</span>
 </div>

@@ -4,11 +4,13 @@ export interface UpdateEntryPreview {
   siteUrl: string;
   siteName: string;
   registeredAt: string;
+  statusCode: number;
 }
 
 export interface BareUpdateEntry {
   registeredAt: string;
   change: string; //todo
+  statusCode: number;
 }
 
 export interface SiteDetails {

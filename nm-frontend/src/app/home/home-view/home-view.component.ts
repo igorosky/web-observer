@@ -39,21 +39,32 @@ export class HomeViewComponent implements OnInit, OnDestroy {
           siteUrl: "https://test/url.com",
           siteName: "my site exists",
           registeredAt: "2025-01-01T00:00:00.000Z",
+          statusCode: 200
         }
         const nonExistUpdate: UpdateEntryPreview = {
           siteId: "124",
           siteUrl: "https://test/url.com",
           siteName: "my site doesn't exist",
           registeredAt: "2025-01-01T00:00:00.000Z",
+          statusCode: 503
+        }
+        const nonExistent2: UpdateEntryPreview = {
+          siteId: "125",
+          siteUrl: "https://test2/url.com",
+          siteName: "my site doesn't exist2",
+          registeredAt: "2025-01-01T00:00:00.000Z",
+          statusCode: 401
         }
         let dummyUpdates: UpdatesState = {
           errorMessage: null,
           updates: []
         }
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 3; i++) {
           dummyUpdates.updates!.push(update); //todo
           dummyUpdates.updates!.push(nonExistUpdate);
+          dummyUpdates.updates!.push(nonExistent2);
         }
+        dummyUpdates.updates!.push(nonExistUpdate);
         this.displayedUpdates = dummyUpdates;
       });
   }
