@@ -1,123 +1,104 @@
-import time
 from django.utils import timezone
-
-from django.contrib.auth.views import logout_then_login
-from django.shortcuts import render
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.contrib.auth import authenticate, login,logout
-# Create your views here.
+from django.contrib.auth import  login,logout
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.views import APIView
+
 from .serializers import UserRegistrationSerializer, EmailLoginSerializer
+from django_app.utils import validate_or_raise
+
+from django_app.exception_handler import CustomAPIException
 
 
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def register_user(request):
-    """
-    POST /register/
-    Request:
-    {
-    "email": "user@example.com",
-    "username": "user123",
-    "password": "strongpassword"
-    }
-    Response when no errors:
-    {
-    "id": "",
-    "email": "",
-    "username": "",
-    "created_at": "" (UTC)
-    }
-    Errors:
-    405 - bad http method
-    400 - errors in input data: (only this field where error occurred):
-    {
-        "email": [
-            ""
-        ],
-        "username": [
-            ""
-        ],
-        "password": [
-            ""
-        ]
-    }
-
-    """
-    serializer = UserRegistrationSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def login_user(request):
-    """
-    POST /login/
-    Request:
-    {
-    "email": "user@example.com",
-    "password": "strongpassword"
-    }
-
-    Response when no errors:
-    {
+class RegisterUserView(APIView):
+    permission_classes = [AllowAny]
+    def post(self,request):
+        """
+        POST /register/
+        Request:
+        {
+        "email": "user@example.com",
+        "username": "user123",
+        "password": "strongpassword"
+        }
+        Response when no errors:
+        {
         "email": "",
-        "lastLoginAt": ""
-    }
+        "username": "",
+        }
+        Errors:
+        405 - bad http method
+        400 - errors in input data
+        "message": "",
+        "errors": {}
+        """
+        serializer = UserRegistrationSerializer(data=request.data)
+        data = validate_or_raise(serializer,status_code=400,message="Register failed")
+        serializer.save()
+        return Response({
+            "email":data["email"],
+            "username":data["username"],
+        })
 
-    Errors:
-    405 - bad http method
-    401 - unauthorized:
-    {
-        "non_field_errors": [
-            "User do not exists"
-        ]
-    }
 
-    {
-        "non_field_errors": [
-            "Password incorrect"
-        ]
-    }
+class LoginUserView(APIView):
+    permission_classes = [AllowAny]
+    def post(self,request):
+        """
+        POST /login/
+        Request:
+        {
+        "email": "user@example.com",
+        "password": "strongpassword"
+        }
 
-    """
-    serializer = EmailLoginSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.validated_data['user']
+        Response when no errors:
+        {
+            "email": "",
+            "lastLoginAt": ""
+        }
+
+        Errors:
+        405 - bad http method
+        401 - unauthorized:
+        "message": "",
+        "errors": {}
+
+        """
+        if request.user.is_authenticated:
+            raise CustomAPIException(status_code=401,message="You are currently logged in",detail={})
+        serializer = EmailLoginSerializer(data=request.data)
+        data = validate_or_raise(serializer,status_code=401,message="Login failed")
+        user = data['user']
         ll = user.last_login
         login(request,user)
         return Response({
-            "email":serializer.data.get("email"),
+            "email":data["email"],
             "lastLoginAt":ll,
         })
-    return Response(serializer.errors,status=status.HTTP_401_UNAUTHORIZED)
 
-@api_view(["POST"])
-@authentication_classes([SessionAuthentication])
-@permission_classes([IsAuthenticated])
-def log_out_user(request):
-    """
-    POST /logout/
-    Response when no errors: 204 code:
-
-    Errors:
-    405 - bad http method
-    403 - logout when you are not logged in:
-    {
-        "detail": "Authentication credentials were not provided."
-    }
-    """
-    user = request.user
-    user.last_login = timezone.now()
-    user.save(update_fields=['last_login'])
-    logout(request)
-    resp =  Response(status=status.HTTP_204_NO_CONTENT)
-    resp.delete_cookie('sessionid')
-    resp.delete_cookie('csrftoken')
-    return resp
+class LogoutUserView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self,request):
+        """
+        POST /logout/
+        Response when no errors: 204 code:
+        Errors:
+        405 - bad http method
+        403 - logout when you are not logged in:
+        "message": "",
+        "errors": {}
+        """
+        user = request.user
+        user.last_login = timezone.now()
+        user.save(update_fields=['last_login'])
+        logout(request)
+        resp =  Response(status=status.HTTP_204_NO_CONTENT)
+        resp.delete_cookie('sessionid')
+        resp.delete_cookie('csrftoken')
+        return resp
 

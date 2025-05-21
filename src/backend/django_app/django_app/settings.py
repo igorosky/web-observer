@@ -58,6 +58,7 @@ REST_FRAMEWORK ={
     'DEFAULT_AUTHENTICATION_CLASSES':[
         'rest_framework.authentication.SessionAuthentication',
     ],
+    "EXCEPTION_HANDLER": "django_app.exception_handler.custom_exception_handler"
 }
 
 
