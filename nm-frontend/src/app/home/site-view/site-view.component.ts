@@ -46,8 +46,8 @@ export class SiteViewComponent implements OnInit {
     this.isInEditMode = !this.isInEditMode;
     if(this.isInEditMode){
       this.siteEditForm = this.fb.group({
-        siteName: [this.currentSite.siteInfo.siteName, [Validators.required]],
-        siteDesc: [this.currentSite.description],
+        siteName: [this.currentSite.siteInfo.siteName, [Validators.required, Validators.maxLength(30)]],
+        siteDesc: [this.currentSite.description, [Validators.maxLength(300)]],
       })
     }else{
       this.siteEditForm = undefined;
@@ -87,6 +87,10 @@ export class SiteViewComponent implements OnInit {
 
   siteEditForm?: FormGroup;
   siteEditErrorMessage?: string = undefined;
+
+  get siteEditFormPristine() {
+    return this.siteEditForm !== undefined && this.siteEditForm.pristine;
+  }
 
   attemptSiteEdit(){
     if(this.siteEditForm === undefined || this.siteEditForm.pristine || this.currentSite === undefined) return;

@@ -10,7 +10,7 @@ export const logAndExtractMessage = (error: HttpErrorResponse): string => {
     logErrorMessage(`An unexpected client error occurred: ${error.message}`);
     return `An unexpected client error occurred: ${error.message}`;
   } else {
-    const errorMessage = error.error;
+    const errorMessage = error.error.message;
     logErrorMessage(errorMessage);
     return errorMessage;
   }

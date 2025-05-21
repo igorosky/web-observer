@@ -1,4 +1,6 @@
 .main {
+  width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1.5fr;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
@@ -13,6 +15,7 @@
 }
 
 .siteInfoDiv {
+  margin: 1em;
   grid-area: siteInfoDiv;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -25,17 +28,35 @@
     "descDiv descDiv descDiv descDiv descDiv"
     "updateInfoDiv updateInfoDiv updateInfoDiv updateInfoDiv updateInfoDiv"
     "optionsDiv optionsDiv optionsDiv optionsDiv optionsDiv";
+  color: white;
 }
 
-.siteNameDiv { grid-area: siteNameDiv; }
+.siteNameDiv {
+  margin-left: 1em;
+  grid-area: siteNameDiv;
+  align-items: flex-start;
+}
 
-.siteExtrasDiv { grid-area: siteExtrasDiv; }
+.siteExtrasDiv {
+  grid-area: siteExtrasDiv;
+}
 
-.optionsDiv { grid-area: optionsDiv; }
+.optionsDiv {
+  grid-area: optionsDiv;
+}
 
-.descDiv { grid-area: descDiv; }
+.descDiv {
+  padding: 0.5em;
+  grid-area: descDiv;
+  text-align: justify;
+  text-wrap: nowrap;
+  white-space: normal;
+  line-break: strict;
+}
 
-.updateInfoDiv { grid-area: updateInfoDiv; }
+.updateInfoDiv {
+  grid-area: updateInfoDiv;
+}
 
 
 .siteUpdatesDiv {
@@ -47,11 +68,15 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.5em;
-  padding-bottom: 0.2em;
-  flex: 0 0 90%;
+  padding-top: 0.3em;
+  padding-bottom: 0.1em;
+  flex: 0 0 70%;
   overflow-y: scroll;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  width: 90%;
 }
 
 #siteViewOuterBox {
@@ -59,29 +84,52 @@
   height: 100%;
 }
 
+.editWrapper{
+  z-index: 1000;
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  width: 50vw;
+  height: 65vh;
+}
 
-.siteEditDiv {  display: grid;
+.siteEditDiv {
+  height: 90%;
+  width: 100%;
+  position: relative;
+  display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   gap: 0 0;
   grid-auto-flow: row;
   grid-template-areas:
-    ". editTitleDiv editTitleDiv editTitleDiv ."
-    ". editControlDiv editControlDiv editControlDiv ."
-    ". editControlDiv editControlDiv editControlDiv ."
-    ". editControlDiv editControlDiv editControlDiv ."
+    "editTitleDiv editTitleDiv editTitleDiv editTitleDiv editTitleDiv"
+    "editControlDiv editControlDiv editControlDiv editControlDiv editControlDiv"
+    "editControlDiv editControlDiv editControlDiv editControlDiv editControlDiv"
+    "editControlDiv editControlDiv editControlDiv editControlDiv editControlDiv"
     ". editButtonsDiv editButtonsDiv editButtonsDiv .";
-  z-index: 1000;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40vw;
-  height: 50vh;
 }
 
-.editTitleDiv { grid-area: editTitleDiv; }
+.editTitleDiv {
+  align-items: flex-start;
+  position: relative;
+  left: 5%;
+  grid-area: editTitleDiv;
+}
 
-.editControlDiv { grid-area: editControlDiv; }
+.editControlDiv {
+  position: relative;
+  left: 5%;
+  align-items: flex-start;
+  grid-area: editControlDiv;
+}
 
-.editButtonsDiv { grid-area: editButtonsDiv; }
+.editButtonsDiv {
+  grid-area: editButtonsDiv;
+}
+
+.infoBox{
+  color: white;
+  margin-right: 2em;
+}
