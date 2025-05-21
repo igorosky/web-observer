@@ -3,19 +3,20 @@ import {HomeLoaderService, UpdatesState} from '../home-loader.service';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-box.component';
+import {SearchBarComponent} from '../search-bar/search-bar.component';
 
 @Component({
   selector: 'app-home-view',
   imports: [
     RouterOutlet,
-    UpdatePreviewBoxComponent
+    UpdatePreviewBoxComponent,
+    SearchBarComponent
   ],
   templateUrl: './home-view.component.html',
   styleUrl: './home-view.component.css',
   standalone: true
 })
 export class HomeViewComponent implements OnInit, OnDestroy {
-
 
   private homeLoaderService: HomeLoaderService = inject(HomeLoaderService);
   private updatesSubscription!: Subscription;

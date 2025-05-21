@@ -1,36 +1,41 @@
 <div class="main">
-  <div class="header row">
-    <div id="logo">Notify me!</div>
-    <!--    buttons here-->
+  <div class="header">
+    <div class="searchBarDiv">
+      <app-search-bar></app-search-bar>
+    </div>
+    <div class="menuDiv"></div>
   </div>
-  <div class="updateCol column">
-    <div class="column" style="gap: 0">
-      <b class="error-box" style="font-size: 1.4em">Newest updates</b>
-      <span class="error-box">Refreshed every 5 seconds</span>
-    </div>
-    <div id="counter">
-      <div id="counter-bar"></div>
-    </div>
-    @if (displayedUpdates !== null) {
-      @if (displayedUpdates.errorMessage !== null) {
-        <div style="flex: 0 0 80%" class="error-box centerVH">
-          <span>{{ displayedUpdates.errorMessage  }}</span>
-        </div>
+  <div class="updateCol">
+    <div class="logoDiv">Notify me!</div>
+    <div class="innerUpdateCol column">
+      <div class="column" style="gap: 0">
+        <b class="error-box" style="font-size: 1.4em">Newest updates</b>
+        <span class="error-box">Refreshed every 5 seconds</span>
+      </div>
+      <div id="counter">
+        <div id="counter-bar"></div>
+      </div>
+      @if (displayedUpdates !== null) {
+        @if (displayedUpdates.errorMessage !== null) {
+          <div style="flex: 0 0 80%" class="error-box centerVH">
+            <span>{{ displayedUpdates.errorMessage }}</span>
+          </div>
+        } @else {
+          <div id="updateContainer">
+            @for (update of displayedUpdates.updates; track $index) {
+              <app-update-box [update]="update"></app-update-box>
+            }
+          </div>
+        }
       } @else {
-        <div id="updateContainer">
-          @for (update of displayedUpdates.updates; track $index) {
-            <app-update-box [update]="update"></app-update-box>
-          }
+        <div style="flex: 0 0 80%" class="error-box centerVH">
+          <span>No new updates found.</span>
         </div>
       }
-    } @else {
-      <div style="flex: 0 0 80%" class="error-box centerVH">
-        <span>No new updates found.</span>
-      </div>
-    }
+    </div>
   </div>
   <div class="contentDiv">
-    @if (isDefaultView){
+    @if (isDefaultView) {
       <div class="column" style="color: white;">
         <b class="infoBox">Welcome to Notify me!</b>
         <span>On the left side of the screen, you can track the latest updates.</span>

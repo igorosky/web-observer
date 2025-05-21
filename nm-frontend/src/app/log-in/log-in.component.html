@@ -9,7 +9,7 @@
     <form [formGroup]="logInForm" (ngSubmit)="submitLogInForm()" class="column">
       <div class="box-input">
         <div class="border">
-          <input formControlName="email" type="text" name="text" class="input" placeholder="Email">
+          <input formControlName="email" type="text" name="text" class="input" placeholder="Email" autocomplete="off">
         </div>
       </div>
       @if (logInForm.get('email')?.invalid && logInForm.get('email')?.touched){
@@ -17,7 +17,7 @@
       }
       <div class="box-input" style="margin-bottom: 0.4em">
         <div class="border">
-          <input formControlName="password" type="password" name="text" class="input" placeholder="Password">
+          <input formControlName="password" type="password" name="text" class="input" placeholder="Password" autocomplete="off">
         </div>
       </div>
       @if (logInErrorMessage) {
