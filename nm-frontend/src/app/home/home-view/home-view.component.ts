@@ -1,7 +1,6 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {HomeLoaderService, UpdatesState} from '../home-loader.service';
 import {Subscription} from 'rxjs';
-import {AuthService} from '../../auth/auth.service';
 import {Router, RouterOutlet} from '@angular/router';
 import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-box.component';
 
