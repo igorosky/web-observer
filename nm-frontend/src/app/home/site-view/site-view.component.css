@@ -1,20 +1,42 @@
 .main {
   display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.5fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  gap: 0 0;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv"
+    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv"
+    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv"
+    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv"
+    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv";
+}
+
+.siteInfoDiv {
+  grid-area: siteInfoDiv;
+  display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   gap: 0 0;
   grid-auto-flow: row;
   grid-template-areas:
-    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv siteUpdatesDiv"
-    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv siteUpdatesDiv"
-    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv siteUpdatesDiv"
-    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv siteUpdatesDiv"
-    "siteInfoDiv siteInfoDiv siteInfoDiv siteUpdatesDiv siteUpdatesDiv";
+    "siteNameDiv siteNameDiv siteNameDiv siteExtrasDiv siteExtrasDiv"
+    "descDiv descDiv descDiv descDiv descDiv"
+    "descDiv descDiv descDiv descDiv descDiv"
+    "updateInfoDiv updateInfoDiv updateInfoDiv updateInfoDiv updateInfoDiv"
+    "optionsDiv optionsDiv optionsDiv optionsDiv optionsDiv";
 }
 
-.siteInfoDiv {
-  grid-area: siteInfoDiv;
-}
+.siteNameDiv { grid-area: siteNameDiv; }
+
+.siteExtrasDiv { grid-area: siteExtrasDiv; }
+
+.optionsDiv { grid-area: optionsDiv; }
+
+.descDiv { grid-area: descDiv; }
+
+.updateInfoDiv { grid-area: updateInfoDiv; }
+
 
 .siteUpdatesDiv {
   grid-area: siteUpdatesDiv;
@@ -29,9 +51,37 @@
   gap: 0.5em;
   padding-bottom: 0.2em;
   flex: 0 0 90%;
+  overflow-y: scroll;
 }
 
 #siteViewOuterBox {
   width: 100%;
   height: 100%;
 }
+
+
+.siteEditDiv {  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  gap: 0 0;
+  grid-auto-flow: row;
+  grid-template-areas:
+    ". editTitleDiv editTitleDiv editTitleDiv ."
+    ". editControlDiv editControlDiv editControlDiv ."
+    ". editControlDiv editControlDiv editControlDiv ."
+    ". editControlDiv editControlDiv editControlDiv ."
+    ". editButtonsDiv editButtonsDiv editButtonsDiv .";
+  z-index: 1000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40vw;
+  height: 50vh;
+}
+
+.editTitleDiv { grid-area: editTitleDiv; }
+
+.editControlDiv { grid-area: editControlDiv; }
+
+.editButtonsDiv { grid-area: editButtonsDiv; }

@@ -3,11 +3,13 @@ import {ActivatedRoute} from '@angular/router';
 import {HomeLoaderService} from '../home-loader.service';
 import {SiteDetails} from '../models/site';
 import {BareUpdateBoxComponent} from '../bare-update-box/bare-update-box.component';
+import {FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-site-view',
   imports: [
-    BareUpdateBoxComponent
+    BareUpdateBoxComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './site-view.component.html',
   styleUrl: './site-view.component.css'
@@ -16,11 +18,13 @@ export class SiteViewComponent implements OnInit {
 
   private homeLoaderService: HomeLoaderService = inject(HomeLoaderService);
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private fb: NonNullableFormBuilder) {
   }
 
   siteFetchErrorMessage?: string = undefined;
   currentSite?: SiteDetails = undefined;
+
+  isInEditMode: boolean = false;
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
@@ -32,6 +36,22 @@ export class SiteViewComponent implements OnInit {
       }
       this.fetchSiteDetails(siteId);
     })
+  }
+
+  toggleEditMode(){
+    if (this.currentSite === undefined){
+      this.isInEditMode = false;
+      return;
+    }
+    this.isInEditMode = !this.isInEditMode;
+    if(this.isInEditMode){
+      this.siteEditForm = this.fb.group({
+        siteName: [this.currentSite.siteInfo.siteName, [Validators.required]],
+        siteDesc: [this.currentSite.description],
+      })
+    }else{
+      this.siteEditForm = undefined;
+    }
   }
 
   private fetchSiteDetails(siteId: string){
@@ -49,5 +69,41 @@ export class SiteViewComponent implements OnInit {
   refetchCurrentSiteDetails(){
     if(this.currentSite === undefined) return;
     this.fetchSiteDetails(this.currentSite.siteInfo.siteId);
+  }
+
+  attemptSiteRemoval(){
+    if(this.currentSite === undefined) return;
+    this.homeLoaderService.removeSite(this.currentSite.siteInfo.siteId)
+      .subscribe({
+        next: () => {
+          this.siteFetchErrorMessage = "Site removed successfully."
+          this.currentSite = undefined;
+        },
+        error: (errorMessage: string) => {
+          alert(errorMessage);
+        }
+      })
+  }
+
+  siteEditForm?: FormGroup;
+  siteEditErrorMessage?: string = undefined;
+
+  attemptSiteEdit(){
+    if(this.siteEditForm === undefined || this.siteEditForm.pristine || this.currentSite === undefined) return;
+    const editData: FormData = new FormData();
+    const value = this.siteEditForm.value;
+    editData.set('siteName', value.siteName)
+    editData.set('siteDescription', value.siteDesc)
+    this.homeLoaderService.editSite(editData).subscribe({
+      next: () => {
+        this.siteEditErrorMessage = undefined;
+        this.currentSite!.siteInfo.siteName = value.siteName;
+        this.currentSite!.description = value.siteDesc;
+        this.toggleEditMode();
+      },
+      error: (errorMessage: string) => {
+        this.siteEditErrorMessage = errorMessage;
+      }
+    })
   }
 }

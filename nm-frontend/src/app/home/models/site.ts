@@ -1,9 +1,3 @@
-export interface Site {
-  siteId: string;
-  siteName: string;
-  siteUrl: string;
-  lastUpdateAt: string;
-}
 
 export interface UpdateEntryPreview {
   siteId: string;
@@ -14,12 +8,19 @@ export interface UpdateEntryPreview {
 
 export interface BareUpdateEntry {
   registeredAt: string;
-  change: string;
+  change: string; //todo
 }
 
 export interface SiteDetails {
   siteInfo: Site;
   updates: BareUpdateEntry[];
-  trackedSince: string;
+  trackedSince: string; //readonly
   description: string;
+}
+
+export interface Site {
+  siteId: string; //readonly
+  siteName: string;
+  siteUrl: string; //readonly
+  lastUpdateAt: string; //readonly
 }

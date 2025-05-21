@@ -7,10 +7,10 @@ export const handleError = (error: HttpErrorResponse): Observable<never> => {
 
 export const logAndExtractMessage = (error: HttpErrorResponse): string => {
   if (error.error instanceof ErrorEvent) {
-    logErrorMessage(`An unexpected client error occurred: ${error.error.message}`);
-    return `An unexpected client error occurred: ${error.error.message}`;
+    logErrorMessage(`An unexpected client error occurred: ${error.message}`);
+    return `An unexpected client error occurred: ${error.message}`;
   } else {
-    const errorMessage = error.error.error;
+    const errorMessage = error.error;
     logErrorMessage(errorMessage);
     return errorMessage;
   }
