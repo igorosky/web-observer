@@ -22,7 +22,7 @@ export class AuthService {
   }
 
   attemptLogIn(logInData: LogInDto): Observable<AuthData> {
-    return this.http.post<LogInResponse>(`${this.baseUrl}/login`, logInData, {withCredentials: true})
+    return this.http.post<LogInResponse>(`${this.baseUrl}/login`, logInData)
       .pipe(
         map((response: LogInResponse): AuthData => {
           return {
@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   attemptLogOut(): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/logout`, null, {withCredentials: true})
+    return this.http.post<void>(`${this.baseUrl}/logout`, null)
       .pipe(
         tap(() => this.storageService.clearOnLogOut()),
         catchError(handleError)

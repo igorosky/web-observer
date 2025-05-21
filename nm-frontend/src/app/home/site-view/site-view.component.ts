@@ -66,9 +66,23 @@ export class SiteViewComponent implements OnInit {
     })
   }
 
-  refetchCurrentSiteDetails(){
+  refetchCurrentSiteUpdates(){
     if(this.currentSite === undefined) return;
-    this.fetchSiteDetails(this.currentSite.siteInfo.siteId);
+    this.fetchSiteUpdates(this.currentSite.siteInfo.siteId);
+  }
+
+  private fetchSiteUpdates(siteId: string){
+    if(this.currentSite === undefined) return;
+    this.homeLoaderService.fetchSiteUpdates(siteId).subscribe({
+      next: (updates) => {
+        if(this.currentSite === undefined) return;
+        this.currentSite.updates = updates;
+      },
+      error: (errorMessage: string) => {
+        this.siteFetchErrorMessage = errorMessage;
+        this.currentSite = undefined;
+      },
+    })
   }
 
   attemptSiteRemoval(){
@@ -93,16 +107,17 @@ export class SiteViewComponent implements OnInit {
   }
 
   attemptSiteEdit(){
-    if(this.siteEditForm === undefined || this.siteEditForm.pristine || this.currentSite === undefined) return;
+    if(this.siteEditForm === undefined || this.siteEditForm.pristine) return;
     const editData: FormData = new FormData();
     const value = this.siteEditForm.value;
     editData.set('siteName', value.siteName)
     editData.set('siteDescription', value.siteDesc)
     this.homeLoaderService.editSite(editData).subscribe({
       next: () => {
+        if(this.currentSite === undefined) return;
         this.siteEditErrorMessage = undefined;
-        this.currentSite!.siteInfo.siteName = value.siteName;
-        this.currentSite!.description = value.siteDesc;
+        this.currentSite.siteInfo.siteName = value.siteName;
+        this.currentSite.description = value.siteDesc;
         this.toggleEditMode();
       },
       error: (errorMessage: string) => {

@@ -54,7 +54,6 @@
 
 .contentDiv {
   grid-area: contentDiv;
-  border: 0.1em solid #efb429;
   width: 95%;
   height: 100%;
   margin-left: 2em;

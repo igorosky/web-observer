@@ -74,7 +74,7 @@ export class LogInComponent implements OnInit {
       next: async (authData: AuthData) => {
         this.logInErrorMessage = undefined;
         this.welcomeMessage = `Welcome back ${authData.username}!`
-        this.homeLoaderService.preloadHomeView(authData);
+        this.homeLoaderService.preloadHomeView();
         await this.triggerLogInAnimation();
         void this.router.navigate([HOME_ROUTE]);
       },

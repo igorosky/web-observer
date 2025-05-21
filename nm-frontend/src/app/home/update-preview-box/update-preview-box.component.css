@@ -15,14 +15,15 @@
   box-shadow: 0 0 10px 2px #969db6;
 }
 
+/*noinspection CssUnusedSymbol*/
 .serverEU{
   background-color: #6A040F;
 }
-
+/*noinspection CssUnusedSymbol*/
 .clientEU{
   background-color: #654201;
 }
-
+/*noinspection CssUnusedSymbol*/
 .successU{
   background-color: #313c01;
 }

@@ -1,7 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import {AuthData} from '../auth/models/auth-data';
-import {SiteDetails, UpdateEntryPreview} from './models/site';
+import {BareUpdateEntry, SiteDetails, UpdateEntryPreview} from './models/site';
 import {BehaviorSubject, catchError, interval, map, Observable, of, Subject, takeUntil} from 'rxjs';
 import {handleError, logAndExtractMessage} from '../shared/error-handling';
 
@@ -27,7 +26,7 @@ export class HomeLoaderService implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.updatesSubject.complete(); //todo
+    this.updatesSubject.complete();
     this.updatesSubject.unsubscribe();
   }
 
@@ -35,24 +34,23 @@ export class HomeLoaderService implements OnDestroy {
     return this.isFetchingUpdates;
   }
 
-  preloadHomeView(userData: AuthData) {
-    this.startFetchingUpdates(userData);
+  preloadHomeView() {
+    this.startFetchingUpdates();
   }
 
-  startFetchingUpdates(userData: AuthData) {
+  startFetchingUpdates() {
     if (this.isFetchingUpdates) return;
     this.isFetchingUpdates = true;
     interval(UPDATES_POLL_INTERVAL_MS)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        this.refetchUpdates(userData.username);
+        this.refetchUpdates();
       });
   }
 
 
-  private refetchUpdates(forUsername: string) {
-    const params = new HttpParams().set('username', forUsername);
-    this.http.get<UpdateEntryPreview[]>(`${this.baseUrl}/updates`, {params: params})
+  private refetchUpdates() {
+    this.http.get<UpdateEntryPreview[]>(`${this.baseUrl}/updates`)
       .pipe(
         map(updates => {
           return updates.length > 0 ? {updates: updates, errorMessage: null} : null;
@@ -71,6 +69,12 @@ export class HomeLoaderService implements OnDestroy {
   fetchSiteInfo(siteId: string): Observable<SiteDetails> {
     const params = new HttpParams().set('siteId', siteId);
     return this.http.get<SiteDetails>(`${this.baseUrl}/site`, {params: params})
+      .pipe(catchError(handleError));
+  }
+
+  fetchSiteUpdates(siteId: string): Observable<BareUpdateEntry[]> {
+    const params = new HttpParams().set('siteId', siteId).set('onlyUpdates', 'true');
+    return this.http.get<BareUpdateEntry[]>(`${this.baseUrl}/site`, {params: params})
       .pipe(catchError(handleError));
   }
 

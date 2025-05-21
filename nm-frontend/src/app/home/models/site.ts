@@ -26,3 +26,8 @@ export interface Site {
   siteUrl: string; //readonly
   lastUpdateAt: string; //readonly
 }
+
+export interface SitePreview {
+  siteId: string;
+  siteName: string;
+}
