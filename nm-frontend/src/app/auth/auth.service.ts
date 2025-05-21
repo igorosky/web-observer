@@ -32,7 +32,7 @@ export class AuthService {
         }),
         switchMap(authData => {
           if (!this.storageService.setAuthData(authData)) {
-            return from(this.attemptLogOut()).pipe(
+            return from(this.attemptLogOut(false)).pipe(
               switchMap(() => {
                 if (this.storageService.setAuthData(authData)) return of(authData);
                 else return throwError(() => new Error('Failed to save authentication data. Please clear local cache manually.'));
@@ -45,19 +45,25 @@ export class AuthService {
       );
   }
 
-  attemptLogOut(): Observable<void> {
+  attemptLogOut(redirectToLogIn: boolean): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, null)
       .pipe(
-        tap(() => this.storageService.clearOnLogOut()),
+        tap(() => {
+          this.storageService.clearOnLogOut();
+          if(redirectToLogIn) this.redirectToLogIn();
+        }),
         catchError(handleError)
       );
+  }
+
+  redirectToLogIn(): void {
+    void this.router.navigate([LOG_IN_ROUTE]);
   }
 
   getCurrentUserData(): Observable<AuthData> {
     const data = this.storageService.getAuthData();
     if(data === null){
-      this.attemptLogOut();
-      void this.router.navigate([LOG_IN_ROUTE]);
+      this.attemptLogOut(true);
       return convertMessageToError('User data was cleared during session. Please log in again.')
     }
     return of(data);
