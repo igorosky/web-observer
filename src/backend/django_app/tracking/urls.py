@@ -9,8 +9,8 @@ urlpatterns = [
    # path("site-details/", SiteDetailsView.as_view(), name="site_detail"),
    # path("refresh-site/", views.refresh_site, name="refresh_site"),
    # path("update-site-details/",UpdateSiteView.as_view() , name="update_site_details"),
-    path("sites/", views.sites, name="sites"),
-    path("last-updates/", views.last_updates, name="last_updates"),
     #path("remove-site/", RemoveSiteView.as_view(), name="remove_site"),
+
+    path("test/", views.test, name="sites"),
 
 ]

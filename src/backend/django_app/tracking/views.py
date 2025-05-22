@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
+from .ChangeAPI import ElementChangeHandler, get_element_id
 from .models import UserTrackedWebsites
 from .serializers import RegisterSiteSerializer, SiteDetailsSerializer, RemoveSiteSerializer, ElementIDSerializer, \
     PatchSiteSerializer, RegisterElementChangeSerializer
@@ -206,21 +207,15 @@ class TrackingElementChangeView(APIView):
 
 
 
-@api_view(["GET"])
+
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def refresh_site(request):
-    ...
+def test(request):
+    element_change = ElementChangeHandler.register_change(
+        user=request.user,
+        element_id=get_element_id(request.user,"d97b81901ac74faa8d60593090dfab5c"),
+        content="new HTML here",
+        change="diff here or  "
+     )
 
 
-@api_view(["GET"])
-@authentication_classes([SessionAuthentication])
-@permission_classes([IsAuthenticated])
-def sites(request):
-    ...
-
-@api_view(["GET"])
-@authentication_classes([SessionAuthentication])
-@permission_classes([IsAuthenticated])
-def last_updates(request):
-    ...
