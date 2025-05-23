@@ -66,20 +66,22 @@
                   <input formControlName="siteName" type="text" name="text" class="input">
                 </div>
               </div>
-              @if (siteEditForm.get('siteName')?.invalid && siteEditForm.get('siteName')?.touched) {
-                <span style="margin-left: 1em" class="error-box">Site name is required. Max length: 30 characters.</span>
+              @if (siteName.hasError('required') && siteName.touched) {
+                <span style="margin-left: 1em" class="error-box">Site name is required</span>
+              } @else if (siteName.hasError('maxlength')) {
+                <span style="margin-left: 1em" class="error-box">Maximum length is 30 characters</span>
               }
             </div>
           </div>
           <div class="editControlDiv column">
             <div class="row">
               <span class="infoBox">Edit description:</span>
-                  <textarea class="sTextArea" formControlName="siteDesc" type="text"></textarea>
+              <textarea class="sTextArea" formControlName="siteDesc" type="text"></textarea>
             </div>
           </div>
           <div class="editButtonsDiv column">
-            @if (siteEditForm.get('siteDesc')?.invalid && siteEditForm.get('siteDesc')?.touched) {
-              <span class="error-box">Max description length: 300 characters.</span>
+            @if (siteDesc.invalid && siteDesc.touched) {
+              <span class="error-box">Maximum description length is 300 characters</span>
             }
             <span class="error-box">
               @if (siteEditErrorMessage !== undefined) {

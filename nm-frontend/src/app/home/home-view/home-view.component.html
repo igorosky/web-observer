@@ -4,7 +4,7 @@
       <app-search-bar [availableSites$]="fetchAvailableSites()" (siteSelected)="onSearchSiteSelect($event)"></app-search-bar>
     </div>
     <div class="menuDiv">
-      <button class="s_button" type="button" routerLink="register">
+      <button class="s_button" type="button" (click)="routeToRegisterSite()">
         <div class="s_button__int centerVH" style="height: 1.5em">
           <span style="white-space: nowrap">Register site</span>
         </div>

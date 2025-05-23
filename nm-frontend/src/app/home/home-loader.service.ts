@@ -3,7 +3,6 @@ import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {BareUpdateEntry, SiteDetails, SitePreview, UpdateEntryPreview} from './models/site';
 import {BehaviorSubject, catchError, interval, map, Observable, of, Subject, takeUntil} from 'rxjs';
 import {handleError, logAndExtractMessage} from '../shared/error-handling';
-import {SiteRegisterComponent} from './site-register/site-register.component';
 
 export interface UpdatesState {
   updates: UpdateEntryPreview[] | null;

@@ -111,7 +111,7 @@ export class SiteViewComponent implements OnInit {
     const editData: FormData = new FormData();
     const value = this.siteEditForm.value;
     editData.set('siteName', value.siteName)
-    editData.set('siteDescription', value.siteDesc)
+    editData.set('siteDescription', value.siteDesc) //todo
     this.homeLoaderService.editSite(editData).subscribe({
       next: () => {
         if(this.currentSite === undefined) return;
@@ -124,5 +124,13 @@ export class SiteViewComponent implements OnInit {
         this.siteEditErrorMessage = errorMessage;
       }
     })
+  }
+
+  get siteName(){
+    return this.siteEditForm?.get('siteName')!;
+  }
+
+  get siteDesc() {
+    return this.siteEditForm?.get('siteDesc')!;
   }
 }

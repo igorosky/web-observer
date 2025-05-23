@@ -1,19 +1,19 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {HomeLoaderService, UpdatesState} from '../home-loader.service';
 import {Observable, Subscription} from 'rxjs';
-import {ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-box.component';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
 import {SitePreview} from '../models/site';
 import {AuthService} from '../../auth/auth.service';
+import {SITE_REGISTER_ROUTE} from '../../app.routes';
 
 @Component({
   selector: 'app-home-view',
   imports: [
     RouterOutlet,
     UpdatePreviewBoxComponent,
-    SearchBarComponent,
-    RouterLink
+    SearchBarComponent
   ],
   templateUrl: './home-view.component.html',
   styleUrl: './home-view.component.css',
@@ -48,10 +48,15 @@ export class HomeViewComponent implements OnInit, OnDestroy {
   }
 
   onSearchSiteSelect(site: SitePreview) {
-    void this.router.navigate(['site', site.siteId]);
+    void this.router.navigate(['site', site.siteId], {relativeTo: this.activatedRoute});
   }
 
   attemptLogOut() {
     this.authService.attemptLogOut(true);
+  }
+
+  routeToRegisterSite() {
+    this.isDefaultView = false;
+    void this.router.navigate([SITE_REGISTER_ROUTE], {relativeTo: this.activatedRoute});
   }
 }
