@@ -7,7 +7,7 @@
   <div class="white"></div>
   <div class="search-border"></div>
 
-  <div id="main">
+  <div id="searchBarMain">
     <input placeholder="Search sites..." type="text" name="text" class="search-input" autocomplete="off"
            [(ngModel)]="searchText" (input)="filterResults()" (focus)="onSearchFocus()" (blur)="onSearchBlur()"/>
     @if (isFocused && filteredSites.length > 0) {

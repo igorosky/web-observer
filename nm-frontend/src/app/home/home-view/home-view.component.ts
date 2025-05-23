@@ -6,14 +6,14 @@ import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-bo
 import {SearchBarComponent} from '../search-bar/search-bar.component';
 import {SitePreview} from '../models/site';
 import {AuthService} from '../../auth/auth.service';
-import {SITE_REGISTER_ROUTE} from '../../app.routes';
+import {HOME_ROUTE, SITE_REGISTER_ROUTE} from '../../app.routes';
 
 @Component({
   selector: 'app-home-view',
   imports: [
     RouterOutlet,
     UpdatePreviewBoxComponent,
-    SearchBarComponent
+    SearchBarComponent,
   ],
   templateUrl: './home-view.component.html',
   styleUrl: './home-view.component.css',
@@ -58,5 +58,10 @@ export class HomeViewComponent implements OnInit, OnDestroy {
   routeToRegisterSite() {
     this.isDefaultView = false;
     void this.router.navigate([SITE_REGISTER_ROUTE], {relativeTo: this.activatedRoute});
+  }
+
+  navigateToHome() {
+    this.isDefaultView = true;
+    void this.router.navigate([HOME_ROUTE]);
   }
 }

@@ -117,6 +117,7 @@
   background-size: 400% 400%;
   animation: gradient-flow 4s infinite;
   margin-bottom: 0.8em;
+  cursor: pointer;
 }
 
 @keyframes gradient-flow {
