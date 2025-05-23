@@ -145,6 +145,7 @@ html, body {
 }
 
 .sTextArea {
+  resize: none;
   background-color: #212121;
   padding: 0 19px 0 10px;
   font-size: 1.1em;
@@ -153,7 +154,7 @@ html, body {
   border: none;
   color: white;
   outline: 0;
-  overflow: hidden;
+  overflow: auto;
   width: 30em;
   height: 17em;
   max-width: 100%;
