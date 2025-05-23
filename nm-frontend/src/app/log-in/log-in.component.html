@@ -12,7 +12,7 @@
           <input formControlName="email" type="text" name="text" class="input" placeholder="Email" autocomplete="off">
         </div>
       </div>
-      @if (logInForm.get('email')?.invalid && logInForm.get('email')?.touched){
+      @if (email.invalid && email.touched){
         <span class="error-box">Email must be valid</span>
       }
       <div class="box-input" style="margin-bottom: 0.4em">

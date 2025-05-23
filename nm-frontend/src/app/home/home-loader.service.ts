@@ -9,6 +9,10 @@ export interface UpdatesState {
   errorMessage: string | null;
 }
 
+export interface SiteRegisterResponse{
+  siteId: string;
+}
+
 const UPDATES_POLL_INTERVAL_MS = 5000;
 
 @Injectable({
@@ -85,6 +89,10 @@ export class HomeLoaderService implements OnDestroy {
 
   editSite(siteEditData: FormData): Observable<void> {
     return this.http.patch<void>(`${this.baseUrl}/site`, siteEditData).pipe(catchError(handleError));
+  }
+
+  registerSite(siteRegisterData: FormData): Observable<SiteRegisterResponse> {
+    return this.http.post<SiteRegisterResponse>(`${this.baseUrl}/site`, siteRegisterData).pipe(catchError(handleError));
   }
 
   fetchUserSiteCollection(): Observable<SitePreview[]> {

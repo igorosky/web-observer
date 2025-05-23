@@ -1,6 +1,6 @@
-<div id="siteViewOuterBox" class="centerVH">
+<div id="siteViewOuterBox">
   @if (currentSite !== undefined) {
-    <div class="main">
+    <div id="siteViewMain">
       <div class="siteInfoDiv">
         <div class="siteNameDiv column">
           <b style="font-size: 1.3em">Site: {{ currentSite.siteInfo.siteName }}</b>
@@ -23,11 +23,16 @@
           </button>
         </div>
         <div class="descDiv centerVH">
-          {{ currentSite.description }}
+          @if (currentSite.description.length !== 0) {
+            {{ currentSite.description }}
+          } @else{
+            <span class="error-box">No description provided</span>
+          }
         </div>
-        <div class="updateInfoDiv centerVH">
+        <div class="updateInfoDiv column">
           <span>Last update: {{ currentSite.siteInfo.lastUpdateAt }}
             . Registered updates: {{ currentSite.updates.length }}</span>
+          <span>CSS selector "{{currentSite.siteInfo.cssSelector}}" tracked: "{{currentSite.siteInfo.elementName}}"</span>
         </div>
       </div>
       <div class="siteUpdatesDiv column">
@@ -45,7 +50,7 @@
       </div>
     </div>
   } @else {
-    <span class="error-box centerVH" style="font-size: 1.4em">
+    <span class="error-box" style="font-size: 1.4em; top: 50%; position: absolute">
     @if (siteFetchErrorMessage !== undefined) {
       {{ siteFetchErrorMessage }}
     } @else {
@@ -58,29 +63,48 @@
       <div class="column" style="gap:0; height: 100%; width: 100%; background-color: #03071E">
         <b class="infoBox" style="font-size: 2em; margin: 0">Edit site {{ currentSite.siteInfo.siteId }}</b>
         <form class="siteEditDiv" [formGroup]="siteEditForm" (ngSubmit)="attemptSiteEdit()">
-          <div class="editTitleDiv column">
-            <div class="row">
-              <span class="infoBox" style="margin-right: 2.5em">Edit site name:</span>
-              <div class="box-input">
-                <div class="border">
-                  <input formControlName="siteName" type="text" name="text" class="input">
+          <div class="editTitleDiv">
+              <div class="column">
+                <div class="row">
+                  <span style="color: white; margin-right: 1em">Edit site name:</span>
+                  <div class="box-input">
+                    <div class="border">
+                      <input formControlName="siteName" type="text" name="text" class="input">
+                    </div>
+                  </div>
                 </div>
+                @if (siteName.hasError('required') && siteName.touched) {
+                  <span style="margin-left: 1em" class="error-box">Site name is required</span>
+                } @else if (siteName.hasError('maxlength')) {
+                  <span style="margin-left: 1em" class="error-box">Maximum length is 30 characters</span>
+                }
               </div>
-              @if (siteEditForm.get('siteName')?.invalid && siteEditForm.get('siteName')?.touched) {
-                <span style="margin-left: 1em" class="error-box">Site name is required. Max length: 30 characters.</span>
-              }
-            </div>
+              <div class="column">
+                <div class="row">
+                  <span style="color: white; margin-right: 1em">Edit element name:</span>
+                  <div class="box-input">
+                    <div class="border">
+                      <input formControlName="elementName" type="text" name="text" class="input">
+                    </div>
+                  </div>
+                </div>
+                @if (elementName.hasError('required') && elementName.touched) {
+                  <span style="margin-left: 1em" class="error-box">Element name is required</span>
+                } @else if (elementName.hasError('maxlength')) {
+                  <span style="margin-left: 1em" class="error-box">Maximum length is 30 characters</span>
+                }
+              </div>
           </div>
           <div class="editControlDiv column">
             <div class="row">
               <span class="infoBox">Edit description:</span>
-                  <textarea class="sTextArea" formControlName="siteDesc" type="text"></textarea>
+              <textarea class="sTextArea" formControlName="siteDesc" type="text"></textarea>
             </div>
+            @if (siteDesc.invalid && siteDesc.touched) {
+              <span class="error-box" style="margin-top: 1em">Maximum description length is 300 characters</span>
+            }
           </div>
           <div class="editButtonsDiv column">
-            @if (siteEditForm.get('siteDesc')?.invalid && siteEditForm.get('siteDesc')?.touched) {
-              <span class="error-box">Max description length: 300 characters.</span>
-            }
             <span class="error-box">
               @if (siteEditErrorMessage !== undefined) {
                 {{ siteFetchErrorMessage }}

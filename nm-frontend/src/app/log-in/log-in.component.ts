@@ -99,4 +99,8 @@ export class LogInComponent implements OnInit {
     return this.logInForm?.pristine ?? true;
   }
 
+  get email(){
+    return this.logInForm?.get('email')!;
+  }
+
 }
