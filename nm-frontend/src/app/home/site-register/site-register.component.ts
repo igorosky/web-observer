@@ -57,7 +57,7 @@ export class SiteRegisterComponent {
       siteName: ['', [Validators.required, Validators.maxLength(30)]],
       siteUrl: ['', [Validators.required, Validators.maxLength(100), urlValidator()]],
       siteDesc: ['', Validators.maxLength(300)],
-      elementName: ['', [Validators.required, Validators.maxLength(255)]],
+      elementName: ['', [Validators.required, Validators.maxLength(30)]],
       cssSelector: ['', [Validators.required, Validators.maxLength(255)]],
     })
   }

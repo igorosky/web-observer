@@ -1,4 +1,4 @@
-.main {
+#siteViewMain {
   width: 100%;
   height: 100%;
   display: grid;
@@ -72,8 +72,9 @@
   gap: 0.5em;
   padding-top: 0.3em;
   padding-bottom: 0.1em;
-  flex: 0 0 70%;
-  overflow-y: scroll;
+  flex: 0 0 65%;
+  overflow: auto;
+  overflow-x: hidden;
   margin-top: 1em;
   margin-bottom: 1em;
   width: 90%;
@@ -81,16 +82,16 @@
 
 #siteViewOuterBox {
   width: 100%;
-  height: 100%;
+  height: 80vh;
 }
 
 .editWrapper{
   z-index: 1000;
   position: absolute;
   top: 50%;
-  left: 60%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  width: 50vw;
+  width: 55vw;
   height: 65vh;
 }
 
@@ -112,16 +113,15 @@
 }
 
 .editTitleDiv {
-  align-items: flex-start;
-  position: relative;
-  left: 5%;
+  align-items: center;
+  display: flex;
+  gap: 5em;
+  justify-content: center;
   grid-area: editTitleDiv;
 }
 
 .editControlDiv {
   position: relative;
-  left: 5%;
-  align-items: flex-start;
   grid-area: editControlDiv;
 }
 

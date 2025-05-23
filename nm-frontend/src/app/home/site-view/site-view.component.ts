@@ -48,6 +48,7 @@ export class SiteViewComponent implements OnInit {
       this.siteEditForm = this.fb.group({
         siteName: [this.currentSite.siteInfo.siteName, [Validators.required, Validators.maxLength(30)]],
         siteDesc: [this.currentSite.description, [Validators.maxLength(300)]],
+        elementName: [this.currentSite.siteInfo.elementName, [Validators.required, Validators.maxLength(30)]],
       })
     }else{
       this.siteEditForm = undefined;
@@ -111,13 +112,15 @@ export class SiteViewComponent implements OnInit {
     const editData: FormData = new FormData();
     const value = this.siteEditForm.value;
     editData.set('siteName', value.siteName)
-    editData.set('siteDescription', value.siteDesc) //todo
+    editData.set('siteDescription', value.siteDesc)
+    editData.set('elementName', value.elementName)
     this.homeLoaderService.editSite(editData).subscribe({
       next: () => {
         if(this.currentSite === undefined) return;
         this.siteEditErrorMessage = undefined;
         this.currentSite.siteInfo.siteName = value.siteName;
         this.currentSite.description = value.siteDesc;
+        this.currentSite.siteInfo.elementName = value.elementName;
         this.toggleEditMode();
       },
       error: (errorMessage: string) => {
@@ -132,5 +135,9 @@ export class SiteViewComponent implements OnInit {
 
   get siteDesc() {
     return this.siteEditForm?.get('siteDesc')!;
+  }
+
+  get elementName(){
+    return this.siteEditForm?.get('elementName')!;
   }
 }
