@@ -1,17 +1,19 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {HomeLoaderService, UpdatesState} from '../home-loader.service';
 import {Observable, Subscription} from 'rxjs';
-import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
 import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-box.component';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
 import {SitePreview} from '../models/site';
+import {AuthService} from '../../auth/auth.service';
 
 @Component({
   selector: 'app-home-view',
   imports: [
     RouterOutlet,
     UpdatePreviewBoxComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    RouterLink
   ],
   templateUrl: './home-view.component.html',
   styleUrl: './home-view.component.css',
@@ -34,7 +36,7 @@ export class HomeViewComponent implements OnInit, OnDestroy {
       });
   }
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService) {
   }
 
   ngOnDestroy(): void {
@@ -49,4 +51,7 @@ export class HomeViewComponent implements OnInit, OnDestroy {
     void this.router.navigate(['site', site.siteId]);
   }
 
+  attemptLogOut() {
+    this.authService.attemptLogOut(true);
+  }
 }

@@ -26,9 +26,17 @@
   align-items: flex-start;
 }
 
-.searchBarDiv { grid-area: searchBarDiv; }
+.searchBarDiv {
+  grid-area: searchBarDiv;
+}
 
-.menuDiv { grid-area: menuDiv; }
+.menuDiv {
+  font-size: 0.7em;
+  display: flex;
+  grid-area: menuDiv;
+  gap: 0.5em;
+  margin-top: 0.5em;
+}
 
 
 #counter {

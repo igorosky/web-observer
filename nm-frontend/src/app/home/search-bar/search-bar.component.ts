@@ -29,7 +29,7 @@ export class SearchBarComponent implements OnInit {
         this.filteredSites = [...this.sitesToSearch];
       },
       error: (errorMessage) => {
-        alert(`Searching disabled due to the following error: ${errorMessage}`)
+        //alert(`Searching disabled due to the following error: ${errorMessage}`) todo
       }
     })
   }

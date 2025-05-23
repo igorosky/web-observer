@@ -3,10 +3,15 @@ import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {BareUpdateEntry, SiteDetails, SitePreview, UpdateEntryPreview} from './models/site';
 import {BehaviorSubject, catchError, interval, map, Observable, of, Subject, takeUntil} from 'rxjs';
 import {handleError, logAndExtractMessage} from '../shared/error-handling';
+import {SiteRegisterComponent} from './site-register/site-register.component';
 
 export interface UpdatesState {
   updates: UpdateEntryPreview[] | null;
   errorMessage: string | null;
+}
+
+export interface SiteRegisterResponse{
+  siteId: string;
 }
 
 const UPDATES_POLL_INTERVAL_MS = 5000;
@@ -85,6 +90,10 @@ export class HomeLoaderService implements OnDestroy {
 
   editSite(siteEditData: FormData): Observable<void> {
     return this.http.patch<void>(`${this.baseUrl}/site`, siteEditData).pipe(catchError(handleError));
+  }
+
+  registerSite(siteRegisterData: FormData): Observable<SiteRegisterResponse> {
+    return this.http.post<SiteRegisterResponse>(`${this.baseUrl}/site`, siteRegisterData).pipe(catchError(handleError));
   }
 
   fetchUserSiteCollection(): Observable<SitePreview[]> {

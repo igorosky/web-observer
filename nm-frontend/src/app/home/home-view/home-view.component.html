@@ -3,7 +3,18 @@
     <div class="searchBarDiv">
       <app-search-bar [availableSites$]="fetchAvailableSites()" (siteSelected)="onSearchSiteSelect($event)"></app-search-bar>
     </div>
-    <div class="menuDiv"></div>
+    <div class="menuDiv">
+      <button class="s_button" type="button" routerLink="register">
+        <div class="s_button__int centerVH" style="height: 1.5em">
+          <span style="white-space: nowrap">Register site</span>
+        </div>
+      </button>
+      <button class="s_button" type="button" (click)="attemptLogOut()">
+        <div class="s_button__int centerVH" style="height: 1.5em">
+          <span style="white-space: nowrap">Log out</span>
+        </div>
+      </button>
+    </div>
   </div>
   <div class="updateCol">
     <div class="logoDiv">Notify me!</div>

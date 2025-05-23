@@ -46,9 +46,11 @@ export class AuthService {
   }
 
   attemptLogOut(redirectToLogIn: boolean): Observable<void> {
+    console.log('att')
     return this.http.post<void>(`${this.baseUrl}/logout`, null)
       .pipe(
         tap(() => {
+          console.log('Logged out');
           this.storageService.clearOnLogOut();
           if(redirectToLogIn) this.redirectToLogIn();
         }),
