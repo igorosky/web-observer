@@ -7,14 +7,29 @@
   gap: 0 0;
   grid-auto-flow: row;
   grid-template-areas:
-    "header header header header header header header"
+    "updateCol header header header header header header"
     "updateCol contentDiv contentDiv contentDiv contentDiv contentDiv contentDiv"
     "updateCol contentDiv contentDiv contentDiv contentDiv contentDiv contentDiv"
     "updateCol contentDiv contentDiv contentDiv contentDiv contentDiv contentDiv"
     "updateCol contentDiv contentDiv contentDiv contentDiv contentDiv contentDiv";
 }
 
-.header { grid-area: header; }
+.header {
+  grid-area: header;
+  display: grid;
+  grid-template-columns: 4fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0 0;
+  grid-auto-flow: row;
+  grid-template-areas:
+    ". searchBarDiv menuDiv";
+  align-items: flex-start;
+}
+
+.searchBarDiv { grid-area: searchBarDiv; }
+
+.menuDiv { grid-area: menuDiv; }
+
 
 #counter {
   flex: 0 0 6%;
@@ -43,13 +58,20 @@
   }
 }
 
-
-.updateCol {
+.innerUpdateCol {
   background-color: #020e51;
   border-radius: 0.6em;
-  grid-area: updateCol;
   width: 100%;
+  height: 100%;
   padding: 0.3em;
+  flex: 0 0 90%;
+}
+
+.updateCol {
+  grid-area: updateCol;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .contentDiv {
@@ -57,6 +79,10 @@
   width: 95%;
   height: 100%;
   margin-left: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 #updateContainer {
@@ -70,7 +96,8 @@
   padding-top: 0.2em;
 }
 
-#logo {
+.logoDiv {
+  grid-area: logoDiv;
   font-size: 3em;
   font-weight: bold;
   text-transform: uppercase;
