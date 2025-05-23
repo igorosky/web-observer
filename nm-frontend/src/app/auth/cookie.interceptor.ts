@@ -16,7 +16,6 @@ export class CookieInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('adding ')
     return next.handle(req.clone({withCredentials: true})).pipe(
       catchError(error => {
         if (error instanceof HttpErrorResponse){

@@ -1,7 +1,7 @@
 <div class="main">
   <div class="header">
     <div class="searchBarDiv">
-      <app-search-bar></app-search-bar>
+      <app-search-bar [availableSites$]="fetchAvailableSites()" (siteSelected)="onSearchSiteSelect($event)"></app-search-bar>
     </div>
     <div class="menuDiv"></div>
   </div>

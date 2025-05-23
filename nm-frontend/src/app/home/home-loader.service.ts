@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
-import {BareUpdateEntry, SiteDetails, UpdateEntryPreview} from './models/site';
+import {BareUpdateEntry, SiteDetails, SitePreview, UpdateEntryPreview} from './models/site';
 import {BehaviorSubject, catchError, interval, map, Observable, of, Subject, takeUntil} from 'rxjs';
 import {handleError, logAndExtractMessage} from '../shared/error-handling';
 
@@ -87,4 +87,8 @@ export class HomeLoaderService implements OnDestroy {
     return this.http.patch<void>(`${this.baseUrl}/site`, siteEditData).pipe(catchError(handleError));
   }
 
+  fetchUserSiteCollection(): Observable<SitePreview[]> {
+    return this.http.get<SitePreview[]>(`${this.baseUrl}/collection`)
+      .pipe(catchError(handleError));
+  }
 }

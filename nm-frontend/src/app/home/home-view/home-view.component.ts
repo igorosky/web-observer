@@ -1,9 +1,10 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {HomeLoaderService, UpdatesState} from '../home-loader.service';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-box.component';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
+import {SitePreview} from '../models/site';
 
 @Component({
   selector: 'app-home-view',
@@ -21,17 +22,16 @@ export class HomeViewComponent implements OnInit, OnDestroy {
   private homeLoaderService: HomeLoaderService = inject(HomeLoaderService);
   private updatesSubscription!: Subscription;
   protected displayedUpdates: UpdatesState | null = null;
-
   protected isDefaultView = true;
 
   ngOnInit(): void {
+    this.isDefaultView = this.activatedRoute.children.length === 0;
     if (!this.homeLoaderService.isLoaded()) this.homeLoaderService.startFetchingUpdates();
     this.updatesSubscription = this.homeLoaderService
       .updates$
       .subscribe((fetchingResult: UpdatesState | null) => {
         this.displayedUpdates = fetchingResult;
       });
-    this.isDefaultView = this.activatedRoute.children.length === 0;
   }
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
@@ -39,6 +39,14 @@ export class HomeViewComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.updatesSubscription.unsubscribe();
+  }
+
+  fetchAvailableSites(): Observable<SitePreview[]> {
+    return this.homeLoaderService.fetchUserSiteCollection();
+  }
+
+  onSearchSiteSelect(site: SitePreview) {
+    void this.router.navigate(['site', site.siteId]);
   }
 
 }

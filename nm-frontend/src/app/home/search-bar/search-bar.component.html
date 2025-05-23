@@ -8,7 +8,18 @@
   <div class="search-border"></div>
 
   <div id="main">
-    <input placeholder="Search..." type="text" name="text" class="search-input" autocomplete="off"/>
+    <input placeholder="Search sites..." type="text" name="text" class="search-input" autocomplete="off"
+           [(ngModel)]="searchText" (input)="filterResults()" (focus)="onSearchFocus()" (blur)="onSearchBlur()"/>
+    @if (isFocused && filteredSites.length > 0) {
+      <div class="results-container">
+        @for (site of filteredSites; track $index) {
+          <div class="result-item" (click)="onSiteSelect(site)">
+            <b style="font-size: 1.2em">{{ site.siteName }}</b>
+            <span>Id: {{ site.siteId }}</span>
+          </div>
+        }
+      </div>
+    }
     <div class="filterBorder"></div>
     <div id="filter-icon">
       <svg
