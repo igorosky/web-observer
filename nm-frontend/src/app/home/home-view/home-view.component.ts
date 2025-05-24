@@ -4,7 +4,7 @@ import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-box.component';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
-import {SitePreview, UpdateEntryPreview} from '../models/site';
+import {SitePreview} from '../models/site';
 import {AuthService} from '../../auth/auth.service';
 import {HOME_ROUTE, SITE_REGISTER_ROUTE} from '../../app.routes';
 

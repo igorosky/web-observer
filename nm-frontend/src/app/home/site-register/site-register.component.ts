@@ -56,7 +56,7 @@ export class SiteRegisterComponent {
     this.siteRegisterForm = this.fb.group({
       siteName: ['', [Validators.required, Validators.maxLength(30)]],
       siteUrl: ['', [Validators.required, Validators.maxLength(100), urlValidator()]],
-      siteDesc: ['', Validators.maxLength(300)],
+      siteDesc: ['', Validators.maxLength(900)],
       elementName: ['', [Validators.required, Validators.maxLength(30)]],
       cssSelector: ['', [Validators.required, Validators.maxLength(255)]],
     })

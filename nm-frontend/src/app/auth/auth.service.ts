@@ -62,6 +62,7 @@ export class AuthService {
     void this.router.navigate([LOG_IN_ROUTE]);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   getCurrentUserData(): Observable<AuthData> {
     const data = this.storageService.getAuthData();
     if(data === null){
