@@ -19,17 +19,19 @@ export class SearchBarComponent implements OnInit {
   private sitesToSearch?: SitePreview[];
   protected searchText: string = '';
   protected filteredSites: SitePreview[] = [];
+  protected searchErrorMessage?: string;
 
   ngOnInit(): void {
     const coll = Intl.Collator("pl");
     this.availableSites$.subscribe({
       next: (sites) => {
+        this.searchErrorMessage = undefined;
         sites = sites.sort((a, b) => coll.compare(a.siteName, b.siteName));
         this.sitesToSearch = sites;
         this.filteredSites = [...this.sitesToSearch];
       },
       error: (errorMessage) => {
-        alert(`Searching disabled due to the following error: ${errorMessage}`)
+        this.searchErrorMessage = errorMessage;
       }
     })
   }
