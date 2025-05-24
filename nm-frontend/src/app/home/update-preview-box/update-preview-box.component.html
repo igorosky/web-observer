@@ -1,4 +1,4 @@
-<div class="updateBoxContainer" [ngClass]="getStatusClass(update.statusCode)" routerLink="site/{{update.siteId}}">
-  <b>Site: {{update.siteName}}: {{update.statusCode}}</b>
+<div class="updateBoxContainer" [ngClass]="getStatusClass(update.statusCode)">
+  <b>{{update.siteName}}: {{update.statusCode}}</b>
   <span>Found at: {{update.registeredAt}}</span>
 </div>

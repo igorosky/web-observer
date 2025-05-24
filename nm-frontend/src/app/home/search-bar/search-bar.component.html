@@ -1,4 +1,7 @@
-<!-- Based on Uiverse.io by Lakshay-art, colours and animations modified -->
+<!-- Based on Uiverse.io by Lakshay-art, colours and animations, effects modified -->
+@if (isFocused) {
+  <div id="focus-blur"></div>
+}
 <div id="poda">
   <div class="darkBorderBg"></div>
   <div class="darkBorderBg"></div>
@@ -10,16 +13,6 @@
   <div id="searchBarMain">
     <input placeholder="Search sites..." type="text" name="text" class="search-input" autocomplete="off"
            [(ngModel)]="searchText" (input)="filterResults()" (focus)="onSearchFocus()" (blur)="onSearchBlur()"/>
-    @if (isFocused && filteredSites.length > 0) {
-      <div class="results-container">
-        @for (site of filteredSites; track $index) {
-          <div class="result-item" (click)="onSiteSelect(site)">
-            <b style="font-size: 1.2em">{{ site.siteName }}</b>
-            <span>Id: {{ site.siteId }}</span>
-          </div>
-        }
-      </div>
-    }
     <div class="filterBorder"></div>
     <div id="filter-icon">
       <svg
@@ -73,3 +66,21 @@
     </div>
   </div>
 </div>
+@if (isFocused) {
+  <div id="result-wrapper" class="centerVH">
+    @if (filteredSites.length > 0) {
+              <div class="results-container">
+                  @for (site of filteredSites; track $index) {
+                    <div class="result-item" (click)="onSiteSelect(site)">
+                      <b style="font-size: 1.1em">{{ site.siteName }}</b>
+                      <span>Id: {{ site.siteId }}</span>
+                    </div>
+                  }
+                </div>
+    } @else if (searchErrorMessage !== undefined) {
+      <span class="error-box">Searching disabled due to the following error: {{ searchErrorMessage }}</span>
+    } @else {
+      <span class="error-box">No results found for the given site name</span>
+    }
+  </div>
+}

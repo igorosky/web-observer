@@ -1,7 +1,7 @@
 <div class="main">
   <div class="header">
     <div class="searchBarDiv">
-      <app-search-bar [availableSites$]="fetchAvailableSites()" (siteSelected)="onSearchSiteSelect($event)"></app-search-bar>
+      <app-search-bar [availableSites$]="fetchAvailableSites()" (siteSelected)="onSiteSelect($event)"></app-search-bar>
     </div>
     <div class="menuDiv">
       <button class="s_button" type="button" (click)="routeToRegisterSite()">
@@ -34,7 +34,7 @@
         } @else {
           <div id="updateContainer">
             @for (update of displayedUpdates.updates; track $index) {
-              <app-update-box [update]="update"></app-update-box>
+              <app-update-box [update]="update" (click)="onSiteSelect(update.siteId)"></app-update-box>
             }
           </div>
         }

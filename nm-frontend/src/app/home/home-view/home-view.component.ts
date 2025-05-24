@@ -47,8 +47,9 @@ export class HomeViewComponent implements OnInit, OnDestroy {
     return this.homeLoaderService.fetchUserSiteCollection();
   }
 
-  onSearchSiteSelect(site: SitePreview) {
-    void this.router.navigate(['site', site.siteId], {relativeTo: this.activatedRoute});
+  onSiteSelect(siteId: string) {
+    this.isDefaultView = false;
+    void this.router.navigate(['site', siteId], {relativeTo: this.activatedRoute});
   }
 
   attemptLogOut() {

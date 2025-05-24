@@ -47,7 +47,7 @@ export class SiteViewComponent implements OnInit {
     if(this.isInEditMode){
       this.siteEditForm = this.fb.group({
         siteName: [this.currentSite.siteInfo.siteName, [Validators.required, Validators.maxLength(30)]],
-        siteDesc: [this.currentSite.description, [Validators.maxLength(300)]],
+        siteDesc: [this.currentSite.description, [Validators.maxLength(900)]],
         elementName: [this.currentSite.siteInfo.elementName, [Validators.required, Validators.maxLength(30)]],
       })
     }else{
