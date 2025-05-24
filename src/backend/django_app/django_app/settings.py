@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 from django.conf.global_settings import CSRF_COOKIE_SAMESITE, SESSION_COOKIE_SAMESITE, CSRF_COOKIE_HTTPONLY, \
-    SESSION_COOKIE_HTTPONLY
+    SESSION_COOKIE_HTTPONLY, SESSION_COOKIE_AGE, SESSION_SAVE_EVERY_REQUEST, SESSION_COOKIE_SECURE
 from dotenv import load_dotenv  # <--- dodaj to
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,13 +50,22 @@ SESSION_COOKIE_SAMESITE='Strict'
 CSRF_COOKIE_HTTPONLY=False
 SESSION_COOKIE_HTTPONLY=True
 ROOT_URLCONF = "django_app.urls"
-
+#change this to longer time
+SESSION_COOKIE_AGE=60*60
+SESSION_SAVE_EVERY_REQUEST=True
+#!!!!! delete on production
+SESSION_COOKIE_SECURE=False
 REST_FRAMEWORK ={
     'DEFAULT_RENDERER_CLASSES':[
         'rest_framework.renderers.JSONRenderer',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES':[
-        'rest_framework.authentication.SessionAuthentication',
+       # 'rest_framework.authentication.SessionAuthentication',
+        'django_app.custom_session.CustomSessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES':[
+       # 'rest_framework.authentication.SessionAuthentication',
+        'django_app.custom_authentication.CustomIsAuthenticated',
     ],
     "EXCEPTION_HANDLER": "django_app.exception_handler.custom_exception_handler"
 }

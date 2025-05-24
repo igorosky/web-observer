@@ -20,9 +20,9 @@ def get_element_id(user, site_id):
         raise CustomAPIException(status_code=401, message="No permission to get this site", detail={})
 
     serializer = ElementIDSerializer(data={"siteId": site_id})
-    data = validate_or_raise(serializer, status_code=404, message="Search for this site failed")
+    serializer = validate_or_raise(serializer, status_code=404, message="Search for this site failed")
 
-    return data["element_id"]
+    return serializer.validated_data["element_id"]
 
 
 #change can be null but required

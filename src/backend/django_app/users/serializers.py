@@ -9,7 +9,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "email", "username", "password", "created_at"]
         extra_kwargs = {
-            'id': {'read_only': True},
             'password': {'write_only': True},
             'created_at': {'read_only': True}
         }

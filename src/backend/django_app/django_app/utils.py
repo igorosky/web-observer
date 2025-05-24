@@ -7,4 +7,5 @@ def validate_or_raise(serializer,status_code,message):
             status_code=status_code,
             message=message
         )
-    return serializer.validated_data
+   # return serializer.validated_data
+    return serializer
