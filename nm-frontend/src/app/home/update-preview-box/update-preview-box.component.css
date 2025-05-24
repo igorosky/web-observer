@@ -1,7 +1,9 @@
 .updateBoxContainer{
   cursor: pointer;
   width: 100%;
-  font-size: 1em;
+  min-width: 16em;
+  max-width: 10vw;
+  font-size: 1.1em;
   text-align: center;
   align-self: center;
   display: flex;

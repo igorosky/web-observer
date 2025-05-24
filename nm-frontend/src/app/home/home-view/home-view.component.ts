@@ -4,7 +4,7 @@ import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-box.component';
 import {SearchBarComponent} from '../search-bar/search-bar.component';
-import {SitePreview} from '../models/site';
+import {SitePreview, UpdateEntryPreview} from '../models/site';
 import {AuthService} from '../../auth/auth.service';
 import {HOME_ROUTE, SITE_REGISTER_ROUTE} from '../../app.routes';
 
@@ -47,9 +47,9 @@ export class HomeViewComponent implements OnInit, OnDestroy {
     return this.homeLoaderService.fetchUserSiteCollection();
   }
 
-  onSearchSiteSelect(site: SitePreview) {
+  onSiteSelect(siteId: string) {
     this.isDefaultView = false;
-    void this.router.navigate(['site', site.siteId], {relativeTo: this.activatedRoute});
+    void this.router.navigate(['site', siteId], {relativeTo: this.activatedRoute});
   }
 
   attemptLogOut() {

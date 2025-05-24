@@ -14,7 +14,7 @@ import {FormsModule} from '@angular/forms';
 export class SearchBarComponent implements OnInit {
 
   @Input() availableSites$!: Observable<SitePreview[]>;
-  @Output() siteSelected = new EventEmitter<SitePreview>();
+  @Output() siteSelected = new EventEmitter<string>();
 
   private sitesToSearch?: SitePreview[];
   protected searchText: string = '';
@@ -49,7 +49,7 @@ export class SearchBarComponent implements OnInit {
   onSiteSelect(site: SitePreview) {
     this.searchText = '';
     this.filteredSites = [];
-    this.siteSelected.emit(site);
+    this.siteSelected.emit(site.siteId);
   }
 
   protected isFocused = false;
