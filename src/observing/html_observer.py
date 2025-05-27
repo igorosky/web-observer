@@ -1,7 +1,7 @@
-from .observer import Observer
+from .web_observer import WebObserver
 from .web_observer_options import WebObserverOptions
-from apscheduler.triggers.interval import IntervalTrigger
-from datetime import datetime
+from .web_observer_api import Notification
+from typing import Callable
 from bs4 import BeautifulSoup, PageElement, ResultSet
 from hashlib import sha256
 import requests
@@ -10,48 +10,18 @@ import sys
 import imgkit
 import os
 
-DEFAULT_ACCEPRED_RESPONSE_CODES = [200]
-
-class Notification:
-  observer_id: int
-  new_value: str | None = None
-  image: str | None = None
-  response_code: int | None = None
-  response_code_not_accepted: bool = False
-  response_code_changed: bool = False
-  
-  def __init__(self, observer_id: int) -> None:
-    self.observer_id = observer_id
-
-def notify(notification: Notification) -> None:
-  """
-  `Notify` the user about the change in the observed element.
-  This is a placeholder function that should be implemented to send notifications.
-  """
-  if notification.image is not None:
-    print(f"Notification for observer {notification.observer_id}: Change detected with image {notification.image}")
-  else:
-    print(f"Notification for observer {notification.observer_id}: Change detected without image")
-
-def update_digest(id: str, new_digest: str) -> None:
-  """
-  Update the current digest for the observer with the given id.
-  This is a placeholder function that should be implemented to update the digest in a database or cache.
-  """
-  print(f"Updating digest for observer {id} to {new_digest}")
-
-class SimpleObserver(Observer):
-  def __init__(self, options: WebObserverOptions, current_digest: str | None = None,
-               last_response_code: int | None = None, path_to_images: str | None = None) -> None:
-    if len(options.steps_to_get_element) > 0: 
+class HtmlObserver(WebObserver):
+  def __init__(self, options: WebObserverOptions, notify: Callable[[Notification], None],
+               current_digest: str | None = None, last_response_code: int | None = None,
+               path_to_images: str | None = None) -> None:
+    if len(options.steps_to_get_element) > 0:
       if options.steps_to_get_element[-1].element_index is None and not options.count_elements:
         raise ValueError("Last step must have element_index set to None if count_elements is False.")
       if any(x.element_index is None for x in options.steps_to_get_element[:-1]):
         raise ValueError("All steps except the last one must have element_index set.")
-    self.options = options
-    self.id = uuid.uuid4().hex
+    super().__init__(options, notify, last_response_code)
+    self.type = 'html'
     self.current_digest = current_digest
-    self.last_response_code = last_response_code
     if path_to_images is None:
       path_to_images = os.getcwd()
     os.makedirs(path_to_images, exist_ok=True)
@@ -70,6 +40,8 @@ class SimpleObserver(Observer):
         kwargs['id'] = step.element_id
       if step.element_index is not None:
         kwargs['limit'] = step.element_index
+      if step.element_attributes is not None:
+        kwargs['attrs'] = step.element_attributes
       elements = soup.find_all(**kwargs)
       if step.element_index is not None:
         if step.element_index < 0 or step.element_index >= len(elements):
@@ -80,7 +52,7 @@ class SimpleObserver(Observer):
     return soup
 
   @staticmethod
-  def substitute_imgs(soup: BeautifulSoup, base_url: str) -> callable:
+  def substitute_imgs(soup: BeautifulSoup, base_url: str) -> Callable[[], None]:
     replacements = []
     for img in soup.find_all('img'):
       src = img['src']
@@ -100,36 +72,24 @@ class SimpleObserver(Observer):
     imgkit.from_string(soup.string, target, options={'format': 'jpg', 'quiet': ''})
     return target
 
-  def request_site(self) -> requests.Response:
-    session = requests.session()
-    if self.options.headers is not None:
-      session.headers.update(self.options.headers)
-    if self.options.cookies is not None:
-      session.cookies.update(self.options.cookies)
-    if self.options.timeout is not None:
-      session.timeout = self.options.timeout
-    return session.get(self.options.url)
-
   def check(self) -> None:
     print(f"Checking URL: {self.options.url} with id: {self.id}")
     notification = Notification(self.options.id)
-    do_notify = False
 
     try:
-      response = self.request_site()
+      response, do_notify = super().get_site(notification)
     except requests.exceptions.RequestException as e:
-      print(f"Error checking URL {self.options.url}: {e}")
+      print(f"Error requesting site {self.options.url}: {e}", file=sys.stderr)
+      return
 
-    notification.response_code = response.status_code
-    if self.options.track_response_codes and \
-      (self.last_response_code is None or self.last_response_code != response.status_code):
-      do_notify = True
-      notification.response_code_changed = True
-
-    if (len(self.options.accepted_response_codes) != 0 or response.status_code not in DEFAULT_ACCEPRED_RESPONSE_CODES) \
-      and response.status_code not in self.options.accepted_response_codes:
-      notification.response_code_not_accepted = True
-      notify(notification)
+    if do_notify is None:
+      self.notify(notification)
+      return
+    
+    content_type = response.headers.get('Content-Type', '<undefined>').lower()
+    if not content_type.startswith('text/html'):
+      print(f"Response from {self.options.url} is not HTML ({content_type}), skipping.", file=sys.stderr)
+      # TODO(@Igor Zaworski): User shall be notified about this
       return
 
     soup = BeautifulSoup(response.content, 'html.parser')
@@ -137,7 +97,7 @@ class SimpleObserver(Observer):
       content = soup.select(self.options.css_selector)
     else:
       try:
-        content = SimpleObserver.get_elements(soup, self.options.steps_to_get_element)
+        content = HtmlObserver.get_elements(soup, self.options.steps_to_get_element)
       except IndentationError as e:
         print(f"Error parsing HTML content from {self.options.url}: {e}", file=sys.stderr)
         return
@@ -156,8 +116,8 @@ class SimpleObserver(Observer):
       # Because imgkit would not handle relative URLs correctly
       # This simply replaces them with sha256 hashes
       # And during reverse we restore URLs with base path
-      reverse = SimpleObserver.substitute_imgs(element, self.options.url)
-      if self.options.observe_images:
+      reverse = HtmlObserver.substitute_imgs(element, self.options.url)
+      if not self.options.observe_images:
         reverse()
         reverse = None
 
@@ -172,14 +132,7 @@ class SimpleObserver(Observer):
         notification.new_value = element.get_text(strip=True)
       if self.options.observe_images:
         notification.image = self.generate_view(element)
-      update_digest(self.id, digest)
       self.current_digest = digest
 
     if do_notify:
-      notify(notification)
-
-  def get_interval(self) -> IntervalTrigger:
-    return IntervalTrigger(seconds=self.options.interval, start_date=datetime.now())
-
-  def get_id(self) -> str:
-    return self.id
+      self.notify(notification)
