@@ -2,6 +2,7 @@ from observing.image_observer import ImageObserver
 from observing.web_observer_scheduler import WebObserverScheduler
 from observing.html_observer import HtmlObserver
 from observing.web_observer_options import WebObserverOptions
+from observing.json_observer import JsonObserver
 
 def main() -> None:
   print("Starting web observer...")
@@ -13,8 +14,13 @@ def main() -> None:
     url='https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_16x9.jpg?w=1200',
     interval=15, observe_images=True),
     notify=lambda notification: print(f"Image Notification: {notification}"), path_to_images='imgs')
+  json_observer = JsonObserver(WebObserverOptions(id=3, url="https://jsonplaceholder.typicode.com/posts/1",
+      interval=10, steps_to_get_element=[
+      WebObserverOptions.StepToGetElement(element_id="body"),
+    ], take_text=True), notify=lambda notification: print(f"JSON Notification: {notification}"))
   web_observer.add_observer(observer)
   web_observer.add_observer(img_observer)
+  web_observer.add_observer(json_observer)
   while True:
     pass
 

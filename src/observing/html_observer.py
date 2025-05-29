@@ -108,6 +108,11 @@ class HtmlObserver(WebObserver):
         return
 
     if self.options.count_elements:
+      if not isinstance(content, ResultSet):
+        print("Count elements option is set but content is not a list.", file=sys.stderr)
+        notification.error = "Count elements option is set but content is not a list."
+        self.notify(notification)
+        return
       digest = sha256(str(len(content)).encode('utf-8')).hexdigest()
     else:
       # At this point content should be a single element
@@ -122,7 +127,6 @@ class HtmlObserver(WebObserver):
         reverse()
         reverse = None
 
-      element.get_text(strip=True)
       digest = sha256(element.encode('utf-8')).hexdigest()
 
       reverse() if reverse is not None else None
