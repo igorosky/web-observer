@@ -29,3 +29,8 @@
 .successU{
   background-color: #313c01;
 }
+/*noinspection CssUnusedSymbol*/
+.errorU {
+  background-color: #969db6;
+  color: black;
+}
