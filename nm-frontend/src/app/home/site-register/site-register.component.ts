@@ -4,8 +4,10 @@ import {HomeLoaderService, SiteRegisterResponse} from '../home-loader.service';
 import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
 import {HOME_ROUTE} from '../../app.routes';
 import {Router} from '@angular/router';
-import {urlValidator} from '../utils/utils';
+import {siteTypeValidator, urlValidator} from '../utils/utils';
 
+
+export const SITE_TYPE = ['html', 'json', 'image'];
 const ANIMATION_HOLD_MS = 3000;
 
 interface SiteAnimationData{
@@ -59,6 +61,7 @@ export class SiteRegisterComponent {
       siteDesc: ['', Validators.maxLength(900)],
       elementName: ['', [Validators.required, Validators.maxLength(30)]],
       cssSelector: ['', [Validators.required, Validators.maxLength(255)]],
+      siteType: ['html', [Validators.required, siteTypeValidator()]]
     })
   }
 
@@ -89,6 +92,7 @@ export class SiteRegisterComponent {
     registerData.set('siteUrl', value.siteUrl);
     registerData.set('elementName', value.elementName);
     registerData.set('cssSelector', value.cssSelector);
+    registerData.set('siteType', value.siteType);
     this.homeLoaderService.registerSite(registerData).subscribe({
       next: async (registerData: SiteRegisterResponse) => {
         this.siteRegisterErrorMessage = undefined;

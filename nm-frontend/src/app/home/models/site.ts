@@ -30,6 +30,7 @@ export interface Site {
   lastUpdateAt: string; //readonly
   cssSelector: string; //readonly
   elementName: string;
+  siteType: string;
 }
 
 export interface SitePreview {

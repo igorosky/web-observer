@@ -1,4 +1,5 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
+import {SITE_TYPE} from '../site-register/site-register.component';
 
 export function getStatusClass(statusCode?: number): string {
   if(statusCode === undefined) return 'errorU'
@@ -16,5 +17,12 @@ export function urlValidator(): ValidatorFn {
     }
     const isValid = urlPattern.test(value);
     return isValid ? null : { invalidUrl: true };
+  };
+}
+
+export function siteTypeValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value: string = control.value;
+    return (SITE_TYPE.includes(value)) ? null : { invalidSiteType: true };
   };
 }
