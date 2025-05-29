@@ -21,6 +21,16 @@ html, body {
   }
 }
 
+a {
+  text-decoration: none;
+  color: white;
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #daa520;
+}
+
 .column {
   display: flex;
   flex-direction: column;

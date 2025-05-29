@@ -4,7 +4,7 @@
       <div class="siteInfoDiv">
         <div class="siteNameDiv column">
           <b style="font-size: 1.3em">Site: {{ currentSite.siteInfo.siteName }}</b>
-          <span>Under: {{ currentSite.siteInfo.siteUrl }}</span>
+          <span>Under: <a href="{{currentSite.siteInfo.siteUrl}}">{{ currentSite.siteInfo.siteUrl }}</a></span>
         </div>
         <div class="siteExtrasDiv column">
           <span>Unique site ID: {{ currentSite.siteInfo.siteId }}</span>

@@ -53,7 +53,7 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(30deg, #3a0209, #8c2205, #E85D04, #F48C06, #FAA307, #FFBA08);
-  animation: counter-flow 5s linear infinite;
+  animation: counter-flow 15s linear infinite;
   background-size: 400% 400%;
 }
 
