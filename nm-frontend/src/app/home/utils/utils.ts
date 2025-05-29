@@ -1,7 +1,8 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 
-export function getStatusClass(statusCode: number): string {
-  if(statusCode < 400) return 'successU';
+export function getStatusClass(statusCode?: number): string {
+  if(statusCode === undefined) return 'errorU'
+  else if(statusCode < 400) return 'successU';
   else if(statusCode < 500) return 'clientEU';
   else return 'serverEU';
 }

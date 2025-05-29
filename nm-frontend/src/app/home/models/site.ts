@@ -5,12 +5,15 @@ export interface UpdateEntryPreview {
   siteName: string;
   registeredAt: string;
   statusCode: number;
+  error: string | undefined;
 }
 
 export interface BareUpdateEntry {
   registeredAt: string;
-  change: string; //todo
+  textChange: string | undefined;
+  imageChangeUrl: string | undefined;
   statusCode: number;
+  error: string | undefined;
 }
 
 export interface SiteDetails {
