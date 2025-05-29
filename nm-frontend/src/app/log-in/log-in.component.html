@@ -1,0 +1,33 @@
+<div id="logInAnimation" class="centerVH" [@logInAnimation]="animationState">
+  @if (welcomeMessage) {
+    {{welcomeMessage}}
+  }
+</div>
+<div id="main" class="column">
+  @if (logInForm){
+    <div id="logo">Notify me!</div>
+    <form [formGroup]="logInForm" (ngSubmit)="submitLogInForm()" class="column">
+      <div class="box-input">
+        <div class="border">
+          <input formControlName="email" type="text" name="text" class="input" placeholder="Email" autocomplete="off">
+        </div>
+      </div>
+      @if (email.invalid && email.touched){
+        <span class="error-box">Email must be valid</span>
+      }
+      <div class="box-input" style="margin-bottom: 0.4em">
+        <div class="border">
+          <input formControlName="password" type="password" name="text" class="input" placeholder="Password" autocomplete="off">
+        </div>
+      </div>
+      @if (logInErrorMessage) {
+        <span class="error-box">{{logInErrorMessage}}</span>
+      }
+      <button class="s_button" type="submit" [disabled]="logInForm.invalid || logInFormPristine">
+        <div class="s_button__int">
+          <span>Log in</span>
+        </div>
+      </button>
+    </form>
+  }
+</div>
