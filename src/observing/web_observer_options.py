@@ -3,11 +3,11 @@ import json
 class WebObserverOptions:
   class StepToGetElement:
     def __init__(self,
-                element_type: str | None = None,
-                element_id: str | None = None,
-                element_class: str | None = None,
-                element_attributes: dict[str, str] | None = None,
-                element_index: int | None = 0) -> None:
+                 element_type: str | None = None,
+                 element_id: str | None = None,
+                 element_class: str | None = None,
+                 element_attributes: dict[str, str] | None = None,
+                 element_index: int | None = 0) -> None:
       self.element_type: str | None = element_type
       self.element_id: str | None = element_id
       self.element_class: str | None = element_class

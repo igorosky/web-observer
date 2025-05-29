@@ -4,7 +4,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from .web_observer_api import Notification
 from .web_observer_options import WebObserverOptions
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 
 DEFAULT_ACCEPRED_RESPONSE_CODES = [200]
@@ -49,7 +49,7 @@ class WebObserver(ABC):
     pass
 
   def get_interval(self) -> IntervalTrigger:
-    return IntervalTrigger(seconds=self.options.interval, start_date=datetime.now())
+    return IntervalTrigger(seconds=self.options.interval, start_date=datetime.now() + timedelta(seconds=1))
 
   def get_id(self) -> str:
     return self.id

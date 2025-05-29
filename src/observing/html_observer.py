@@ -85,11 +85,12 @@ class HtmlObserver(WebObserver):
     if do_notify is None:
       self.notify(notification)
       return
-    
+
     content_type = response.headers.get('Content-Type', '<undefined>').lower()
     if not content_type.startswith('text/html'):
       print(f"Response from {self.options.url} is not HTML ({content_type}), skipping.", file=sys.stderr)
-      # TODO(@Igor Zaworski): User shall be notified about this
+      notification.error = f"Response is not HTML: {content_type}"
+      self.notify(notification)
       return
 
     soup = BeautifulSoup(response.content, 'html.parser')
