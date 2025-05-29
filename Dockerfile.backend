@@ -6,7 +6,6 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ /app/src/
 
-COPY entrypoint.sh entrypoint.sh
+COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x entrypoint.sh
-ENTRYPOINT [ "./entrypoint.sh" ]
-CMD ["/bin/bash"]
+ENTRYPOINT [ "/app/entrypoint.sh" ]

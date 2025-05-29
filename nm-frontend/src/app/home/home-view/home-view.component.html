@@ -1,0 +1,61 @@
+<div class="main">
+  <div class="header">
+    <div class="searchBarDiv">
+      <app-search-bar [availableSites$]="fetchAvailableSites()" (siteSelected)="onSiteSelect($event)"></app-search-bar>
+    </div>
+    <div class="menuDiv">
+      <button class="s_button" type="button" (click)="routeToRegisterSite()">
+        <div class="s_button__int centerVH" style="height: 1.5em">
+          <span style="white-space: nowrap">Register site</span>
+        </div>
+      </button>
+      <button class="s_button" type="button" (click)="attemptLogOut()">
+        <div class="s_button__int centerVH" style="height: 1.5em">
+          <span style="white-space: nowrap">Log out</span>
+        </div>
+      </button>
+    </div>
+  </div>
+  <div class="updateCol">
+    <span class="logoDiv" (click)="navigateToHome()">Notify me!</span>
+    <div class="innerUpdateCol column">
+      <div class="column" style="gap: 0">
+        <b class="error-box" style="font-size: 1.4em">Newest updates</b>
+        <span class="error-box">Refreshed every 5 seconds</span>
+      </div>
+      <div id="counter">
+        <div id="counter-bar"></div>
+      </div>
+      @if (displayedUpdates !== null) {
+        @if (displayedUpdates.errorMessage !== null) {
+          <div style="flex: 0 0 80%" class="error-box centerVH">
+            <span>{{ displayedUpdates.errorMessage }}</span>
+          </div>
+        } @else {
+          <div id="updateContainer">
+            @for (update of displayedUpdates.updates; track $index) {
+              <app-update-box [update]="update" (click)="onSiteSelect(update.siteId)"></app-update-box>
+            }
+          </div>
+        }
+      } @else {
+        <div style="flex: 0 0 80%" class="error-box centerVH">
+          <span>No new updates found.</span>
+        </div>
+      }
+    </div>
+  </div>
+  <div class="contentDiv">
+    @if (isDefaultView) {
+      <div class="column" style="color: white;">
+        <b class="infoBox">Welcome to Notify me!</b>
+        <span>On the left side of the screen, you can track the latest updates.</span>
+        <span>Click any of the to go to the respective site view and get more details.</span>
+        <span>To navigate to any site, use the search menu above.</span>
+        <span>To create a new site, click the "Add site" button.</span>
+        <span>To securely log out, please use the "Log out" button.</span>
+      </div>
+    }
+    <router-outlet></router-outlet>
+  </div>
+</div>

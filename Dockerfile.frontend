@@ -1,0 +1,16 @@
+FROM trion/ng-cli AS builder
+
+WORKDIR /app
+COPY nm-frontend/package.json /app/package.json
+COPY nm-frontend/package-lock.json /app/package-lock.json
+RUN npm ci
+COPY nm-frontend/ /app/
+RUN ng build --configuration production
+
+FROM httpd:alpine3.21
+
+RUN rm -rf /usr/local/apache2/htdocs/*
+COPY --from=builder /app/dist/nm-frontend/browser/ /usr/local/apache2/htdocs/
+
+EXPOSE 80
+ENTRYPOINT ["httpd-foreground"]

@@ -1,0 +1,133 @@
+.main {
+  height: 90vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.75fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 0.5fr 1fr 1fr 1fr 1fr;
+  gap: 0 0;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "updateCol header header header header header header"
+    "updateCol contentDiv contentDiv contentDiv contentDiv contentDiv contentDiv"
+    "updateCol contentDiv contentDiv contentDiv contentDiv contentDiv contentDiv"
+    "updateCol contentDiv contentDiv contentDiv contentDiv contentDiv contentDiv"
+    "updateCol contentDiv contentDiv contentDiv contentDiv contentDiv contentDiv";
+}
+
+.header {
+  grid-area: header;
+  display: grid;
+  grid-template-columns: 4fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0 0;
+  grid-auto-flow: row;
+  grid-template-areas:
+    ". searchBarDiv menuDiv";
+  align-items: flex-start;
+}
+
+.searchBarDiv {
+  grid-area: searchBarDiv;
+}
+
+.menuDiv {
+  font-size: 0.7em;
+  display: flex;
+  grid-area: menuDiv;
+  gap: 0.5em;
+  margin-top: 0.5em;
+}
+
+
+#counter {
+  flex: 0 0 6%;
+  width: 90%;
+  height: 100%;
+  background-color: #00081e;
+  border-radius: 1em;
+  position: relative;
+  overflow: hidden;
+}
+
+#counter-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(30deg, #3a0209, #8c2205, #E85D04, #F48C06, #FAA307, #FFBA08);
+  animation: counter-flow 5s linear infinite;
+  background-size: 400% 400%;
+}
+
+@keyframes counter-flow {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}
+
+.innerUpdateCol {
+  background-color: #020e51;
+  border-radius: 0.6em;
+  width: 100%;
+  height: 100%;
+  padding: 0.3em;
+  flex: 0 0 95%;
+}
+
+.updateCol {
+  grid-area: updateCol;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.contentDiv {
+  grid-area: contentDiv;
+  width: 95%;
+  height: 100%;
+  margin-left: 2em;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#updateContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 0 0 80%;
+  width: 100%;
+  gap: 0.5em;
+  padding-top: 0.2em;
+}
+
+.logoDiv {
+  grid-area: logoDiv;
+  font-size: 3em;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  background: linear-gradient(30deg, #6A040F, #DC2F02, #E85D04, #F48C06, #FAA307, #FFBA08);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 400% 400%;
+  animation: gradient-flow 4s infinite;
+  margin-bottom: 0.8em;
+  cursor: pointer;
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
