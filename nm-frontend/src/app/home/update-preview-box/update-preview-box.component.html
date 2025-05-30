@@ -1,4 +1,9 @@
 <div class="updateBoxContainer" [ngClass]="getStatusClass(update.statusCode)">
-  <b>{{update.siteName}}: {{update.statusCode}}</b>
-  <span>Found at: {{update.registeredAt}}</span>
+  @if(update.error === undefined){
+    <b>{{update.siteName}}: {{update.statusCode}}</b>
+    <span>Found at: {{update.registeredAt}}</span>
+  } @else{
+    <b>{{update.siteName}}: ERR</b>
+    <span>Detected: {{update.registeredAt}}</span>
+  }
 </div>

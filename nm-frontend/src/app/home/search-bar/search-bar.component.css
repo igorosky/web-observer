@@ -197,7 +197,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  opacity: 0.6;
+  opacity: 0.9;
   z-index: 1000;
   background-color: #00081e;
   width: 100%;

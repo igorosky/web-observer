@@ -1,7 +1,9 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
+import {SITE_TYPE} from '../site-register/site-register.component';
 
-export function getStatusClass(statusCode: number): string {
-  if(statusCode < 400) return 'successU';
+export function getStatusClass(statusCode?: number): string {
+  if(statusCode === undefined) return 'errorU'
+  else if(statusCode < 400) return 'successU';
   else if(statusCode < 500) return 'clientEU';
   else return 'serverEU';
 }
@@ -15,5 +17,12 @@ export function urlValidator(): ValidatorFn {
     }
     const isValid = urlPattern.test(value);
     return isValid ? null : { invalidUrl: true };
+  };
+}
+
+export function siteTypeValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value: string = control.value;
+    return (SITE_TYPE.includes(value)) ? null : { invalidSiteType: true };
   };
 }

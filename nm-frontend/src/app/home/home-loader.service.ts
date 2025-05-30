@@ -13,7 +13,7 @@ export interface SiteRegisterResponse{
   siteId: string;
 }
 
-const UPDATES_POLL_INTERVAL_MS = 5000;
+const UPDATES_POLL_INTERVAL_MS = 15000;
 
 @Injectable({
   providedIn: 'root'

@@ -4,7 +4,7 @@
       <div class="siteInfoDiv">
         <div class="siteNameDiv column">
           <b style="font-size: 1.3em">Site: {{ currentSite.siteInfo.siteName }}</b>
-          <span>Under: {{ currentSite.siteInfo.siteUrl }}</span>
+          <span>Under: <a href="{{currentSite.siteInfo.siteUrl}}">{{ currentSite.siteInfo.siteUrl }}</a></span>
         </div>
         <div class="siteExtrasDiv column">
           <span>Unique site ID: {{ currentSite.siteInfo.siteId }}</span>
@@ -33,6 +33,7 @@
           <span>Last update: {{ currentSite.siteInfo.lastUpdateAt }}
             . Registered updates: {{ currentSite.updates.length }}</span>
           <span>CSS selector "{{currentSite.siteInfo.cssSelector}}" tracked: "{{currentSite.siteInfo.elementName}}"</span>
+          <span>Site resource type: {{currentSite.siteInfo.siteType}}</span>
         </div>
       </div>
       <div class="siteUpdatesDiv column">
@@ -50,7 +51,7 @@
       </div>
     </div>
   } @else {
-    <span class="error-box" style="font-size: 1.4em; top: 50%; position: absolute">
+    <span class="error-box" style="font-size: 1.4em; top: 50%; left: 40%; text-align: center; position: absolute">
     @if (siteFetchErrorMessage !== undefined) {
       {{ siteFetchErrorMessage }}
     } @else {

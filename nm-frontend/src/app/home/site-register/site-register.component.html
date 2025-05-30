@@ -65,12 +65,25 @@
           </div>
         </div>
       </div>
-
       @if (elementName.hasError('required') && elementName.touched) {
         <span class="error-box">Element name is required</span>
       } @else if (elementName.hasError('maxlength')) {
         <span class="error-box">Maximum length is 30 characters</span>
       }
+      <div class="row" style="width: 70%;">
+        <span style="flex: 0 0 32%; text-align: left">Site type:</span>
+        <select formControlName="siteType" style="font-size: 2em; flex: 0 0 20%; height: 100%; opacity: 0.8">
+          <option value="html">HTML</option>
+          <option value="image">Image</option>
+          <option value="json">JSON</option>
+        </select>
+<!--        <div class="box-input">-->
+<!--          <div class="border">-->
+<!--            <input formControlName="siteType" type="text" name="text" class="input" placeholder="Element name"-->
+<!--                   autocomplete="off">-->
+<!--          </div>-->
+<!--        </div>-->
+      </div>
     </div>
     <div class="column registerDescDiv">
       <span>Edit description:</span>
@@ -87,6 +100,7 @@
         <li>Description → custom description of the site, you can leave if empty or fill it at will</li>
         <li>CSS selector → the exact CSS selector of the tracked element. Example: "div.main.centerVH"</li>
         <li>Element name → custom name for the tracked element to make the CSS selector readable</li>
+        <li>Site type → what is accessible under the URL - HTML page, image resource or a JSON</li>
       </ul>
       <span style="margin-top: -0.2em">Don't worry, you can edit the 'custom' fields later on.</span>
     </div>

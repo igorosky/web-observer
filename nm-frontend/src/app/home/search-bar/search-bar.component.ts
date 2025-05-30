@@ -39,7 +39,6 @@ export class SearchBarComponent implements OnInit {
   filterResults() {
     if (this.sitesToSearch === undefined) return;
     const searchText = this.searchText.trim().toLowerCase();
-    console.log(searchText)
     if (this.searchText === '') this.filteredSites = [...this.sitesToSearch];
     else {
       this.filteredSites = this.sitesToSearch.filter(site => site.siteName.toLowerCase().includes(searchText));
