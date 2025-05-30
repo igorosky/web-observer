@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {catchError, Observable, of, throwError} from 'rxjs';
+import {catchError, Observable, of} from 'rxjs';
 import {handleError} from '../../shared/error-handling';
 
 export interface GotifyData {
@@ -17,16 +17,12 @@ export class GotifyService {
   constructor(private http: HttpClient) { }
 
   getGotifyData(): Observable<GotifyData | null> {
-    // return this.http.get<GotifyData>(this.baseUrl + '/gotify').pipe(
-    //   catchError(err => {
-    //     if(err instanceof HttpErrorResponse && err.status === 404) return of(null);
-    //     return handleError(err);
-    //   })
-    // ); todo
-    return of({
-      url: 'https://mail.google.com/mail/u/2/#inbox',
-      token: '<PASSWORD>'
-    });
+    return this.http.get<GotifyData>(this.baseUrl + '/gotify').pipe(
+      catchError(err => {
+        if(err instanceof HttpErrorResponse && err.status === 404) return of(null);
+        return handleError(err);
+      })
+    );
   }
 
   updateGotifyData(newData: FormData): Observable<void> {

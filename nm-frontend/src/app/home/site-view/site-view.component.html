@@ -61,16 +61,16 @@
   }
   @if (isInEditMode && siteEditForm !== undefined && currentSite !== undefined) {
     <div class="editWrapper border">
-      <div class="column" style="gap:0; height: 100%; width: 100%; background-color: #03071E">
+      <div class="column" style="gap:0; height: 100%; width: 100%; background-color: #03071E; color: white">
         <b class="infoBox" style="font-size: 2em; margin: 0">Edit site {{ currentSite.siteInfo.siteId }}</b>
         <form class="siteEditDiv" [formGroup]="siteEditForm" (ngSubmit)="attemptSiteEdit()">
           <div class="editTitleDiv">
               <div class="column">
                 <div class="row">
-                  <span style="color: white; margin-right: 1em">Edit site name:</span>
+                  <label for="siteName">Edit site name:</label>
                   <div class="box-input">
                     <div class="border">
-                      <input formControlName="siteName" type="text" name="text" class="input">
+                      <input id="siteName" formControlName="siteName" type="text" name="text" class="input">
                     </div>
                   </div>
                 </div>
@@ -82,10 +82,10 @@
               </div>
               <div class="column">
                 <div class="row">
-                  <span style="color: white; margin-right: 1em">Edit element name:</span>
+                  <label for="elemName">Edit element name:</label>
                   <div class="box-input">
                     <div class="border">
-                      <input formControlName="elementName" type="text" name="text" class="input">
+                      <input id="elemName" formControlName="elementName" type="text" name="text" class="input">
                     </div>
                   </div>
                 </div>
