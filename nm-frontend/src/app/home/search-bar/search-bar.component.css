@@ -252,37 +252,6 @@
   }
 }
 
-#filter-icon {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  max-height: 40px;
-  max-width: 38px;
-  height: 100%;
-  width: 100%;
-
-  isolation: isolate;
-  overflow: hidden;
-  /* Border Radius */
-  border-radius: 10px;
-  background: linear-gradient(180deg, #370617, #03071E, #6A040F);
-  border: 1px solid transparent;
-}
-
-.filterBorder {
-  height: 42px;
-  width: 40px;
-  position: absolute;
-  overflow: hidden;
-  top: 7px;
-  right: 7px;
-  border-radius: 10px;
-}
-
 #searchBarMain {
   overflow: visible;
   position: relative;

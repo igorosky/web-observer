@@ -65,4 +65,9 @@ export class HomeViewComponent implements OnInit, OnDestroy {
     this.isDefaultView = true;
     void this.router.navigate([HOME_ROUTE]);
   }
+
+  routeToGotify(){
+    this.isDefaultView = false;
+    void this.router.navigate(['gotify'], {relativeTo: this.activatedRoute});
+  }
 }
