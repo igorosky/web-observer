@@ -62,3 +62,10 @@
 .registerButtonsDiv {
   grid-area: registerButtonsDiv;
 }
+
+label{
+  font-size: 1.3em;
+  text-align: left;
+  flex: 0 0 40%;
+  margin-right: 0.2em;
+}
