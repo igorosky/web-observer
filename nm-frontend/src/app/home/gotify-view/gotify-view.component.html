@@ -1,1 +1,62 @@
-<p>gotify-view works!</p>
+<div class="gotifyMain">
+  <b class="gotifyTitleDiv">Link Gotify server to NotifyMe!</b>
+  <div class="gotifyLogoDiv column">
+    <img ngSrc="https://raw.githubusercontent.com/gotify/logo/master/gotify-logo.png" height="400" width="300"
+         style="max-width: 100%; max-height: 100%; margin-bottom: 1em"
+         alt="Gotify logo couldn't be fetched from the server"/>
+    <button class="s_button" type="button" [disabled]="!gotifyData" (click)="attemptGotifyRemoval()">
+      <div class="s_button__int">
+        <span>Remove Gotify</span>
+      </div>
+    </button>
+  </div>
+  @if (gotifyData !== undefined && gotifyUpdateForm !== undefined) {
+    <form class="gotifyFormDiv column" [formGroup]="gotifyUpdateForm" (ngSubmit)="attemptGotifyDataUpdate()">
+      <div class="column">
+        <div class="row">
+          <label for="gotifyUrl">Edit URL:</label>
+          <div class="box-input">
+            <div class="border">
+              <input id="gotifyUrl" formControlName="url" type="text" name="text" class="input" maxlength="100">
+            </div>
+          </div>
+        </div>
+        @if (url.invalid && url.touched) {
+          <span class="error-box">URL must be a valid internet address</span>
+        }
+      </div>
+      <div class="column">
+        <div class="row">
+          <label for="gotifyToken">Edit token:</label>
+          <div class="box-input">
+            <div class="border">
+              <input id="gotifyToken" formControlName="token" type="text" name="text" class="input">
+            </div>
+          </div>
+        </div>
+        @if (gotifyUpdateForm!.get('token')!.invalid) {
+          <span class="error-box">Token is required</span>
+        }
+      </div>
+      <div class="gotifyButtonsDiv column">
+        @if (gotifyUpdateErrorMessage) {
+          <span class="error-box">{{ gotifyUpdateErrorMessage }}</span>
+        }
+        <div class="row"><button class="s_button" type="submit" [disabled]="gotifyUpdateForm.invalid || gotifyFormPristine">
+          <div class="s_button__int">
+            <span>Update Gotify</span>
+          </div>
+        </button>
+          <button class="s_button" type="button" (click)="resetUpdateForm()">
+            <div class="s_button__int">
+              <span>Reset form</span>
+            </div>
+          </button></div>
+
+      </div>
+    </form>
+  } @else {
+    <span
+      class="error-box gotifyFormDiv centerVH">{{ gotifyFetchErrorMessage ?? "Couldn't fetched Gotify data from server." }}</span>
+  }
+</div>

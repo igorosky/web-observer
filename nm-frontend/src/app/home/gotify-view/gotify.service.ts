@@ -17,12 +17,16 @@ export class GotifyService {
   constructor(private http: HttpClient) { }
 
   getGotifyData(): Observable<GotifyData | null> {
-    return this.http.get<GotifyData>(this.baseUrl + '/gotify').pipe(
-      catchError(err => {
-        if(err instanceof HttpErrorResponse && err.status === 404) return of(null);
-        return handleError(err);
-      })
-    );
+    // return this.http.get<GotifyData>(this.baseUrl + '/gotify').pipe(
+    //   catchError(err => {
+    //     if(err instanceof HttpErrorResponse && err.status === 404) return of(null);
+    //     return handleError(err);
+    //   })
+    // ); todo
+    return of({
+      url: 'https://mail.google.com/mail/u/2/#inbox',
+      token: '<PASSWORD>'
+    });
   }
 
   updateGotifyData(newData: FormData): Observable<void> {

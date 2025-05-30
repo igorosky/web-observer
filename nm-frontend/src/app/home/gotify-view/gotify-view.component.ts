@@ -1,11 +1,16 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {GotifyData, GotifyService} from './gotify.service';
-import {FormGroup, NonNullableFormBuilder, Validators} from '@angular/forms';
+import {FormGroup, FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {urlValidator} from '../utils/utils';
+import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-gotify-view',
-  imports: [],
+  imports: [
+    NgOptimizedImage,
+    ReactiveFormsModule,
+    FormsModule
+  ],
   templateUrl: './gotify-view.component.html',
   styleUrl: './gotify-view.component.css'
 })
@@ -40,7 +45,7 @@ export class GotifyViewComponent implements OnInit {
       });
     }else{
       this.gotifyUpdateForm = this.fb.group({
-        url: [gotifyData.url, [Validators.required, urlValidator()]],
+        url: [gotifyData.url, [Validators.required, urlValidator(), Validators.maxLength(100)]],
         token: [gotifyData.token, Validators.required]
       });
     }
@@ -62,6 +67,15 @@ export class GotifyViewComponent implements OnInit {
 
   resetUpdateForm(){
     this.gotifyUpdateForm?.reset();
+    this.gotifyUpdateErrorMessage = undefined;
+  }
+
+  get gotifyFormPristine(){
+    return this.gotifyUpdateForm!.pristine;
+  }
+
+  get url(){
+    return this.gotifyUpdateForm!.get('url')!;
   }
 
   attemptGotifyRemoval(){
