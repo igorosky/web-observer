@@ -42,7 +42,8 @@ class ImageObserver(WebObserver):
     content_type = response.headers.get('Content-Type', '<undefined>').lower()
     if not content_type.lower().startswith('image/'):
       print(f"Response from {self.options.url} is not na image ({content_type}), skipping.", file=sys.stderr)
-      # TODO(@Igor Zaworski): User shall be notified about this
+      notification.error = f"Response is not an image: {content_type}"
+      self.notify(notification)
       return
 
     digest = sha256(response.content).hexdigest()
