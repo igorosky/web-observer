@@ -8,11 +8,17 @@ class TrackedWebsite(models.Model):
         indexes = [
             models.Index(fields=["siteName"],name="idx_site_name")
         ]
+    class Type(models.TextChoices):
+        HTML = 'html', 'HTML'
+        JSON = 'json', 'JSON'
+        IMAGE = 'image', 'image'
+
 
     siteId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     siteName = models.CharField(max_length=30)
     siteUrl = models.TextField()
     siteDescription = models.TextField(max_length=900,null=False)
+    type = models.CharField(choices=Type,default=Type.HTML)
     createdAt = models.DateTimeField(auto_now_add=True)
 
 # FK has _id
@@ -40,7 +46,8 @@ class TrackedElement(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     website = models.ForeignKey(TrackedWebsite, on_delete=models.CASCADE,unique=True)
-    cssSelector = models.TextField()
+    cssSelector = models.TextField(null=True) # it can be null
+    jsonSelector = models.TextField(null=True) # it can be null
     elementName = models.CharField(max_length=255)
     registeredAt = models.DateTimeField(auto_now_add=True)
 
@@ -56,7 +63,8 @@ class ElementChange(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     element = models.ForeignKey(TrackedElement, on_delete=models.CASCADE)
     content = models.TextField()
-    change = models.TextField(null=True)
+    textChange = models.TextField(null=True)
+    imageChangeUrl = models.TextField(null=True)
     detectedAt = models.DateTimeField(auto_now_add=True)
 
 
@@ -74,29 +82,19 @@ class UserElementUpdate(models.Model):
     website = models.ForeignKey(TrackedWebsite, on_delete=models.CASCADE)
     statusCode = models.CharField(max_length=100)
     updateTime = models.DateTimeField()
+    error = models.TextField(null=True) # check in other places
 
-@dataclass
-class BareUpdateEntry:
-    registeredAt:str
-    change:str
-    statusCode:int
+class Observer(models.Model):
+    class Meta:
+        db_table = "observers"
 
-@dataclass
-class Site:
-    siteId:str
-    siteName:str
-    siteUrl:str
-    lastUpdatedAt:str
-    cssSelector:str
-    elementName:str
+    id = models.AutoField(primary_key=True)
+    site = models.ForeignKey(TrackedWebsite, on_delete=models.CASCADE,unique=True)
+    hash = models.CharField(null=True)
 
-@dataclass
-class SiteDetails:
-    siteInfo:Site
-    updates:list
-    trackedSince:str
-    description:str
+class ObserverInfo(models.Model):
+    class Meta:
+        db_table = "observers_info"
 
-
-
-
+    observer = models.ForeignKey(Observer,primary_key=True,on_delete=models.CASCADE)
+    info = models.JSONField(default=dict)

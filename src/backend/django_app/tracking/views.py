@@ -4,18 +4,14 @@ from django_app.custom_session import CustomSessionAuthentication
 from django_app.custom_authentication import CustomIsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import  authentication_classes, permission_classes
-from .models import Site, SiteDetails, BareUpdateEntry, UserElementUpdate
 
-from .ChangeAPI import ElementChangeHandler, get_element_id
 from .models import UserTrackedWebsites, TrackedElement
 from .serializers import RegisterSiteSerializer, RemoveSiteSerializer, ElementIDSerializer, \
     PatchSiteSerializer, RegisterElementChangeSerializer, SiteDetailSerializer, KLastUpdatesSerializer, \
-    SearchSuggestionSerializer
+    SearchSuggestionSerializer, RegisterObserverSerializer, RemoveObserverSerializer
 from rest_framework.views import  APIView
 
-
-#Server first has to send /get/element-id/siteId=? and if no error then => from this will get element_id, this is needed for response
-# from python scraper.
+#TO DELETE
 class elementId(APIView):
     """
     GET /element-id/siteId=?
@@ -39,7 +35,7 @@ class elementId(APIView):
             "element_id":elemId
         })
 
-
+#TO DELETE (dont works)
 class TrackingElementChangeView(APIView):
     authentication_classes = [CustomSessionAuthentication]
     permission_classes = [CustomIsAuthenticated]
@@ -51,21 +47,6 @@ class TrackingElementChangeView(APIView):
          element_id:"",
          content:"",
          change:"", # required but can be null
-         }
-         Response when no errors:
-         {
-         siteId:""
-         element_id:"",
-         content:"",
-         change:"",
-         }
-         Errors:
-         405 - bad http method
-         400 - errors in input data:
-         404 - when somehow user do not have access to element_id
-        "message": "",
-        "errors": {}
-
          """
         serializer = RegisterElementChangeSerializer(data=request.data,context={'request':request})
         serializer = validate_or_raise(serializer,status_code=400,message="Adding change failed")
@@ -90,7 +71,9 @@ class SiteView(APIView):
          "siteUrl": "www.link.com",
          "siteDescription": "good site",
          "elementName":"fancy div"
-         "cssSelector":"div.name"
+         "cssSelector":"#name" or NULL #change everywhere!!
+         "jsonSelector" " " or NULL
+         "type":{html,json,image}
          }
          Response when no errors:
          {
@@ -98,22 +81,23 @@ class SiteView(APIView):
          "siteName":"",
          "siteUrl":"",
          "siteDescription":"",
+         "type: " "
          }
          Errors:
          405 - bad http method
          400 - errors in input data:
         "message": "",
         "errors": {}
-
          """
         serializer = RegisterSiteSerializer(data=request.data,context={'request':request})
         serializer = validate_or_raise(serializer,status_code=400,message="Adding page failed")
-        serializer.save() # dont forget when you want change sth in db (especially in creating)!!!
+        serializer.save()
         return Response({
             "siteId":serializer.data["siteId"],
             "siteName": serializer.validated_data['siteName'],
             "siteUrl": serializer.validated_data['siteUrl'],
             "siteDescription":serializer.validated_data['siteDescription'],
+            "type":serializer.validated_data['type']
         })
 
     def delete(self,request):
@@ -143,14 +127,11 @@ class SiteView(APIView):
         """
            GET /site/?siteId=&onlyUpdates=[true/false/undefined]
            Request:
-           Response when no errors ( too big to be here but in short: onlyUp=True => Only updates else updates with
+           Response when no errors (too big to be here but in short: onlyUp=True => Only updates else updates with
            whole descriptions, a lots of strings)
-           [{
-
-           }]
            Errors:
 
-          405 - bad http method
+           405 - bad http method
            400 - missing id param:
            404 - site not found
            "message": "",
@@ -170,6 +151,7 @@ class SiteView(APIView):
         else:
             site = serializer.validated_data['site_details']
         return Response(site)
+
     def patch(self,request):
         """
            PATCH /site/?siteId=
@@ -183,7 +165,7 @@ class SiteView(APIView):
            Errors:
            405 - bad http method
            400 - missing id param:
-           401 - delete not your site
+           401 - patch not your site
            404 - site not found
            "message": "",
            "errors": {}
@@ -227,6 +209,7 @@ class LastKUpdatesView(APIView):
                 "siteName":" ",
                 "registeredAt":" ",
                 "statusCode":" "
+                "error: "
                 }]
            Errors:
            405 - bad http method
@@ -240,15 +223,13 @@ class LastKUpdatesView(APIView):
         updates = serializer.validated_data["updates"]
         return Response(updates)
 
-
-
-#siteName id?
 class SearchSuggestionView(APIView):
     authentication_classes = [CustomSessionAuthentication]
     permission_classes = [CustomIsAuthenticated]
-    def post(self,request):
+    def get(self,request):
         """
-           GET /search/
+           q - text we're typing
+           GET /search/?q=
            Response when no errors 200
             [{
             siteId:" ",
@@ -268,14 +249,65 @@ class SearchSuggestionView(APIView):
         return Response(suggestion)
 
 
-@authentication_classes([CustomSessionAuthentication])
-@permission_classes([CustomIsAuthenticated])
-def test(request):
-    element_change = ElementChangeHandler.register_change(
-        user=request.user,
-        element_id=get_element_id(request.user,"19f733ae8fb8412fa07dae4f88931a61"),
-        content="new HTML here2",
-        change="diff here or  2"
-     )
+class ObserverView(APIView):
+    authentication_classes = [CustomSessionAuthentication]
+    permission_classes = [CustomIsAuthenticated]
+    def post(self,request):
+        """
+           POST /observer/
+           Request:
+           {
+           site_id: " " this site where we want to add observer, we get this after register a site (the same id)
+           interval " " textbox for client
+           take_text:" " # maybe checkbox (default false unchecked)
+           observe_images : " "# maybe checkboc (default false unchecked) true/fals both required
+           }
+
+           Resposne :
+           {
+           settings:
+                    {
+                    id="",
+                    }
+            }
+           Errors:
+           405 - bad http method
+           404 - site not found
+           "message": "",
+           "errors": {}
+
+           """
+        serializer = RegisterObserverSerializer(data=request.data,context={'request':request})
+        serializer = validate_or_raise(serializer,status_code=400,message="Adding observer failed")
+        serializer.save()
+
+        return Response({
+            "settings": {
+                "id":serializer.data['id']
+            }
+        })
+
+    def delete(self,request):
+        """
+           DELETE /site/?siteId=
+           Request:
+           Response when no errors: 204 HTTP
+           Errors:
+           405 - bad http method
+           400 - missing id param:
+           401 - deleted not your observer
+           404 - site not found
+           "message": "",
+           "errors": {}
+           """
+        site_id = request.query_params.get('siteId')
+        if not site_id:
+            raise CustomAPIException(status_code=400, message="Missing site id",detail={})
+        if not UserTrackedWebsites.exists_site_for_user(site_id,request.user.id):
+            raise CustomAPIException(status_code=401,message="Can't permission to delete this observer",detail={})
+        serializer = RemoveObserverSerializer(data={"site_id": site_id})
+        serializer = validate_or_raise(serializer,status_code=404,message="Remove this observer failed")
+        serializer.validated_data['observer'].delete()
+        return Response(status=204)
 
 

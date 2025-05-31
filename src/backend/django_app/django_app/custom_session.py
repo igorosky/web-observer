@@ -1,11 +1,12 @@
 from rest_framework.authentication import SessionAuthentication
 from django.contrib.sessions.models import Session
 from django.utils.timezone import now
-from django_app.exception_handler import NotAuthenticatedError, InvalidSessionError, SessionExpiredError, UserInactiveError
 
 
 class CustomSessionAuthentication(SessionAuthentication):
     def authenticate(self, request):
+        from django_app.exception_handler import NotAuthenticatedError, InvalidSessionError, SessionExpiredError, \
+            UserInactiveError
 
         session_key = request.COOKIES.get('sessionid')
         if not session_key:
