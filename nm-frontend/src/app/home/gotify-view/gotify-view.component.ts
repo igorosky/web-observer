@@ -46,7 +46,7 @@ export class GotifyViewComponent implements OnInit {
     }else{
       this.gotifyUpdateForm = this.fb.group({
         url: [gotifyData.url, [Validators.required, urlValidator(), Validators.maxLength(100)]],
-        token: [gotifyData.token, Validators.required]
+        token: ['[REENTER TOKEN]', Validators.required]
       });
     }
   }

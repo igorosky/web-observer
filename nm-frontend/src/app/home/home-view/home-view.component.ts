@@ -6,7 +6,7 @@ import {UpdatePreviewBoxComponent} from '../update-preview-box/update-preview-bo
 import {SearchBarComponent} from '../search-bar/search-bar.component';
 import {SitePreview} from '../models/site';
 import {AuthService} from '../../auth/auth.service';
-import {HOME_ROUTE, SITE_REGISTER_ROUTE} from '../../app.routes';
+import {GOTIFY_ROUTE, HOME_ROUTE, SITE_REGISTER_ROUTE} from '../../app.routes';
 
 @Component({
   selector: 'app-home-view',
@@ -68,6 +68,6 @@ export class HomeViewComponent implements OnInit, OnDestroy {
 
   routeToGotify(){
     this.isDefaultView = false;
-    void this.router.navigate(['gotify'], {relativeTo: this.activatedRoute});
+    void this.router.navigate([GOTIFY_ROUTE], {relativeTo: this.activatedRoute});
   }
 }
