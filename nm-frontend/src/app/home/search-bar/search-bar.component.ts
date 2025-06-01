@@ -45,24 +45,30 @@ export class SearchBarComponent implements OnInit {
     }
   }
 
-  onSiteSelect(site: SitePreview) {
-    this.searchText = '';
-    this.filteredSites = [];
-    this.siteSelected.emit(site.siteId);
-  }
-
   protected isFocused = false;
 
   onSearchFocus() {
     this.isFocused = true;
   }
 
-  onSearchBlur() {
+  onSiteSelect(site: SitePreview) {
+    this.searchText = '';
+    this.filteredSites = [];
+    this.siteSelected.emit(site.siteId);
+  }
+
+  blurDelay(event: MouseEvent, toBlur: HTMLElement) {
+    event.preventDefault();
     setTimeout(() => {
-      if(this.sitesToSearch !== undefined) this.filteredSites = [...this.sitesToSearch];
-      this.searchText = '';
-      this.isFocused = false;
-    }, 120);
+      toBlur.blur();
+      this.onSearchBlur();
+    }, 250);
+  }
+
+  onSearchBlur() {
+    if (this.sitesToSearch !== undefined) this.filteredSites = [...this.sitesToSearch];
+    this.searchText = '';
+    this.isFocused = false;
   }
 
 }
