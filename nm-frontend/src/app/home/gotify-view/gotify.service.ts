@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, Observable, of} from 'rxjs';
-import {handleError} from '../../shared/error-handling';
+import {handleError} from '@app/shared/error-handling';
 
 export interface GotifyData {
   url: string;

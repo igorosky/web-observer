@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {HomeLoaderService, SiteRegisterResponse} from '../home-loader.service';
 import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
-import {HOME_ROUTE} from '../../app.routes';
+import {HOME_ROUTE} from '@app/app.routes';
 import {Router} from '@angular/router';
 import {siteTypeValidator, urlValidator} from '../utils/utils';
 
