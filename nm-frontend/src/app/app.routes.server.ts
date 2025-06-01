@@ -12,7 +12,7 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: `${HOME_ROUTE}/${SITE_REGISTER_ROUTE}`,
-    renderMode: RenderMode.Prerender
+    renderMode: RenderMode.Server
   },
   {
     path: `${HOME_ROUTE}/${SITE_ROUTE}`,
@@ -20,7 +20,7 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: `${HOME_ROUTE}/${GOTIFY_ROUTE}`,
-    renderMode: RenderMode.Client
+    renderMode: RenderMode.Server
   },
   {
     path: HOME_ROUTE,

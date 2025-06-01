@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, Inject, inject, OnInit, PLATFORM_ID} from '@angular/core';
 import {AuthService} from '../auth/auth.service';
 import {Router} from '@angular/router';
 import {HOME_ROUTE} from '../app.routes';
@@ -6,6 +6,7 @@ import {FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from
 import {animate, keyframes, state, style, transition, trigger} from '@angular/animations';
 import {AuthData} from '../auth/models/auth-data';
 import {HomeLoaderService} from '../home/home-loader.service';
+import {isPlatformBrowser} from '@angular/common';
 
 const ANIMATION_HOLD_MS = 3000;
 
@@ -49,12 +50,12 @@ export class LogInComponent implements OnInit {
   private router: Router = inject(Router);
   protected logInForm?: FormGroup = undefined;
 
-  constructor(private fb: NonNullableFormBuilder, private homeLoaderService: HomeLoaderService) {
+  constructor(@Inject(PLATFORM_ID) private platformId: object, private fb: NonNullableFormBuilder, private homeLoaderService: HomeLoaderService) {
     this.renderLogInForm();
   }
 
   ngOnInit() {
-    if (this.authService.isLoggedIn()) void this.router.navigate([HOME_ROUTE]);
+    if (isPlatformBrowser(this.platformId) && this.authService.isLoggedIn()) void this.router.navigate([HOME_ROUTE]);
   }
 
   private renderLogInForm() {
