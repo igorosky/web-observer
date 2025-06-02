@@ -4,7 +4,7 @@ from django.core.validators import validate_unicode_slug
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import TrackedWebsite, UserTrackedWebsites, ElementChange, TrackedElement, UserElementUpdate, Observer, \
-    ObserverInfo
+    ObserverInfo, GotifyInfo
 import uuid
 from django.db import transaction, connection, IntegrityError
 from django_app.utils import validate_or_raise
@@ -325,3 +325,52 @@ class RemoveObserverSerializer(serializers.Serializer):
             raise serializers.ValidationError("Observer does not exist")
         return data
 
+class GotifyRegisterSerializer(serializers.ModelSerializer):
+    url = serializers.URLField(allow_blank=True, allow_null=True, required=False, write_only=True)
+    token = serializers.CharField(allow_blank=True, allow_null=True, required=False, write_only=True)
+
+    class Meta:
+        model = GotifyInfo
+        fields = ["id", "user", "url", "token", "updateTime"]
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'user': {'read_only': True},
+            'updateTime': {'read_only': True},
+        }
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        url = validated_data.get("url")
+        token = validated_data.get("token")
+
+        with transaction.atomic():
+            gotify, created = GotifyInfo.objects.get_or_create(user=user, defaults={"url": url or "", "token": token or ""})
+
+            if not created:
+                updated_fields = []
+                if url is not None:
+                    gotify.url = url
+                    updated_fields.append("url")
+                if token is not None:
+                    gotify.token = token
+                    updated_fields.append("token")
+                if updated_fields:
+                    gotify.save(update_fields=updated_fields)
+
+        return gotify
+
+
+class GotifyInfoSerializer(serializers.Serializer):
+    url = serializers.URLField()
+    token = serializers.CharField()
+
+
+class RemoveGotifySerializer(serializers.Serializer):
+    def validate(self, data):
+        user = self.context['request'].user
+        try:
+            gotify_entry = GotifyInfo.objects.get(user=user)
+            data["gotify"] = gotify_entry
+        except GotifyInfo.DoesNotExist:
+            raise serializers.ValidationError("Gotify config does not exist for this user")
+        return data

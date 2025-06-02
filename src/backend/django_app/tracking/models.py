@@ -98,3 +98,15 @@ class ObserverInfo(models.Model):
 
     observer = models.ForeignKey(Observer,primary_key=True,on_delete=models.CASCADE)
     info = models.JSONField(default=dict)
+
+
+class GotifyInfo(models.Model):
+    class Meta:
+        db_table = 'gotify_info'
+
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    url = models.URLField(unique=True, null=False, blank=False)   # ← wymagany i unikalny
+    token = models.TextField(null=False, blank=False)             # ← wymagany
+    updateTime = models.DateTimeField(auto_now_add=True)
+
