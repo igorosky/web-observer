@@ -1,0 +1,68 @@
+.bareBox-main {
+  cursor: pointer;
+  width: 18em;
+  font-size: 1em;
+  text-align: center;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  padding: 0.3em 0.5em;
+  border-radius: 0.3em;
+  color: rgba(202, 243, 243, 0.65);
+}
+
+.updateHoverBox {
+  width: 60vw;
+  height: 75vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1002;
+}
+
+.bareBox-main:hover {
+  border: 1px solid #969db6;
+}
+
+/*noinspection CssUnusedSymbol*/
+.serverEU {
+  background-color: #6A040F;
+}
+
+/*noinspection CssUnusedSymbol*/
+.clientEU {
+  background-color: #654201;
+}
+
+/*noinspection CssUnusedSymbol*/
+.successU {
+  background-color: #313c01;
+}
+
+/*noinspection CssUnusedSymbol*/
+.errorU {
+  background-color: #969db6;
+  color: black;
+}
+
+.hoverCenter {
+  background-color: #03071E;
+  width: 100%;
+  height: 100%;
+}
+
+.imgContainer {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.innerImgContainer {
+  max-width: 90%;
+  min-width: 70%;
+  height: 90%;
+  position: relative;
+}

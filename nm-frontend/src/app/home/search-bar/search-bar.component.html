@@ -1,0 +1,67 @@
+<!-- Based on Uiverse.io by Lakshay-art, colours and animations, effects modified -->
+@if (isFocused) {
+  <div id="focus-blur"></div>
+}
+<div id="poda">
+  <div class="darkBorderBg"></div>
+  <div class="darkBorderBg"></div>
+  <div class="darkBorderBg"></div>
+
+  <div class="white"></div>
+  <div class="search-border"></div>
+
+  <div id="searchBarMain">
+    <input #searchInput placeholder="Search sites..." type="text" name="text" class="search-input" autocomplete="off"
+           [(ngModel)]="searchText" (input)="filterResults()" (focus)="onSearchFocus()" (blur)="onSearchBlur()"/>
+    <div id="search-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        height="24"
+        fill="none"
+        class="feather feather-search"
+      >
+        <circle stroke="url(#search)" r="8" cy="11" cx="11"></circle>
+        <line
+          stroke="url(#searchl)"
+          y2="16.65"
+          y1="22"
+          x2="16.65"
+          x1="22"
+        ></line>
+        <defs>
+          <linearGradient gradientTransform="rotate(50)" id="search">
+            <stop stop-color="#f8e7f8" offset="0%"></stop>
+            <stop stop-color="#b6a9b7" offset="50%"></stop>
+          </linearGradient>
+          <linearGradient id="searchl">
+            <stop stop-color="#b6a9b7" offset="0%"></stop>
+            <stop stop-color="#837484" offset="50%"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</div>
+@if (isFocused) {
+  <div id="result-wrapper" class="centerVH">
+    @if (filteredSites.length > 0) {
+              <div class="results-container">
+                  @for (site of filteredSites; track $index) {
+                    <div class="result-item" (click)="onSiteSelect(site)" (mousedown)="blurDelay($event, searchInput)">
+                      <b style="font-size: 1.1em">{{ site.siteName }}</b>
+                      <span>Id: {{ site.siteId }}</span>
+                    </div>
+                  }
+                </div>
+    } @else if (searchErrorMessage !== undefined) {
+      <span class="error-box">Searching disabled due to the following error: {{ searchErrorMessage }}</span>
+    } @else {
+      <span class="error-box">No results found for the given site name</span>
+    }
+  </div>
+}

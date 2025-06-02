@@ -1,0 +1,37 @@
+@if (showPreview) {
+  <div class="updateHoverBox border centerVH">
+    <div style="color: white" class="hoverCenter column">
+      @if (update.imageChangeUrl !== undefined) {
+        <div class="imgContainer">
+          <div class="innerImgContainer">
+            <img ngSrc="{{update.imageChangeUrl}}" fill style="max-width: 100%; max-height: 100%"
+                 alt="Change screenshot couldn't be fetched from the server"/>
+          </div>
+        </div>
+      }
+      @else if (update.error === undefined) {
+        @if (update.textChange !== undefined) {
+          <span style="margin-top: 1em">{{ update.textChange }}</span>
+        }
+      } @else {
+        <div class="error-box column">
+          <span style="font-size: 2.5em">Configuration error detected</span>
+          <span>{{ update.error }}</span>
+        </div>
+      }
+      <button style="margin-bottom: 1em; margin-top: 1em" class="s_button" (click)="toggleShowPreview()">
+        <div class="s_button__int">
+          <span>Close preview</span>
+        </div>
+      </button>
+    </div>
+  </div>
+}
+<div class="bareBox-main centerVH" [ngClass]="getStatusClass(update.statusCode)" (click)="toggleShowPreview()">
+  @if (update.error === undefined) {
+    {{ update.registeredAt }}: {{ update.statusCode }}
+  } @else {
+    <span>Configuration error</span>
+    <span>{{ update.registeredAt }}</span>
+  }
+</div>

@@ -2,7 +2,7 @@
 .idea
 .env
 TODO
-.vscode.
+.vscode
 __pycache__
 imgs
 *.sqlite3

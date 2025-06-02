@@ -1,0 +1,131 @@
+<div id="siteViewOuterBox">
+  @if (currentSite !== undefined) {
+    <div id="siteViewMain">
+      <div class="siteInfoDiv">
+        <div class="siteNameDiv column">
+          <b style="font-size: 1.3em">Site: {{ currentSite.siteInfo.siteName }}</b>
+          <span>Under: <a href="{{currentSite.siteInfo.siteUrl}}">{{ currentSite.siteInfo.siteUrl }}</a></span>
+        </div>
+        <div class="siteExtrasDiv column">
+          <span>Unique site ID: {{ currentSite.siteInfo.siteId }}</span>
+          <span>Tracked since: {{ currentSite.trackedSince }}</span>
+        </div>
+        <div class="optionsDiv row">
+          <button class="s_button" type="button" (click)="toggleEditMode()">
+            <div class="s_button__int">
+              <span>Edit site </span>
+            </div>
+          </button>
+          <button class="s_button" type="button" (click)="attemptSiteRemoval()">
+            <div class="s_button__int">
+              <span>Remove site</span>
+            </div>
+          </button>
+        </div>
+        <div class="descDiv centerVH">
+          @if (currentSite.description.length !== 0) {
+            {{ currentSite.description }}
+          } @else{
+            <span class="error-box">No description provided</span>
+          }
+        </div>
+        <div class="updateInfoDiv column">
+          <span>Last update: {{ currentSite.siteInfo.lastUpdateAt }}
+            . Registered updates: {{ currentSite.updates.length }}</span>
+          <span>CSS selector "{{currentSite.siteInfo.cssSelector}}" tracked: "{{currentSite.siteInfo.elementName}}"</span>
+          <span>Site resource type: {{currentSite.siteInfo.siteType}}</span>
+        </div>
+      </div>
+      <div class="siteUpdatesDiv column">
+        <b class="error-box" style="font-size: 1.4em">Registered updates</b>
+        <div id="siteUpdatesContainer">
+          @for (update of currentSite.updates; track $index) {
+            <app-bare-update-box [update]="update"></app-bare-update-box>
+          }
+        </div>
+        <button class="s_button" type="button" (click)="refetchCurrentSiteUpdates()">
+          <div class="s_button__int">
+            <span>Refresh updates</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  } @else {
+    <span class="error-box" style="font-size: 1.4em; top: 50%; left: 40%; text-align: center; position: absolute">
+    @if (siteFetchErrorMessage !== undefined) {
+      {{ siteFetchErrorMessage }}
+    } @else {
+      Couldn't load the site details. Please try again later.
+    }
+  </span>
+  }
+  @if (isInEditMode && siteEditForm !== undefined && currentSite !== undefined) {
+    <div class="editWrapper border">
+      <div class="column" style="gap:0; height: 100%; width: 100%; background-color: #03071E; color: white">
+        <b class="infoBox" style="font-size: 2em; margin: 0">Edit site {{ currentSite.siteInfo.siteId }}</b>
+        <form class="siteEditDiv" [formGroup]="siteEditForm" (ngSubmit)="attemptSiteEdit()">
+          <div class="editTitleDiv">
+              <div class="column">
+                <div class="row">
+                  <label for="siteName">Edit site name:</label>
+                  <div class="box-input">
+                    <div class="border">
+                      <input id="siteName" formControlName="siteName" type="text" name="text" class="input">
+                    </div>
+                  </div>
+                </div>
+                @if (siteName.hasError('required') && siteName.touched) {
+                  <span style="margin-left: 1em" class="error-box">Site name is required</span>
+                } @else if (siteName.hasError('maxlength')) {
+                  <span style="margin-left: 1em" class="error-box">Maximum length is 30 characters</span>
+                }
+              </div>
+              <div class="column">
+                <div class="row">
+                  <label for="elemName">Edit element name:</label>
+                  <div class="box-input">
+                    <div class="border">
+                      <input id="elemName" formControlName="elementName" type="text" name="text" class="input">
+                    </div>
+                  </div>
+                </div>
+                @if (elementName.hasError('required') && elementName.touched) {
+                  <span style="margin-left: 1em" class="error-box">Element name is required</span>
+                } @else if (elementName.hasError('maxlength')) {
+                  <span style="margin-left: 1em" class="error-box">Maximum length is 30 characters</span>
+                }
+              </div>
+          </div>
+          <div class="editControlDiv column">
+            <div class="row">
+              <span class="infoBox">Edit description:</span>
+              <textarea class="sTextArea" formControlName="siteDesc" type="text"></textarea>
+            </div>
+            @if (siteDesc.invalid && siteDesc.touched) {
+              <span class="error-box" style="margin-top: 1em">Maximum description length is 900 characters</span>
+            }
+          </div>
+          <div class="editButtonsDiv column">
+            <span class="error-box">
+              @if (siteEditErrorMessage !== undefined) {
+                {{ siteFetchErrorMessage }}
+              }
+            </span>
+            <div class="row">
+              <button class="s_button" type="submit" [disabled]="siteEditForm.invalid || siteEditFormPristine">
+                <div class="s_button__int">
+                  <span>Save changes</span>
+                </div>
+              </button>
+              <button class="s_button" type="button" (click)="toggleEditMode()">
+                <div class="s_button__int">
+                  <span>Cancel</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

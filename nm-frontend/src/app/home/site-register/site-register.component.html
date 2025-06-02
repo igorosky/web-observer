@@ -1,0 +1,119 @@
+<div id="registerAnimation" class="centerVH" [@registerAnimation]="animationState">
+  @if (siteAnimationData) {
+    <div class="column">
+      <span>Registered site {{ siteAnimationData.siteName }}</span>
+      <span style="font-size: 0.4em">Site was allotted an id of {{ siteAnimationData.siteId }}</span>
+    </div>
+  }
+</div>
+<div id="registerMain">
+  <form id="registerForm" [formGroup]="siteRegisterForm" (ngSubmit)="attemptSiteRegistrations()">
+    <b class="registerTitleDiv centerVH">Track a new site</b>
+    <div class="basicInfoDiv column">
+      <div class="row">
+        <label for="siteName">Site name:</label>
+        <div class="box-input">
+          <div class="border">
+            <input id="siteName" formControlName="siteName" type="text" name="text" class="input" placeholder="Name of your site"
+                   autocomplete="off">
+          </div>
+        </div>
+      </div>
+      @if (siteName.hasError('required') && siteName.touched) {
+        <span class="error-box">Site name is required</span>
+      } @else if (siteName.hasError('maxlength')) {
+        <span class="error-box">Maximum length is 30 characters</span>
+      }
+      <div class="row">
+        <label for="siteUrl">Site URL:</label>
+        <div class="box-input">
+          <div class="border">
+            <input id="siteUrl" formControlName="siteUrl" type="text" name="text" class="input" placeholder="Site URL"
+                   autocomplete="off">
+          </div>
+        </div>
+      </div>
+      @if (siteUrl.hasError('required') && siteUrl.touched) {
+        <span class="error-box">Site URL is required</span>
+      } @else if (siteUrl.hasError('maxlength')) {
+        <span class="error-box">Maximum length is 100 characters</span>
+      } @else if (siteUrl.hasError('invalidUrl')) {
+        <span class="error-box">Entered URL is not valid</span>
+      }
+    </div>
+    <div class="cssInfoDiv column">
+      <div class="row">
+        <label for="cssSelector">CSS selector:</label>
+        <div class="box-input">
+          <div class="border">
+            <input id="cssSelector" formControlName="cssSelector" type="text" name="text" class="input" placeholder="CSS selector ID"
+                   autocomplete="off">
+          </div>
+        </div>
+      </div>
+      @if (cssSelector.hasError('required') && cssSelector.touched) {
+        <span class="error-box">CSS selector ID is required</span>
+      } @else if (cssSelector.hasError('maxlength')) {
+        <span class="error-box">Maximum length is 255 characters</span>
+      }
+      <div class="row">
+        <label for="elemName">Element name:</label>
+        <div class="box-input">
+          <div class="border">
+            <input id="elemName" formControlName="elementName" type="text" name="text" class="input" placeholder="Element name"
+                   autocomplete="off">
+          </div>
+        </div>
+      </div>
+      @if (elementName.hasError('required') && elementName.touched) {
+        <span class="error-box">Element name is required</span>
+      } @else if (elementName.hasError('maxlength')) {
+        <span class="error-box">Maximum length is 30 characters</span>
+      }
+      <div class="row" style="width: 70%">
+        <label for="siteType" style="margin-right: 0">Site type:</label>
+        <select id="siteType" formControlName="siteType" style="font-size: 1.5em; opacity: 0.8">
+          <option value="html">HTML</option>
+          <option value="image">Image</option>
+          <option value="json">JSON</option>
+        </select>
+      </div>
+    </div>
+    <div class="column registerDescDiv">
+      <span>Edit description:</span>
+      <textarea class="sTextArea" style="height: 15em; width: 35em; max-width: 30vw; max-height: 25vh; margin-bottom: 1em" formControlName="siteDesc" type="text"></textarea>
+      @if (siteDesc.invalid) {
+        <span class="error-box">Maximum description length is 900 characters</span>
+      }
+    </div>
+    <div class="registerInfoDiv column">
+      <span>Add a new site for tracking.</span>
+      <ul>
+        <li>Site name → custom name of the site, set whatever you'd like</li>
+        <li>Site URL → the exact URL of the site, it's important to enter it correctly</li>
+        <li>Description → custom description of the site, you can leave if empty or fill it at will</li>
+        <li>CSS selector → the exact CSS selector of the tracked element. Example: "div.main.centerVH"</li>
+        <li>Element name → custom name for the tracked element to make the CSS selector readable</li>
+        <li>Site type → what is accessible under the URL - HTML page, image resource or a JSON</li>
+      </ul>
+      <span style="margin-top: -0.2em">Don't worry, you can edit the 'custom' fields later on.</span>
+    </div>
+    <div class="registerButtonsDiv column">
+      @if (siteRegisterErrorMessage) {
+        <span class="error-box" style="font-size: 1em">{{ siteRegisterErrorMessage }}</span>
+      }
+      <div class="row">
+        <button class="s_button" type="submit" [disabled]="siteRegisterForm.invalid || siteRegisterFormPristine">
+          <div class="s_button__int">
+            <span>Register the site</span>
+          </div>
+        </button>
+        <button class="s_button" type="button" (click)="resetSiteRegisterForm()">
+          <div class="s_button__int">
+            <span>Reset form</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
