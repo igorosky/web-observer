@@ -3,25 +3,26 @@ from django.contrib.auth.hashers import make_password
 from django.core.validators import validate_unicode_slug
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import TrackedWebsite, UserTrackedWebsites, ElementChange, TrackedElement, UserElementUpdate, \
-    BareUpdateEntry
+from .models import TrackedWebsite, UserTrackedWebsites, ElementChange, TrackedElement, UserElementUpdate, Observer, \
+    ObserverInfo, GotifyInfo
 import uuid
-from django.db import transaction, connection
+from django.db import transaction, connection, IntegrityError
 from django_app.utils import validate_or_raise
 
 from django_app.exception_handler import CustomAPIException
-
+from .observers import load_observers_from_db, create_observer, make_settings_from_info
+from .observers import  web_observer
 User = get_user_model()
 
 
 class RegisterSiteSerializer(serializers.ModelSerializer):
-    cssSelector = serializers.CharField(write_only=True)
     elementName = serializers.CharField(write_only=True)
-
+    cssSelector = serializers.CharField(allow_blank=True,allow_null=True,write_only=True)
+    jsonSelector = serializers.CharField(allow_blank=True,allow_null=True,write_only=True)
     class Meta:
         model = TrackedWebsite
         fields = [
-            "siteId", "siteName", "siteUrl", "siteDescription", "createdAt",
+            "siteId", "siteName", "siteUrl", "siteDescription", "createdAt","type","jsonSelector",
             "cssSelector", "elementName"
         ]
         extra_kwargs = {
@@ -34,12 +35,14 @@ class RegisterSiteSerializer(serializers.ModelSerializer):
 
         cssSelector = validated_data.pop('cssSelector')
         elementName = validated_data.pop('elementName')
+        jsonSelector = validated_data.pop('jsonSelector')
 
         with transaction.atomic():
             site = TrackedWebsite.objects.create(
                 siteName=validated_data['siteName'],
                 siteUrl=validated_data['siteUrl'],
-                siteDescription=validated_data['siteDescription']
+                siteDescription=validated_data['siteDescription'],
+                type=validated_data['type']
             )
             UserTrackedWebsites.objects.create(
                 user_id=user.id,
@@ -47,6 +50,7 @@ class RegisterSiteSerializer(serializers.ModelSerializer):
             )
             TrackedElement.objects.create(
                 cssSelector=cssSelector,
+                jsonSelector=jsonSelector,
                 elementName=elementName,
                 website_id=site.siteId
             )
@@ -55,7 +59,7 @@ class RegisterSiteSerializer(serializers.ModelSerializer):
 def _get_site_by_id(data):
     site_id = data.get('siteId')  # we know that this exsits because of checkign query params
     try:
-        site = TrackedWebsite.objects.get(id=site_id)
+        site = TrackedWebsite.objects.get(siteId=site_id)
         data["site"] = site
         return data
     except TrackedWebsite.DoesNotExist:
@@ -156,8 +160,10 @@ def get_all_updates(id):
     query = '''
     SELECT
         u.updateTime AS update_time,
+        ec.textChange AS tchange,
+        ec.imageChangeUrl AS urlChange,
         u.statusCode AS status_code,
-        ec.change AS change
+        u.error as error
     FROM element_changes ec
     JOIN user_element_updates u
     ON u.element_id = ec.element_id
@@ -169,8 +175,10 @@ def get_all_updates(id):
         entries = [
             {
                 "registeredAt": row[0],
-                "statusCode": row[1],
-                "change": row[2]
+                "textChange":row[1],
+                "imageChangeUrl":row[2],
+                "statusCode": row[3],
+                "error":row[4]
             }
             for row in rows
         ]
@@ -226,6 +234,7 @@ class KLastUpdatesSerializer(serializers.Serializer):
                 "siteName":update.website.siteName,
                 "registeredAt":update.website.createdAt,
                 "statusCode":update.statusCode,
+                "error":update.error,
             }for update in updates
             ]
             data["updates"]=updates
@@ -253,3 +262,115 @@ class SearchSuggestionSerializer(serializers.Serializer):
             return data
         except TrackedWebsite.DoesNotExist:
             raise serializers.ValidationError("Site do not exists")
+
+
+
+class RegisterObserverSerializer(serializers.ModelSerializer):
+    site_id = serializers.UUIDField()
+    interval = serializers.CharField(write_only=True)
+    take_text = serializers.CharField(write_only=True)
+    observe_images = serializers.CharField(write_only=True)
+    class Meta:
+        model = Observer
+        fields = ["id","site_id","interval","take_text","observe_images"]
+        extra_kwargs = {
+            'id': {'read_only': True},
+        }
+
+    def create(self, validated_data):
+        try:
+            with transaction.atomic():
+                observer = Observer.objects.create(
+                    site_id=validated_data['site_id']
+                )
+                site = TrackedWebsite.objects.get(siteId=validated_data['site_id'])
+                elem = TrackedElement.objects.get(website_id=site.pk)
+                info = ObserverInfo.objects.create(
+                    observer_id = observer.id,
+                    info = {
+                        "id" : observer.id,
+                        "url": site.siteUrl,
+                        "interval": validated_data['interval'],
+                        "css_selector": elem.cssSelector,
+                        "json_selector": elem.jsonSelector, # in loading and creating if and after that to list steps...
+                        "take_text": False if site.type =="image" else validated_data['take_text'],
+                        "observe_images": validated_data['observe_images'],
+                    }
+                )
+
+                # we have to start here observers
+                obs = create_observer(site_type=site.type,settings=make_settings_from_info(info.info))
+                web_observer.add_observer(obs)
+                Observer.objects.filter(id=observer.id).update(hash=obs.get_id())
+
+            return observer
+        except IntegrityError:
+            raise  CustomAPIException(status_code=400,message="Not unique values",detail={})
+        except TrackedWebsite.DoesNotExist:
+            raise  CustomAPIException(status_code=404,message="Site do not exists",detail={})
+
+
+
+
+class RemoveObserverSerializer(serializers.Serializer):
+    site_id = serializers.UUIDField()
+    def validate(self, data):
+        data["siteId"] = data["site_id"]
+        site = _get_site_by_id(data)
+        try:
+            obs =Observer.objects.get(site_id=site["site"])
+            data["observer"] = obs
+            web_observer.remove_observer(obs.hash)
+        except Observer.DoesNotExist:
+            raise serializers.ValidationError("Observer does not exist")
+        return data
+
+class GotifyRegisterSerializer(serializers.ModelSerializer):
+    url = serializers.URLField(allow_blank=True, allow_null=True, required=False, write_only=True)
+    token = serializers.CharField(allow_blank=True, allow_null=True, required=False, write_only=True)
+
+    class Meta:
+        model = GotifyInfo
+        fields = ["id", "user", "url", "token", "updateTime"]
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'user': {'read_only': True},
+            'updateTime': {'read_only': True},
+        }
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        url = validated_data.get("url")
+        token = validated_data.get("token")
+
+        with transaction.atomic():
+            gotify, created = GotifyInfo.objects.get_or_create(user=user, defaults={"url": url or "", "token": token or ""})
+
+            if not created:
+                updated_fields = []
+                if url is not None:
+                    gotify.url = url
+                    updated_fields.append("url")
+                if token is not None:
+                    gotify.token = token
+                    updated_fields.append("token")
+                if updated_fields:
+                    gotify.save(update_fields=updated_fields)
+
+        return gotify
+
+
+class GotifyInfoSerializer(serializers.Serializer):
+    url = serializers.URLField()
+    token = serializers.CharField()
+
+
+class RemoveGotifySerializer(serializers.Serializer):
+    def validate(self, data):
+        user = self.context['request'].user
+        try:
+            gotify_entry = GotifyInfo.objects.get(user=user)
+            data["gotify"] = gotify_entry
+        except GotifyInfo.DoesNotExist:
+            raise serializers.ValidationError("Gotify config does not exist for this user")
+        return data
