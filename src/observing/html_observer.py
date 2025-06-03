@@ -116,7 +116,10 @@ class HtmlObserver(WebObserver):
       digest = sha256(str(len(content)).encode('utf-8')).hexdigest()
     else:
       # At this point content should be a single element
-      element: PageElement = content
+      if not isinstance(content, ResultSet):
+        element = content
+      else:
+        content = content[0]
 
       # You ask why not to omit this when we not observe images?
       # Because imgkit would not handle relative URLs correctly
