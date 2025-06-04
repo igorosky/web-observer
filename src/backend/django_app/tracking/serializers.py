@@ -15,15 +15,19 @@ from .observers import  web_observer
 User = get_user_model()
 
 
-class RegisterSiteSerializer(serializers.ModelSerializer):
+class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
     elementName = serializers.CharField(write_only=True)
-    cssSelector = serializers.CharField(allow_blank=True,allow_null=True,write_only=True)
-    jsonSelector = serializers.CharField(allow_blank=True,allow_null=True,write_only=True)
+    selector = serializers.CharField(write_only=True)
+
+    interval = serializers.CharField(write_only=True)
+    take_text = serializers.CharField(write_only=True)
+    observe_images = serializers.CharField(write_only=True)
+
     class Meta:
         model = TrackedWebsite
         fields = [
-            "siteId", "siteName", "siteUrl", "siteDescription", "createdAt","type","jsonSelector",
-            "cssSelector", "elementName"
+            "siteId", "siteName", "siteUrl", "siteDescription", "createdAt", "type",
+            "selector", "elementName", "interval", "take_text", "observe_images"
         ]
         extra_kwargs = {
             'siteId': {'read_only': True},
@@ -33,28 +37,73 @@ class RegisterSiteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
 
-        cssSelector = validated_data.pop('cssSelector')
         elementName = validated_data.pop('elementName')
-        jsonSelector = validated_data.pop('jsonSelector')
+        selector = validated_data.pop('selector')
 
-        with transaction.atomic():
-            site = TrackedWebsite.objects.create(
-                siteName=validated_data['siteName'],
-                siteUrl=validated_data['siteUrl'],
-                siteDescription=validated_data['siteDescription'],
-                type=validated_data['type']
+        interval = validated_data.pop('interval')
+        take_text = validated_data.pop('take_text')
+        observe_images = validated_data.pop('observe_images')
+
+        try:
+            with transaction.atomic():
+                site = TrackedWebsite.objects.create(
+                    siteName=validated_data['siteName'],
+                    siteUrl=validated_data['siteUrl'],
+                    siteDescription=validated_data['siteDescription'],
+                    type=validated_data['type']
+                )
+
+                UserTrackedWebsites.objects.create(
+                    user_id=user.id,
+                    website_id=site.siteId
+                )
+
+                TrackedElement.objects.create(
+                    selector=selector,
+                    elementName=elementName,
+                    website_id=site.siteId
+                )
+
+                observer = Observer.objects.create(
+                    site_id=site.siteId
+                )
+
+                elem = TrackedElement.objects.get(website_id=site.pk)
+
+                info = ObserverInfo.objects.create(
+                    observer_id=observer.id,
+                    info={
+                        "id": observer.id,
+                        "url": site.siteUrl,
+                        "interval": interval,
+                        "selector": elem.selector,
+                        "take_text": False if site.type == "image" else take_text,
+                        "observe_images": observe_images,
+                    }
+                )
+
+                obs = create_observer(
+                    site_type=site.type,
+                    settings=make_settings_from_info(info.info,site.type),
+                )
+                web_observer.add_observer(obs)
+                Observer.objects.filter(id=observer.id).update(hash=obs.get_id())
+
+            return site
+
+        except IntegrityError:
+            raise CustomAPIException(
+                status_code=400,
+                message="Not unique values",
+                detail={}
             )
-            UserTrackedWebsites.objects.create(
-                user_id=user.id,
-                website_id=site.siteId
+        except Exception as e:
+            raise CustomAPIException(
+                status_code=500,
+                message="Error creating site with observer",
+                detail={"error": str(e)}
             )
-            TrackedElement.objects.create(
-                cssSelector=cssSelector,
-                jsonSelector=jsonSelector,
-                elementName=elementName,
-                website_id=site.siteId
-            )
-        return site
+
 
 def _get_site_by_id(data):
     site_id = data.get('siteId')  # we know that this exsits because of checkign query params
@@ -70,10 +119,17 @@ def _get_site_by_id(data):
 
 
 class RemoveSiteSerializer(serializers.Serializer):
-    siteId = serializers.UUIDField() # need for auth inpiut from param
+    siteId = serializers.UUIDField()
     def validate(self, data):
+        site = _get_site_by_id(data)
+        try:
+            obs =Observer.objects.get(site_id=site["site"])
+            data["observer"] = obs
+            web_observer.remove_observer(obs.hash)
+        except Observer.DoesNotExist:
+            raise serializers.ValidationError("Observer does not exist")
         return _get_site_by_id(data)
-
+    #remove observer
 
 class PatchSiteSerializer(serializers.Serializer):
     siteId = serializers.UUIDField()  # need for auth inpiut from param
@@ -206,7 +262,7 @@ class SiteDetailSerializer(serializers.Serializer):
                         "siteName":site.siteName,
                         "siteUrl":site.siteUrl,
                         "lastUpdatedAt":last_change,
-                        "cssSelector":elem.cssSelector,
+                        "selector":elem.selector,
                         "elementName":elem.elementName
                     },
                     "updates":get_all_updates(site_id),
@@ -265,65 +321,18 @@ class SearchSuggestionSerializer(serializers.Serializer):
 
 
 
-class RegisterObserverSerializer(serializers.ModelSerializer):
-    site_id = serializers.UUIDField()
-    interval = serializers.CharField(write_only=True)
-    take_text = serializers.CharField(write_only=True)
-    observe_images = serializers.CharField(write_only=True)
-    class Meta:
-        model = Observer
-        fields = ["id","site_id","interval","take_text","observe_images"]
-        extra_kwargs = {
-            'id': {'read_only': True},
-        }
-
-    def create(self, validated_data):
-        try:
-            with transaction.atomic():
-                observer = Observer.objects.create(
-                    site_id=validated_data['site_id']
-                )
-                site = TrackedWebsite.objects.get(siteId=validated_data['site_id'])
-                elem = TrackedElement.objects.get(website_id=site.pk)
-                info = ObserverInfo.objects.create(
-                    observer_id = observer.id,
-                    info = {
-                        "id" : observer.id,
-                        "url": site.siteUrl,
-                        "interval": validated_data['interval'],
-                        "css_selector": elem.cssSelector,
-                        "json_selector": elem.jsonSelector, # in loading and creating if and after that to list steps...
-                        "take_text": False if site.type =="image" else validated_data['take_text'],
-                        "observe_images": validated_data['observe_images'],
-                    }
-                )
-
-                # we have to start here observers
-                obs = create_observer(site_type=site.type,settings=make_settings_from_info(info.info))
-                web_observer.add_observer(obs)
-                Observer.objects.filter(id=observer.id).update(hash=obs.get_id())
-
-            return observer
-        except IntegrityError:
-            raise  CustomAPIException(status_code=400,message="Not unique values",detail={})
-        except TrackedWebsite.DoesNotExist:
-            raise  CustomAPIException(status_code=404,message="Site do not exists",detail={})
-
-
-
-
-class RemoveObserverSerializer(serializers.Serializer):
-    site_id = serializers.UUIDField()
-    def validate(self, data):
-        data["siteId"] = data["site_id"]
-        site = _get_site_by_id(data)
-        try:
-            obs =Observer.objects.get(site_id=site["site"])
-            data["observer"] = obs
-            web_observer.remove_observer(obs.hash)
-        except Observer.DoesNotExist:
-            raise serializers.ValidationError("Observer does not exist")
-        return data
+#class RemoveObserverSerializer(serializers.Serializer):
+#    site_id = serializers.UUIDField()
+#    def validate(self, data):
+#        data["siteId"] = data["site_id"]
+#        site = _get_site_by_id(data)
+#        try:
+#            obs =Observer.objects.get(site_id=site["site"])
+#            data["observer"] = obs
+#            web_observer.remove_observer(obs.hash)
+#        except Observer.DoesNotExist:
+#            raise serializers.ValidationError("Observer does not exist")
+#        return data
 
 class GotifyRegisterSerializer(serializers.ModelSerializer):
     url = serializers.URLField(allow_blank=True, allow_null=True, required=False, write_only=True)

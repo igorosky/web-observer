@@ -15,8 +15,8 @@ from django_app.exception_handler import CustomAPIException
 
 
 
-#change can be null but required
 def register_change(notification:Notification):
+    print(notification.image)
     siteId = Observer.objects.get(id=notification.observer_id).site.siteId
     textChange = notification.new_value
     imageChangeUrl = notification.image

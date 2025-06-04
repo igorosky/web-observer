@@ -46,8 +46,7 @@ class TrackedElement(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     website = models.ForeignKey(TrackedWebsite, on_delete=models.CASCADE,unique=True)
-    cssSelector = models.TextField(null=True) # it can be null
-    jsonSelector = models.TextField(null=True) # it can be null
+    selector = models.TextField()
     elementName = models.CharField(max_length=255)
     registeredAt = models.DateTimeField(auto_now_add=True)
 
@@ -64,7 +63,7 @@ class ElementChange(models.Model):
     element = models.ForeignKey(TrackedElement, on_delete=models.CASCADE)
     content = models.TextField()
     textChange = models.TextField(null=True)
-    imageChangeUrl = models.TextField(null=True)
+    imageChangeUrl = models.CharField(null=True)
     detectedAt = models.DateTimeField(auto_now_add=True)
 
 
