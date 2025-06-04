@@ -9,14 +9,19 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-import os
+import os,sys
 from pathlib import Path
 
 from django.conf.global_settings import CSRF_COOKIE_SAMESITE, SESSION_COOKIE_SAMESITE, CSRF_COOKIE_HTTPONLY, \
     SESSION_COOKIE_HTTPONLY, SESSION_COOKIE_AGE, SESSION_SAVE_EVERY_REQUEST, SESSION_COOKIE_SECURE
 from dotenv import load_dotenv  # <--- dodaj to
-
+MEDIA_URL='/imgs/'
 BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_ROOT=os.path.join(BASE_DIR,'imgs')
+
+#maybe delete this
+sys.path.insert(0, str(BASE_DIR.parent.parent))
+sys.path.insert(0, str(BASE_DIR.parent.parent / "observing"))
 load_dotenv(dotenv_path=BASE_DIR.parent / ".env")  # <--- to dodaj
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = bool(int(os.getenv("DEBUG", default=1)))  # poprawna konwersja na bool
@@ -32,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "users",
     "tracking",
-    "rest_framework"
+    "rest_framework",
 ]
 
 
@@ -51,7 +56,7 @@ CSRF_COOKIE_HTTPONLY=False
 SESSION_COOKIE_HTTPONLY=True
 ROOT_URLCONF = "django_app.urls"
 #change this to longer time
-SESSION_COOKIE_AGE=60*60
+SESSION_COOKIE_AGE=2*60*60
 SESSION_SAVE_EVERY_REQUEST=True
 #!!!!! delete on production
 SESSION_COOKIE_SECURE=False
@@ -140,3 +145,8 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4000",
+]
