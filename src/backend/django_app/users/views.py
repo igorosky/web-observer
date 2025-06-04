@@ -96,7 +96,7 @@ class LoginUserView(APIView):
         return resp
 
 class LogoutUserView(APIView):
-    authentication_classes = []
+    authentication_classes = [CustomSessionAuthentication]
     permission_classes = [CustomIsAuthenticated]
     def post(self,request):
         """
