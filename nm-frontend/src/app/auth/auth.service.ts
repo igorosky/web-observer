@@ -46,7 +46,6 @@ export class AuthService {
   }
 
   attemptLogOut(redirectToLogIn: boolean): Observable<void> {
-    console.log('att')
     return this.http.post<void>(`${this.baseUrl}/logout`, null)
       .pipe(
         tap(() => {
@@ -58,6 +57,12 @@ export class AuthService {
       );
   }
 
+  attemptLogOutNow(redirectToLogIn: boolean): void {
+    this.attemptLogOut(redirectToLogIn).subscribe({
+      error: (errMsg: string) => {alert(`Logout failed. Reason: ${errMsg}`)}
+    });
+  }
+
   redirectToLogIn(): void {
     void this.router.navigate([LOG_IN_ROUTE]);
   }
@@ -66,7 +71,7 @@ export class AuthService {
   getCurrentUserData(): Observable<AuthData> {
     const data = this.storageService.getAuthData();
     if(data === null){
-      this.attemptLogOut(true);
+      this.attemptLogOutNow(true);
       return convertMessageToError('User data was cleared during session. Please log in again.')
     }
     return of(data);

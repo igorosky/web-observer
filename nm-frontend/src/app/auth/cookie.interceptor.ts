@@ -20,7 +20,7 @@ export class CookieInterceptor implements HttpInterceptor {
       catchError(error => {
         if (error instanceof HttpErrorResponse){
           if(error.status === 403){
-            this.authService.attemptLogOut(true);
+            this.authService.attemptLogOutNow(true);
             alert('Session expired, please log in again.');
           }
           if(error.status === 401) this.authService.redirectToLogIn();

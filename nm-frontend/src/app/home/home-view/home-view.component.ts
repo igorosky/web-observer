@@ -53,7 +53,7 @@ export class HomeViewComponent implements OnInit, OnDestroy {
   }
 
   attemptLogOut() {
-    this.authService.attemptLogOut(true);
+    this.authService.attemptLogOutNow(true);
   }
 
   routeToRegisterSite() {

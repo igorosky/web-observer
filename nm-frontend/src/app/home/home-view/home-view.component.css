@@ -103,6 +103,7 @@
   width: 100%;
   gap: 0.5em;
   padding-top: 0.2em;
+  overflow-y: auto;
 }
 
 .logoDiv {
