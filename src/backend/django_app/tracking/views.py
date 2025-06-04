@@ -9,7 +9,7 @@ from .models import UserTrackedWebsites, TrackedElement, GotifyInfo
 from .serializers import RegisterSiteWithObserverSerializer, RemoveSiteSerializer, ElementIDSerializer, \
     PatchSiteSerializer, RegisterElementChangeSerializer, SiteDetailSerializer, KLastUpdatesSerializer, \
     SearchSuggestionSerializer, GotifyRegisterSerializer, \
-    RemoveGotifySerializer, GotifyInfoSerializer
+    RemoveGotifySerializer, GotifyInfoSerializer, CollectionSerializer
 from rest_framework.views import  APIView
 
 #TO DELETE
@@ -228,7 +228,6 @@ class LastKUpdatesView(APIView):
         serializer = validate_or_raise(serializer,status_code=400,message="Get last updates failed")
         updates = serializer.validated_data["updates"]
         return Response(updates)
-    # if error is not null =>
 
 class SearchSuggestionView(APIView):
     authentication_classes = [CustomSessionAuthentication]
@@ -299,3 +298,15 @@ class GotifyView(APIView):
         gotify.delete()
 
         return Response(status=204)
+
+
+class CollectionView(APIView):
+    authentication_classes = [CustomSessionAuthentication]
+    permission_classes = [CustomIsAuthenticated]
+
+    def get(self,request):
+        serializer = CollectionSerializer(data={},context={'request':request})
+        serializer = validate_or_raise(serializer,status_code=400,message="Get last updates failed")
+        webs = serializer.validated_data["websites"]
+        return Response(webs)
+

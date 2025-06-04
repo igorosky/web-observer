@@ -20,14 +20,13 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
     selector = serializers.CharField(write_only=True)
 
     interval = serializers.CharField(write_only=True)
-    take_text = serializers.CharField(write_only=True)
     observe_images = serializers.CharField(write_only=True)
 
     class Meta:
         model = TrackedWebsite
         fields = [
             "siteId", "siteName", "siteUrl", "siteDescription", "createdAt", "type",
-            "selector", "elementName", "interval", "take_text", "observe_images"
+            "selector", "elementName", "interval","observe_images"
         ]
         extra_kwargs = {
             'siteId': {'read_only': True},
@@ -41,7 +40,6 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
         selector = validated_data.pop('selector')
 
         interval = validated_data.pop('interval')
-        take_text = validated_data.pop('take_text')
         observe_images = validated_data.pop('observe_images')
 
         try:
@@ -69,6 +67,14 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
                 )
 
                 elem = TrackedElement.objects.get(website_id=site.pk)
+                if site.type == "image":
+                    take_text = False
+                    observe_images = True
+                elif site.type == "json": # json didnt catch the photos?
+                    take_text = True
+                    observe_images = False
+                else:
+                    take_text = not observe_images
 
                 info = ObserverInfo.objects.create(
                     observer_id=observer.id,
@@ -77,8 +83,8 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
                         "url": site.siteUrl,
                         "interval": interval,
                         "selector": elem.selector,
-                        "take_text": False if site.type == "image" else take_text,
-                        "observe_images": observe_images,
+                        "take_text": take_text,
+                        "observe_images": observe_images ,
                     }
                 )
 
@@ -276,27 +282,26 @@ class SiteDetailSerializer(serializers.Serializer):
 
 
 
-
 class KLastUpdatesSerializer(serializers.Serializer):
     def validate(self, data):
         user = self.context['request'].user
-        try:
-            updates = UserElementUpdate.objects.filter(
-                user_id=user.id
-            ).select_related('website').order_by('-id')[:10]
-            updates = [{
-                "siteId":update.website.pk,
-                "siteUrl":update.website.siteUrl,
-                "siteName":update.website.siteName,
-                "registeredAt":update.website.createdAt,
-                "statusCode":update.statusCode if update.error is None else -1,
-                "error":update.error,
-            }for update in updates
-            ]
-            data["updates"]=updates
-            return data
-        except TrackedWebsite.DoesNotExist:
-            raise serializers.ValidationError("Site do not exists")
+
+        updates = list(UserElementUpdate.objects.filter(
+            user=user
+        ).select_related('website').order_by('-updateTime')[:10])
+
+        updates_data = [{
+            "siteId": update.website.pk,
+            "siteUrl": update.website.siteUrl,
+            "siteName": update.website.siteName,
+            "registeredAt": update.website.createdAt,
+            "statusCode": update.statusCode if update.error is None else -1,
+            "error": update.error,
+        } for update in updates]
+
+        data["updates"] = updates_data
+        return data
+
 
 
 class SearchSuggestionSerializer(serializers.Serializer):
@@ -382,4 +387,18 @@ class RemoveGotifySerializer(serializers.Serializer):
             data["gotify"] = gotify_entry
         except GotifyInfo.DoesNotExist:
             raise serializers.ValidationError("Gotify config does not exist for this user")
+        return data
+
+
+class CollectionSerializer(serializers.Serializer):
+    def validate(self, data):
+        user = self.context['request'].user
+        websites = TrackedWebsite.objects.filter(usertrackedwebsites__user=user)
+
+        websites_data = [{
+            "siteId": website.pk,
+            "siteName": website.siteName,
+        } for website in websites]
+
+        data["websites"] = websites_data
         return data
