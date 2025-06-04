@@ -85,39 +85,32 @@ class LoginUserView(APIView):
         resp =  Response({
             "userId":user.id,
             "email":serializer.validated_data["email"],
+            "username":user.username,
             "lastLoginAt":ll,
         })
         resp.set_cookie(
             key="was_logged_in",
             value="1",
-            max_age=10000,#change to 2*value in settings
-            secure=False#change to true on prods
+            max_age=10000,
+            secure=False
         )
         return resp
 
+
 class LogoutUserView(APIView):
-    authentication_classes = [CustomSessionAuthentication]
-    permission_classes = [CustomIsAuthenticated]
-    def post(self,request):
-        """
-        POST /logout/
-        Response when no errors: 204 code:
-        Errors:
-        405 - bad http method
-        401 - logout when you are not logged in: # we have to do it because we
-        need to have access to user -> update last login
+    authentication_classes = []
+    permission_classes = []
 
-        "message": "",
-        "errors": {}
+    def post(self, request):
+        if hasattr(request, 'user') and request.user.is_authenticated:
+            user = request.user
+            user.last_login = timezone.now()
+            user.save(update_fields=['last_login'])
 
-        """
-        user = request.user
-        user.last_login = timezone.now()
-        user.save(update_fields=['last_login'])
         logout(request)
-        resp =  Response(status=status.HTTP_204_NO_CONTENT)
+
+        resp = Response(status=status.HTTP_204_NO_CONTENT)
         resp.delete_cookie('sessionid')
         resp.delete_cookie('csrftoken')
         resp.delete_cookie('was_logged_in')
         return resp
-
