@@ -19,7 +19,7 @@ const UPDATES_POLL_INTERVAL_MS = 15000;
   providedIn: 'root'
 })
 export class HomeLoaderService implements OnDestroy {
-  private readonly baseUrl = 'http://localhost:8080';
+  private readonly baseUrl = 'http://localhost:8000';
   private readonly updatesSubject: BehaviorSubject<UpdatesState | null> = new BehaviorSubject<UpdatesState | null>(null);
   private destroy$ = new Subject<void>();
   private isFetchingUpdates: boolean = false;

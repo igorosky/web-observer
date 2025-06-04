@@ -1,8 +1,8 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from '@angular/forms';
 import {SITE_TYPE} from '../site-register/site-register.component';
 
-export function getStatusClass(statusCode?: number): string {
-  if(statusCode === undefined) return 'errorU'
+export function getStatusClass(statusCode: number): string {
+  if(statusCode === -1) return 'errorU'
   else if(statusCode < 400) return 'successU';
   else if(statusCode < 500) return 'clientEU';
   else return 'serverEU';

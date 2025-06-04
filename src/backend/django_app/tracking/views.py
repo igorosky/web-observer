@@ -75,8 +75,8 @@ class SiteView(APIView):
          "selector" " " !!! selector
          "type":{html,json,image}
          "interval" " " textbox for client
-         "take_text:"" " # maybe checkbox (default false unchecked)
-         "observe_images" : " "# maybe checkboc (default false unchecked) true/fals both required
+         "observe_images" :true -> only false -> text
+
          }
          Response when no errors:
          {
@@ -104,6 +104,7 @@ class SiteView(APIView):
             "type":serializer.validated_data['type']
             #observer_id
         })
+
 
     def delete(self,request):
         """
@@ -227,6 +228,7 @@ class LastKUpdatesView(APIView):
         serializer = validate_or_raise(serializer,status_code=400,message="Get last updates failed")
         updates = serializer.validated_data["updates"]
         return Response(updates)
+    # if error is not null =>
 
 class SearchSuggestionView(APIView):
     authentication_classes = [CustomSessionAuthentication]

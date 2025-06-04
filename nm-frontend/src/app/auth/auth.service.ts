@@ -12,7 +12,7 @@ import {Router} from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly baseUrl = 'http://localhost:8080';
+  private readonly baseUrl = 'http://localhost:8000';
 
   constructor(private http: HttpClient, private storageService: StorageService, private router: Router) {
   }

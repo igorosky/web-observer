@@ -233,8 +233,8 @@ def get_all_updates(id):
                 "registeredAt": row[0],
                 "textChange":row[1],
                 "imageChangeUrl":row[2],
-                "statusCode": row[3],
-                "error":row[4]
+                "statusCode": row[3] if row[4] is None else -1,
+                "error":row[4],
             }
             for row in rows
         ]
@@ -289,7 +289,7 @@ class KLastUpdatesSerializer(serializers.Serializer):
                 "siteUrl":update.website.siteUrl,
                 "siteName":update.website.siteName,
                 "registeredAt":update.website.createdAt,
-                "statusCode":update.statusCode,
+                "statusCode":update.statusCode if update.error is None else -1,
                 "error":update.error,
             }for update in updates
             ]
