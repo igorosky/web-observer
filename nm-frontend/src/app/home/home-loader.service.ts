@@ -44,6 +44,7 @@ export class HomeLoaderService implements OnDestroy {
 
   startFetchingUpdates() {
     if (this.isFetchingUpdates) return;
+    this.refetchUpdates();
     this.isFetchingUpdates = true;
     interval(UPDATES_POLL_INTERVAL_MS)
       .pipe(takeUntil(this.destroy$))

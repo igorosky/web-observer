@@ -67,9 +67,11 @@ export class LogInComponent implements OnInit {
 
   protected welcomeMessage?: string = undefined;
   protected logInErrorMessage?: string = undefined;
+  private isFetching: boolean = false;
 
   submitLogInForm() {
-    if (this.logInForm === undefined || this.logInForm.invalid) return;
+    if (this.isFetching || this.logInForm === undefined || this.logInForm.invalid) return;
+    this.isFetching = true;
     const logInData = this.logInForm.value;
     this.authService.attemptLogIn(logInData).subscribe({
       next: async (authData: AuthData) => {
@@ -77,12 +79,14 @@ export class LogInComponent implements OnInit {
         this.welcomeMessage = `Welcome back ${authData.username}!`
         this.homeLoaderService.preloadHomeView();
         await this.triggerLogInAnimation();
+        this.isFetching = false;
         void this.router.navigate([HOME_ROUTE]);
       },
       error: (errorMessage: string) => {
         this.logInErrorMessage = errorMessage;
+        this.isFetching = false;
       }
-    })
+    });
   }
 
   private isAnimating: boolean = false;
@@ -100,7 +104,7 @@ export class LogInComponent implements OnInit {
     return this.logInForm?.pristine ?? true;
   }
 
-  get email(){
+  get email() {
     return this.logInForm?.get('email')!;
   }
 
