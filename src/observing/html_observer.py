@@ -119,7 +119,7 @@ class HtmlObserver(WebObserver):
       if not isinstance(content, ResultSet):
         element = content
       else:
-        content = content[0]
+        element = content[0]
 
       # You ask why not to omit this when we not observe images?
       # Because imgkit would not handle relative URLs correctly
