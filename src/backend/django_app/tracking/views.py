@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import  authentication_classes, permission_classes
 
 from .models import UserTrackedWebsites, TrackedElement, GotifyInfo
-from .serializers import RegisterSiteSerializer, RemoveSiteSerializer, ElementIDSerializer, \
+from .serializers import RegisterSiteWithObserverSerializer, RemoveSiteSerializer, ElementIDSerializer, \
     PatchSiteSerializer, RegisterElementChangeSerializer, SiteDetailSerializer, KLastUpdatesSerializer, \
-    SearchSuggestionSerializer, RegisterObserverSerializer, RemoveObserverSerializer, GotifyRegisterSerializer, \
+    SearchSuggestionSerializer, GotifyRegisterSerializer, \
     RemoveGotifySerializer, GotifyInfoSerializer
 from rest_framework.views import  APIView
 
@@ -72,9 +72,11 @@ class SiteView(APIView):
          "siteUrl": "www.link.com",
          "siteDescription": "good site",
          "elementName":"fancy div"
-         "cssSelector":"#name" or NULL #change everywhere!!
-         "jsonSelector" " " or NULL
+         "selector" " " !!! selector
          "type":{html,json,image}
+         "interval" " " textbox for client
+         "take_text:"" " # maybe checkbox (default false unchecked)
+         "observe_images" : " "# maybe checkboc (default false unchecked) true/fals both required
          }
          Response when no errors:
          {
@@ -83,6 +85,7 @@ class SiteView(APIView):
          "siteUrl":"",
          "siteDescription":"",
          "type: " "
+         "observer_id":""
          }
          Errors:
          405 - bad http method
@@ -90,7 +93,7 @@ class SiteView(APIView):
         "message": "",
         "errors": {}
          """
-        serializer = RegisterSiteSerializer(data=request.data,context={'request':request})
+        serializer = RegisterSiteWithObserverSerializer(data=request.data,context={'request':request})
         serializer = validate_or_raise(serializer,status_code=400,message="Adding page failed")
         serializer.save()
         return Response({
@@ -99,6 +102,7 @@ class SiteView(APIView):
             "siteUrl": serializer.validated_data['siteUrl'],
             "siteDescription":serializer.validated_data['siteDescription'],
             "type":serializer.validated_data['type']
+            #observer_id
         })
 
     def delete(self,request):
@@ -248,69 +252,6 @@ class SearchSuggestionView(APIView):
         serializer = validate_or_raise(serializer,status_code=400,message="Search failed")
         suggestion = serializer.validated_data["items"]
         return Response(suggestion)
-
-
-class ObserverView(APIView):
-    authentication_classes = [CustomSessionAuthentication]
-    permission_classes = [CustomIsAuthenticated]
-    def post(self,request):
-        """
-           POST /observer/
-           Request:
-           {
-           site_id: " " this site where we want to add observer, we get this after register a site (the same id)
-           interval " " textbox for client
-           take_text:" " # maybe checkbox (default false unchecked)
-           observe_images : " "# maybe checkboc (default false unchecked) true/fals both required
-           }
-
-           Resposne :
-           {
-           settings:
-                    {
-                    id="",
-                    }
-            }
-           Errors:
-           405 - bad http method
-           404 - site not found
-           "message": "",
-           "errors": {}
-
-           """
-        serializer = RegisterObserverSerializer(data=request.data,context={'request':request})
-        serializer = validate_or_raise(serializer,status_code=400,message="Adding observer failed")
-        serializer.save()
-
-        return Response({
-            "settings": {
-                "id":serializer.data['id']
-            }
-        })
-
-    def delete(self,request):
-        """
-           DELETE /site/?siteId=
-           Request:
-           Response when no errors: 204 HTTP
-           Errors:
-           405 - bad http method
-           400 - missing id param:
-           401 - deleted not your observer
-           404 - site not found
-           "message": "",
-           "errors": {}
-           """
-        site_id = request.query_params.get('siteId')
-        if not site_id:
-            raise CustomAPIException(status_code=400, message="Missing site id",detail={})
-        if not UserTrackedWebsites.exists_site_for_user(site_id,request.user.id):
-            raise CustomAPIException(status_code=401,message="Can't permission to delete this observer",detail={})
-        serializer = RemoveObserverSerializer(data={"site_id": site_id})
-        serializer = validate_or_raise(serializer,status_code=404,message="Remove this observer failed")
-        serializer.validated_data['observer'].delete()
-        return Response(status=204)
-
 
 
 
