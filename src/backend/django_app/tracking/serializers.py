@@ -8,10 +8,11 @@ from .models import TrackedWebsite, UserTrackedWebsites, ElementChange, TrackedE
 import uuid
 from django.db import transaction, connection, IntegrityError
 from django_app.utils import validate_or_raise
-
+import os
 from django_app.exception_handler import CustomAPIException
 from .observers import load_observers_from_db, create_observer, make_settings_from_info
 from .observers import  web_observer
+from django.conf import settings
 User = get_user_model()
 
 
@@ -230,7 +231,8 @@ def get_all_updates(id):
     JOIN user_element_updates u
     ON u.element_id = ec.element_id
     AND u.updateTime = ec.detectedAt
-    WHERE u.website_id = %s '''
+    WHERE u.website_id = %s 
+    ORDER BY u.updateTime DESC'''
     with connection.cursor() as cursor:
         cursor.execute(query, [str(id).replace("-", "")])
         rows = cursor.fetchall()
@@ -238,11 +240,12 @@ def get_all_updates(id):
             {
                 "registeredAt": row[0],
                 "textChange":row[1],
-                "imageChangeUrl":row[2],
+                "imageChangeUrl":settings.DOMAIN+settings.MEDIA_URL+os.path.basename(row[2]) if row[2] is not None else None,
                 "statusCode": row[3] if row[4] is None else -1,
                 "error":row[4],
             }
             for row in rows
+
         ]
         return entries
 
@@ -259,7 +262,7 @@ class SiteDetailSerializer(serializers.Serializer):
                 data["bare_update_entry"] = entries
             else:
                 elem = TrackedElement.objects.get(website_id=site_id)
-                last_change = ElementChange.objects.filter(element_id=elem.pk).order_by('-id').first()
+                last_change = ElementChange.objects.filter(element_id=elem.pk).order_by('-detectedAt').first()
                 if last_change:
                     last_change = last_change.detectedAt
                 site_details = {

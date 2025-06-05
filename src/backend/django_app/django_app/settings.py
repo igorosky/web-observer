@@ -18,7 +18,7 @@ from dotenv import load_dotenv  # <--- dodaj to
 MEDIA_URL='/imgs/'
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_ROOT=os.path.join(BASE_DIR,'imgs')
-
+DOMAIN='http://localhost:8000'
 #maybe delete this
 sys.path.insert(0, str(BASE_DIR.parent.parent))
 sys.path.insert(0, str(BASE_DIR.parent.parent / "observing"))
