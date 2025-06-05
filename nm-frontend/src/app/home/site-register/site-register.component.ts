@@ -60,8 +60,10 @@ export class SiteRegisterComponent {
       siteUrl: ['', [Validators.required, Validators.maxLength(100), urlValidator()]],
       siteDesc: ['', Validators.maxLength(900)],
       elementName: ['', [Validators.required, Validators.maxLength(30)]],
-      cssSelector: ['', [Validators.required, Validators.maxLength(255)]],
-      siteType: ['html', [Validators.required, siteTypeValidator()]]
+      selector: ['', [Validators.required, Validators.maxLength(255)]],
+      siteType: ['html', [Validators.required, siteTypeValidator()]],
+      interval: [600, [Validators.required, Validators.min(60), Validators.max(604800), Validators.pattern(/^\d+$/)]],
+      observeImages: ['true', Validators.required],
     })
   }
 
@@ -91,8 +93,10 @@ export class SiteRegisterComponent {
     registerData.set('siteDescription', value.siteDesc);
     registerData.set('siteUrl', value.siteUrl);
     registerData.set('elementName', value.elementName);
-    registerData.set('cssSelector', value.cssSelector);
+    registerData.set('selector', value.selector);
     registerData.set('siteType', value.siteType);
+    registerData.set('interval', value.interval);
+    registerData.set('observeImages', value.observeImages.toString());
     this.homeLoaderService.registerSite(registerData).subscribe({
       next: async (registerData: SiteRegisterResponse) => {
         this.siteRegisterErrorMessage = undefined;
@@ -123,12 +127,16 @@ export class SiteRegisterComponent {
     return this.siteRegisterForm.get('siteUrl')!;
   }
 
-  get cssSelector(){
-    return this.siteRegisterForm.get('cssSelector')!;
+  get selector(){
+    return this.siteRegisterForm.get('selector')!;
   }
 
   get elementName(){
     return this.siteRegisterForm.get('elementName')!;
+  }
+
+  get interval() {
+    return this.siteRegisterForm.get('interval')!;
   }
 
   get siteDesc(){

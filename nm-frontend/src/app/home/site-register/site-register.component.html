@@ -14,7 +14,8 @@
         <label for="siteName">Site name:</label>
         <div class="box-input">
           <div class="border">
-            <input id="siteName" formControlName="siteName" type="text" name="text" class="input" placeholder="Name of your site"
+            <input id="siteName" formControlName="siteName" type="text" name="text" class="input"
+                   placeholder="Name of your site"
                    autocomplete="off">
           </div>
         </div>
@@ -43,24 +44,26 @@
     </div>
     <div class="cssInfoDiv column">
       <div class="row">
-        <label for="cssSelector">CSS selector:</label>
+        <label for="selector">Selector:</label>
         <div class="box-input">
           <div class="border">
-            <input id="cssSelector" formControlName="cssSelector" type="text" name="text" class="input" placeholder="CSS selector ID"
+            <input id="selector" formControlName="selector" type="text" name="text" class="input"
+                   placeholder="CSS selector ID"
                    autocomplete="off">
           </div>
         </div>
       </div>
-      @if (cssSelector.hasError('required') && cssSelector.touched) {
-        <span class="error-box">CSS selector ID is required</span>
-      } @else if (cssSelector.hasError('maxlength')) {
+      @if (selector.hasError('required') && selector.touched) {
+        <span class="error-box">Selector is required</span>
+      } @else if (selector.hasError('maxlength')) {
         <span class="error-box">Maximum length is 255 characters</span>
       }
       <div class="row">
-        <label for="elemName">Element name:</label>
+        <label for="elemName">Name:</label>
         <div class="box-input">
           <div class="border">
-            <input id="elemName" formControlName="elementName" type="text" name="text" class="input" placeholder="Element name"
+            <input  id="elemName" formControlName="elementName" type="text" name="text" class="input"
+                   placeholder="Element name"
                    autocomplete="off">
           </div>
         </div>
@@ -70,18 +73,48 @@
       } @else if (elementName.hasError('maxlength')) {
         <span class="error-box">Maximum length is 30 characters</span>
       }
+      <div class="row">
+        <label for="interval">Interval:</label>
+        <div class="box-input">
+          <div class="border">
+            <input id="interval" formControlName="interval" type="number" name="text" class="input"
+                   placeholder="600"
+                   autocomplete="off">
+          </div>
+        </div>
+      </div>
+      @if (interval.hasError('required') && interval.touched) {
+        <span class="error-box">Integer interval value is required</span>
+      }@else if (interval.hasError('min')) {
+        <span class="error-box">Minimum value is 60 seconds</span>
+      } @else if (interval.hasError('max')) {
+        <span class="error-box">Maximum value is 604800 seconds (1 week)</span>
+      } @else if (interval.hasError('pattern')){
+        <span class="error-box">Interval value must be a positive integer</span>
+      }
       <div class="row" style="width: 70%">
         <label for="siteType" style="margin-right: 0">Site type:</label>
-        <select id="siteType" formControlName="siteType" style="font-size: 1.5em; opacity: 0.8">
+        <select #siteType id="siteType" formControlName="siteType" style="font-size: 1.5em; opacity: 0.8">
           <option value="html">HTML</option>
           <option value="image">Image</option>
           <option value="json">JSON</option>
         </select>
       </div>
+      @if (siteType.value === 'html') {
+        <div class="row" style="width: 70%">
+          <label for="observeImages" style="margin-right: 0">Provide images:</label>
+          <select id="observeImages" formControlName="observeImages" style="font-size: 1.5em; opacity: 0.8">
+            <option value="true" selected>Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+      }
     </div>
     <div class="column registerDescDiv">
       <span>Edit description:</span>
-      <textarea class="sTextArea" style="height: 15em; width: 35em; max-width: 30vw; max-height: 25vh; margin-bottom: 1em" formControlName="siteDesc" type="text"></textarea>
+      <textarea class="sTextArea"
+                style="height: 15em; width: 35em; max-width: 30vw; max-height: 25vh; margin-bottom: 1em"
+                formControlName="siteDesc" type="text"></textarea>
       @if (siteDesc.invalid) {
         <span class="error-box">Maximum description length is 900 characters</span>
       }
@@ -92,9 +125,11 @@
         <li>Site name → custom name of the site, set whatever you'd like</li>
         <li>Site URL → the exact URL of the site, it's important to enter it correctly</li>
         <li>Description → custom description of the site, you can leave if empty or fill it at will</li>
-        <li>CSS selector → the exact CSS selector of the tracked element. Example: "div.main.centerVH"</li>
+        <li> Selector → the exact selector of the tracked element. Example for HTML: "div.main.centerVH"</li>
         <li>Element name → custom name for the tracked element to make the CSS selector readable</li>
         <li>Site type → what is accessible under the URL - HTML page, image resource or a JSON</li>
+        <li>Interval → how often should the site be checked (in seconds)</li>
+        <li>Provide images → if image updates should be provided for HTML if possible</li>
       </ul>
       <span style="margin-top: -0.2em">Don't worry, you can edit the 'custom' fields later on.</span>
     </div>

@@ -88,8 +88,8 @@ export class HomeLoaderService implements OnDestroy {
     return this.http.delete<void>(`${this.baseUrl}/site`, {params: params}).pipe(catchError(handleError));
   }
 
-  editSite(siteEditData: FormData): Observable<void> {
-    return this.http.patch<void>(`${this.baseUrl}/site`, siteEditData).pipe(catchError(handleError));
+  editSite(siteId: string, siteEditData: FormData): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/site?siteId=${siteId}`, siteEditData).pipe(catchError(handleError));
   }
 
   registerSite(siteRegisterData: FormData): Observable<SiteRegisterResponse> {
