@@ -52,8 +52,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-CSRF_COOKIE_SAMESITE='Strict'
-SESSION_COOKIE_SAMESITE='Strict'
+CSRF_COOKIE_SAMESITE='Lax'
+SESSION_COOKIE_SAMESITE='Lax'
 CSRF_COOKIE_HTTPONLY=False
 SESSION_COOKIE_HTTPONLY=True
 ROOT_URLCONF = "django_app.urls"
@@ -62,6 +62,8 @@ SESSION_COOKIE_AGE=2*60*60
 SESSION_SAVE_EVERY_REQUEST=True
 #!!!!! delete on production
 SESSION_COOKIE_SECURE=False
+SESSION_SAVE_EVERY_REQUEST = True  # Odświeża sesję przy każdym żądaniu
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 REST_FRAMEWORK ={
     'DEFAULT_RENDERER_CLASSES':[
         'rest_framework.renderers.JSONRenderer',
@@ -150,7 +152,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_CREDENTIALS = True
 
-
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -163,5 +164,9 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4000",
 ]
