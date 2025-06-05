@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.backend
   frontend:
     build:
-      context: context: ./nm-frontend
-      dockerfile: Dockerfile
+      context: ./nm-frontend
+      dockerfile: Client.Dockerfile
     ports:
       - "4000:4000"
