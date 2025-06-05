@@ -18,7 +18,7 @@ class TrackedWebsite(models.Model):
     siteName = models.CharField(max_length=30)
     siteUrl = models.TextField()
     siteDescription = models.TextField(max_length=900,null=False)
-    type = models.CharField(choices=Type,default=Type.HTML)
+    siteType = models.CharField(choices=Type,default=Type.HTML)
     createdAt = models.DateTimeField(auto_now_add=True)
 
 # FK has _id

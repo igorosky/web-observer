@@ -46,7 +46,7 @@ def load_observers_from_db():
 
     for observer_info in observers_with_elements:
         site = observer_info.observer.site
-        site_type = site.type
+        site_type = site.siteType
         elements = site.trackedelement_set.all()
         for elem in elements:
             settings = make_settings_from_info(observer_info.info,site_type)

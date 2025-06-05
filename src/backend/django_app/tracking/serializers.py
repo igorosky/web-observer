@@ -21,13 +21,14 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
     selector = serializers.CharField(write_only=True)
 
     interval = serializers.CharField(write_only=True)
-    observe_images = serializers.CharField(write_only=True)
-
+    observeImages = serializers.CharField(write_only=True)
+#type -> siteType
+#observe_images -> observeImages
     class Meta:
         model = TrackedWebsite
         fields = [
-            "siteId", "siteName", "siteUrl", "siteDescription", "createdAt", "type",
-            "selector", "elementName", "interval","observe_images"
+            "siteId", "siteName", "siteUrl", "siteDescription", "createdAt", "siteType",
+            "selector", "elementName", "interval","observeImages"
         ]
         extra_kwargs = {
             'siteId': {'read_only': True},
@@ -41,7 +42,7 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
         selector = validated_data.pop('selector')
 
         interval = validated_data.pop('interval')
-        observe_images = validated_data.pop('observe_images')
+        observeImages = validated_data.pop('observeImages')
 
         try:
             with transaction.atomic():
@@ -49,7 +50,7 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
                     siteName=validated_data['siteName'],
                     siteUrl=validated_data['siteUrl'],
                     siteDescription=validated_data['siteDescription'],
-                    type=validated_data['type']
+                    siteType=validated_data['siteType']
                 )
 
                 UserTrackedWebsites.objects.create(
@@ -68,14 +69,14 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
                 )
 
                 elem = TrackedElement.objects.get(website_id=site.pk)
-                if site.type == "image":
+                if site.siteType == "image":
                     take_text = False
-                    observe_images = True
-                elif site.type == "json": # json didnt catch the photos?
+                    observeImages = True
+                elif site.siteType == "json": # json didnt catch the photos?
                     take_text = True
-                    observe_images = False
+                    observeImages = False
                 else:
-                    take_text = not observe_images
+                    take_text = not observeImages
 
                 info = ObserverInfo.objects.create(
                     observer_id=observer.id,
@@ -85,13 +86,13 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
                         "interval": interval,
                         "selector": elem.selector,
                         "take_text": take_text,
-                        "observe_images": observe_images ,
+                        "observe_images": observeImages ,
                     }
                 )
 
                 obs = create_observer(
-                    site_type=site.type,
-                    settings=make_settings_from_info(info.info,site.type),
+                    site_type=site.siteType,
+                    settings=make_settings_from_info(info.info,site.siteType),
                 )
                 web_observer.add_observer(obs)
                 Observer.objects.filter(id=observer.id).update(hash=obs.get_id())

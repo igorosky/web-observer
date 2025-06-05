@@ -6,3 +6,4 @@ TODO
 __pycache__
 imgs
 *.sqlite3
+/db/

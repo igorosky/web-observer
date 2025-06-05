@@ -101,7 +101,7 @@ class SiteView(APIView):
             "siteName": serializer.validated_data['siteName'],
             "siteUrl": serializer.validated_data['siteUrl'],
             "siteDescription":serializer.validated_data['siteDescription'],
-            "type":serializer.validated_data['type']
+            "siteType":serializer.validated_data['siteType']
             #observer_id
         })
 
@@ -182,8 +182,9 @@ class SiteView(APIView):
             raise CustomAPIException(status_code=400, message="Missing site id",detail={})
         if not UserTrackedWebsites.exists_site_for_user(site_id,request.user.id):
             raise CustomAPIException(status_code=401,message="Can't permission to patch this site",detail={})
-        request.data["siteId"] = site_id
-        serializer = PatchSiteSerializer(data=request.data)
+        data = request.data.copy()  # Tworzy modyfikowalną kopię
+        data["siteId"] = site_id
+        serializer = PatchSiteSerializer(data=data)
         serializer = validate_or_raise(serializer,status_code=404,message="Patch this site failed")
         site = serializer.validated_data["site"]
         if "siteName" in serializer.validated_data:

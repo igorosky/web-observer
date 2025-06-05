@@ -17,7 +17,11 @@ from django.conf.global_settings import CSRF_COOKIE_SAMESITE, SESSION_COOKIE_SAM
 from dotenv import load_dotenv  # <--- dodaj to
 MEDIA_URL='/imgs/'
 BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_ROOT=os.path.join(BASE_DIR,'imgs')
+if os.environ.get('DOCKER_ENV'):
+    MEDIA_ROOT = '/app/imgs'
+else:
+    # Lokalnie
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'imgs')
 DOMAIN='http://localhost:8000'
 #maybe delete this
 sys.path.insert(0, str(BASE_DIR.parent.parent))
@@ -104,7 +108,8 @@ WSGI_APPLICATION = "django_app.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        #"NAME": BASE_DIR / "db.sqlite3",
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
