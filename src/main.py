@@ -22,13 +22,21 @@ def main() -> None:
       WebObserverOptions.StepToGetElement(element_id="body"),
     ], take_text=True), notify=lambda notification: print(f"JSON Notification: {notification}"))
 
-  web_observer_not_exists = HtmlObserver(WebObserverOptions(id=4,
-    url="https://example.com/nonexistentpage", interval=7), lambda notification: print(f"Non-existent page notification: {notification}"))
+  web_observer_not_found = HtmlObserver(WebObserverOptions(id=4,
+    url="https://example.com/nonexistentpage", interval=7), lambda notification: print(f"Not-found page notification: {notification}"))
+
+  web_observer_not_exists = HtmlObserver(WebObserverOptions(id=5,
+    url="https://thispagedoesnotexist.com", interval=10), lambda notification: print(f"Non-existent page notification: {notification}"))
+
+  web_observer_not_exists_ip = HtmlObserver(WebObserverOptions(id=5,
+    url="http://12.12.12.3/", interval=10), lambda notification: print(f"Non-existent page notification: {notification}"))
 
   web_observer.add_observer(observer)
   web_observer.add_observer(img_observer)
   web_observer.add_observer(json_observer)
+  web_observer.add_observer(web_observer_not_found)
   web_observer.add_observer(web_observer_not_exists)
+  web_observer.add_observer(web_observer_not_exists_ip)
   while True:
     pass
 

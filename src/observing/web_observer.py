@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 import requests
 
 DEFAULT_ACCEPRED_RESPONSE_CODES = [200]
+DEFAULT_TIMEOUT = 15
+DEFAULT_MAX_REDIRECTS = 3
 
 class WebObserver(ABC):
   def __init__(self, options: WebObserverOptions,
@@ -23,8 +25,8 @@ class WebObserver(ABC):
       session.headers.update(self.options.headers)
     if self.options.cookies is not None:
       session.cookies.update(self.options.cookies)
-    if self.options.timeout is not None:
-      session.timeout = self.options.timeout
+    session.timeout = DEFAULT_TIMEOUT if self.options.timeout is None else self.options.timeout
+    session.max_redirects = DEFAULT_MAX_REDIRECTS
     return session.get(self.options.url)
   
   def get_site(self, notification: Notification) -> tuple[requests.Response, bool | None]:

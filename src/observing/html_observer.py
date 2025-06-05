@@ -78,8 +78,20 @@ class HtmlObserver(WebObserver):
 
     try:
       response, do_notify = super().get_site(notification)
+    except requests.exceptions.Timeout as e:
+      print(f"Timeout requesting site {self.options.url}: {e}", file=sys.stderr)
+      notification.error = f"Timeout requesting site: {e}"
+      self.notify(notification)
+      return
+    except requests.exceptions.ConnectionError as e:
+      print(f"Couldn't Connect to a page {self.options.url}: {e}", file=sys.stderr)
+      notification.error = f"Couldn't connect to page: {e}"
+      self.notify(notification)
+      return
     except requests.exceptions.RequestException as e:
       print(f"Error requesting site {self.options.url}: {e}", file=sys.stderr)
+      notification.error = f"Error requesting site: {e}"
+      self.notify(notification)
       return
 
     if do_notify is None:
