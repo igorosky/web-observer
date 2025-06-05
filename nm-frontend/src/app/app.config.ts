@@ -1,16 +1,11 @@
-//app.config.ts
 import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
-import {provideServerRendering} from '@angular/platform-server';
-import {provideServerRouting, withAppShell} from '@angular/ssr';
 import {routes} from './app.routes';
-import {provideHttpClient, withFetch, withInterceptorsFromDi, HTTP_INTERCEPTORS} from '@angular/common/http';
+import {provideHttpClient, withFetch, withInterceptorsFromDi} from '@angular/common/http';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {cookieInterceptor} from './interceptors/cookie.interceptor';
-import {csrfInterceptor, CsrfInterceptor} from './interceptors/csrf.interceptor';
+import {csrfInterceptor} from './interceptors/csrf.interceptor';
 import {provideClientHydration, withEventReplay} from '@angular/platform-browser';
-import {HomeViewComponent} from './home/home-view/home-view.component';
-import {serverRoutes} from './app.routes.server';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,8 +17,6 @@ export const appConfig: ApplicationConfig = {
       withInterceptorsFromDi(),
     ),
     provideAnimations(),
-    provideServerRendering(),
-    provideServerRouting(serverRoutes, withAppShell(HomeViewComponent)),
     cookieInterceptor,
     csrfInterceptor
   ]

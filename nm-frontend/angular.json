@@ -33,14 +33,14 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "prerender": {
-              "discoverRoutes": true
-            },
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
+//            ,"server": "src/main.server.ts",
+//            "prerender": {
+//              "discoverRoutes": true
+//            },
+//            "ssr": {
+//              "entry": "src/server.ts"
+//            }
           },
           "configurations": {
             "production": {

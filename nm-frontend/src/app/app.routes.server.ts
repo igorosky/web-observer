@@ -8,7 +8,7 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: `${HOME_ROUTE}/${SITE_REGISTER_ROUTE}`,
-    renderMode: RenderMode.Server
+    renderMode: RenderMode.Client
   },
   {
     path: `${HOME_ROUTE}/${SITE_ROUTE}`,
