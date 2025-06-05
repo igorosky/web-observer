@@ -1,15 +1,14 @@
-// src/app/interceptors/csrf.interceptor.ts
 import { Injectable } from '@angular/core';
 import {
-  HttpEvent, HttpInterceptor, HttpHandler, HttpRequest
+  HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {CookieInterceptor} from '@app/interceptors/cookie.interceptor';
 
 @Injectable()
 export class CsrfInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Sprawdź czy żądanie idzie do twojego API (backend)
-    if (req.url.startsWith('http://localhost:8000') && req.method !== 'GET' && req.method !== 'HEAD') {
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
       const csrfToken = this.getCookie('csrftoken');
       if (csrfToken) {
         const modified = req.clone({
@@ -21,8 +20,6 @@ export class CsrfInterceptor implements HttpInterceptor {
         return next.handle(modified);
       }
     }
-
-    // GET i inne bez zmian
     return next.handle(req.clone({ withCredentials: true }));
   }
 
@@ -37,3 +34,7 @@ export class CsrfInterceptor implements HttpInterceptor {
     return null;
   }
 }
+
+export const csrfInterceptor = [
+  {provide: HTTP_INTERCEPTORS, useClass: CsrfInterceptor, multi: true},
+];

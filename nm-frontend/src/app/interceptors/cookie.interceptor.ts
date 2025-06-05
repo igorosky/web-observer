@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {catchError, Observable, throwError} from 'rxjs';
-import {AuthService} from './auth.service';
+import {AuthService} from '../auth/auth.service';
 
 @Injectable()
 export class CookieInterceptor implements HttpInterceptor {

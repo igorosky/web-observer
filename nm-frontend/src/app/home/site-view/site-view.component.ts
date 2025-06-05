@@ -114,7 +114,7 @@ export class SiteViewComponent implements OnInit {
     editData.set('siteName', value.siteName)
     editData.set('siteDescription', value.siteDesc)
     editData.set('elementName', value.elementName)
-    this.homeLoaderService.editSite(editData).subscribe({
+    this.homeLoaderService.editSite(this.currentSite!.siteInfo.siteId, editData).subscribe({
       next: () => {
         if(this.currentSite === undefined) return;
         this.siteEditErrorMessage = undefined;
