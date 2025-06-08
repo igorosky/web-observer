@@ -76,7 +76,7 @@ class JsonObserver(WebObserver):
       notification.error = f"Invalid JSON: {e}"
       self.notify(notification)
       return
-    
+
     try:
       content = JsonObserver.get_elements(content, self.options.steps_to_get_element)
     except (IndexError, ValueError) as e:
@@ -96,12 +96,21 @@ class JsonObserver(WebObserver):
       # At this point content should be a single element
       element = content
 
-      digest = sha256(element.encode('utf-8')).hexdigest()
+      # Check if element is None
+      if element is None:
+        print(f"Element not found or is None from {self.options.url}", file=sys.stderr)
+        notification.error = "Element not found or is None"
+        self.notify(notification)
+        return
+
+      # Convert element to string before encoding
+      element_str = str(element) if element is not None else ""
+      digest = sha256(element_str.encode('utf-8')).hexdigest()
 
     if self.current_digest is None or self.current_digest != digest:
       do_notify = True
       if self.options.take_text:
-        notification.new_value = str(element)
+        notification.new_value = str(element) if element is not None else ""
       self.current_digest = digest
 
     if do_notify:

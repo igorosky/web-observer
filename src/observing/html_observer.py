@@ -69,7 +69,7 @@ class HtmlObserver(WebObserver):
   def generate_view(self, soup: BeautifulSoup, target: str | None = None) -> str:
     if target is None:
       target = os.path.join(self.path_to_images , f"{uuid.uuid4().hex}.jpg")
-    imgkit.from_string(soup.string, target, options={'format': 'jpg', 'quiet': ''})
+    imgkit.from_string(str(soup), target, options={'format': 'jpg', 'quiet': ''})
     return target
 
   def check(self) -> None:
@@ -111,12 +111,15 @@ class HtmlObserver(WebObserver):
     else:
       try:
         content = HtmlObserver.get_elements(soup, self.options.steps_to_get_element)
-      except IndentationError as e:
-        print(f"Error parsing HTML content from {self.options.url}: {e}", file=sys.stderr)
-        return
       except IndexError as e:
-        # Imposible since constructor checks this
         print(f"Error accessing element: {e}", file=sys.stderr)
+        notification.error = f"Element not found: {e}"
+        self.notify(notification)
+        return
+      except ValueError as e:
+        print(f"Error parsing HTML content from {self.options.url}: {e}", file=sys.stderr)
+        notification.error = f"Error parsing content: {e}"
+        self.notify(notification)
         return
 
     if self.options.count_elements:
@@ -131,7 +134,19 @@ class HtmlObserver(WebObserver):
       if not isinstance(content, ResultSet):
         element = content
       else:
+        if len(content) == 0:
+          print(f"No elements found matching criteria from {self.options.url}", file=sys.stderr)
+          notification.error = "No elements found matching criteria"
+          self.notify(notification)
+          return
         element = content[0]
+
+      # Check if element exists
+      if element is None:
+        print(f"Element is None from {self.options.url}", file=sys.stderr)
+        notification.error = "Element is None"
+        self.notify(notification)
+        return
 
       # You ask why not to omit this when we not observe images?
       # Because imgkit would not handle relative URLs correctly
@@ -142,15 +157,18 @@ class HtmlObserver(WebObserver):
         reverse()
         reverse = None
 
-      digest = sha256(element.encode('utf-8')).hexdigest()
+      # Safe encoding of element
+      element_str = str(element) if element is not None else ""
+      digest = sha256(element_str.encode('utf-8')).hexdigest()
 
-      reverse() if reverse is not None else None
+      if reverse is not None:
+        reverse()
 
     if self.current_digest is None or self.current_digest != digest:
       do_notify = True
       if self.options.take_text:
-        notification.new_value = element.get_text(strip=True)
-      if self.options.observe_images:
+        notification.new_value = element.get_text(strip=True) if element is not None else ""
+      if self.options.observe_images and element is not None:
         notification.image = self.generate_view(element)
       self.current_digest = digest
 

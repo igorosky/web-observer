@@ -10,7 +10,7 @@ export function getStatusClass(statusCode: number): string {
 
 export function urlValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const urlPattern = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)([\/?]?.*)$/i;
+    const urlPattern = /^(https?:\/\/)?(localhost(:\d+)?|[\w-]+(\.[\w-]+)*|[\w-]+)(:\d+)?([\/?]?.*)$/i;
     const value: string | null | undefined = control.value;
     if (typeof value !== 'string' || value.length === 0) {
       return null;
@@ -19,6 +19,7 @@ export function urlValidator(): ValidatorFn {
     return isValid ? null : { invalidUrl: true };
   };
 }
+
 
 export function siteTypeValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
