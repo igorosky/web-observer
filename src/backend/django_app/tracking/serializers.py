@@ -344,7 +344,7 @@ class SearchSuggestionSerializer(serializers.Serializer):
 #        return data
 
 class GotifyRegisterSerializer(serializers.ModelSerializer):
-    url = serializers.URLField(allow_blank=True, allow_null=True, required=False, write_only=True)
+    url = serializers.CharField(allow_blank=True, allow_null=True, required=False, write_only=True)
     token = serializers.CharField(allow_blank=True, allow_null=True, required=False, write_only=True)
 
     class Meta:

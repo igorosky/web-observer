@@ -105,7 +105,7 @@ class GotifyInfo(models.Model):
 
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    url = models.URLField(unique=True, null=False, blank=False)   # ← wymagany i unikalny
-    token = models.TextField(null=False, blank=False)             # ← wymagany
+    url = models.TextField(unique=True, null=False, blank=False)
+    token = models.TextField(null=False, blank=False)
     updateTime = models.DateTimeField(auto_now_add=True)
 
