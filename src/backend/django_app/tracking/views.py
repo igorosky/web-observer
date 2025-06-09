@@ -54,7 +54,6 @@ class TrackingElementChangeView(APIView):
         serializer.save() # dont forget when you want change sth in db (especially in creating)!!!
         return Response({
             "element_id": serializer.validated_data['element_id'],
-            "content": serializer.validated_data['content'],
             "change":serializer.validated_data['change'],
         })
 

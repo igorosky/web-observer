@@ -17,26 +17,35 @@ from django_app.exception_handler import CustomAPIException
 
 
 
-def register_change(notification:Notification):
-    print(notification.image)
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
+import requests
+
+def register_change(notification: Notification):
     siteId = Observer.objects.get(id=notification.observer_id).site.siteId
     textChange = notification.new_value
     imageChangeUrl = notification.image
     error = notification.error
-    try:
-            user_id = UserTrackedWebsites.objects.get(website_id=siteId).user.id
-            element_id = TrackedElement.objects.get(website_id=siteId).id
-            tracked_element = TrackedElement.objects.get(id=element_id)
-            site = tracked_element.website
-    except ObjectDoesNotExist:
-            raise CustomAPIException(status_code=404, message="Do not have access to this element", detail={})
 
+    try:
+        user_id = UserTrackedWebsites.objects.get(website_id=siteId).user.id
+        element = TrackedElement.objects.get(website_id=siteId)
+        element_id = element.id
+        site = element.website
+    except ObjectDoesNotExist:
+        raise CustomAPIException(status_code=404, message="Do not have access to this element", detail={})
+
+    try:
+        last_change = ElementChange.objects.filter(element_id=element_id).latest("detectedAt")
+        if last_change.textChange == textChange and textChange is not None:
+            return
+    except ElementChange.DoesNotExist:
+        pass
     with transaction.atomic():
         element_change = ElementChange.objects.create(
             element_id=element_id,
-            content="maybe it is to remove",
-            textChange = textChange,
-            imageChangeUrl = imageChangeUrl,
+            textChange=textChange,
+            imageChangeUrl=imageChangeUrl,
         )
 
         try:
@@ -44,33 +53,30 @@ def register_change(notification:Notification):
             status_code = response.status_code
         except requests.RequestException:
             status_code = 501
-        UserElementUpdate.objects.create(
-                user_id=user_id,
-                element_id=element_id,
-                website_id=site.siteId,
-                statusCode=status_code,
-                updateTime=element_change.detectedAt,
-                error=error
 
+        UserElementUpdate.objects.create(
+            user_id=user_id,
+            element_id=element_id,
+            website_id=site.siteId,
+            statusCode=status_code,
+            updateTime=element_change.detectedAt,
+            error=error
         )
+
         gotify_entries = GotifyInfo.objects.filter(user_id=user_id)
         for entry in gotify_entries:
-            GOTIFY_URL = entry.url
-            GOTIFY_TOKEN = entry.token
-
             if imageChangeUrl:
                 send_gotify_message(
-                    url=GOTIFY_URL,
-                    token=GOTIFY_TOKEN,
+                    url=entry.url,
+                    token=entry.token,
                     title="Message from NotifyMe!",
                     message="You have new photo update on NotifyMe, check this!",
                 )
             else:
                 send_gotify_message(
-                    url=GOTIFY_URL,
-                    token=GOTIFY_TOKEN,
+                    url=entry.url,
+                    token=entry.token,
                     title="Message from NotifyMe!",
                     message=notification.new_value,
                 )
-
 

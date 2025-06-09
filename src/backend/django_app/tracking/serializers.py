@@ -183,7 +183,7 @@ class RegisterElementChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ElementChange
         fields = [
-            "id", "element_id", "content", "change", "detectedAt",
+            "id", "element_id", "change", "detectedAt",
         ]
         extra_kwargs = {
             'id': {'read_only': True},
@@ -200,7 +200,6 @@ class RegisterElementChangeSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             elementChange = ElementChange.objects.create(
                 element_id=element_id,
-                content=validated_data['content'],
                 change=validated_data['change'],
             )
             url = TrackedWebsite.objects.get(siteId=site.siteId).siteUrl
@@ -285,7 +284,6 @@ class SiteDetailSerializer(serializers.Serializer):
             raise serializers.ValidationError("Site do not exists")
 
 
-
 class KLastUpdatesSerializer(serializers.Serializer):
     def validate(self, data):
         user = self.context['request'].user
@@ -298,7 +296,7 @@ class KLastUpdatesSerializer(serializers.Serializer):
             "siteId": update.website.pk,
             "siteUrl": update.website.siteUrl,
             "siteName": update.website.siteName,
-            "registeredAt": update.website.createdAt,
+            "registeredAt": update.updateTime,
             "statusCode": update.statusCode if update.error is None else -1,
             "error": update.error,
         } for update in updates]

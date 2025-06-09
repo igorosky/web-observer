@@ -61,11 +61,9 @@ class ElementChange(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     element = models.ForeignKey(TrackedElement, on_delete=models.CASCADE)
-    content = models.TextField()
     textChange = models.TextField(null=True)
     imageChangeUrl = models.CharField(null=True)
     detectedAt = models.DateTimeField(auto_now_add=True)
-
 
 class UserElementUpdate(models.Model):
     class Meta:
