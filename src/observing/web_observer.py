@@ -10,6 +10,9 @@ import requests
 DEFAULT_ACCEPRED_RESPONSE_CODES = [200]
 DEFAULT_TIMEOUT = 15
 DEFAULT_MAX_REDIRECTS = 3
+DEFAULT_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0'
+DEFAULT_HEADERS = requests.utils.default_headers()
+DEFAULT_HEADERS['User-Agent'] = DEFAULT_USER_AGENT
 
 class WebObserver(ABC):
   def __init__(self, options: WebObserverOptions,
@@ -21,6 +24,7 @@ class WebObserver(ABC):
 
   def request_site(self) -> requests.Response:
     session = requests.session()
+    session.headers.update({'User-Agent': DEFAULT_USER_AGENT})
     if self.options.headers is not None:
       session.headers.update(self.options.headers)
     if self.options.cookies is not None:

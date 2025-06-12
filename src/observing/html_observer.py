@@ -1,4 +1,4 @@
-from .web_observer import WebObserver
+from .web_observer import WebObserver, DEFAULT_HEADERS
 from .web_observer_options import WebObserverOptions
 from .web_observer_api import Notification
 from typing import Callable
@@ -59,7 +59,7 @@ class HtmlObserver(WebObserver):
       if not src.startswith('http'):
         src = requests.compat.urljoin(base_url, src)
       replacements.append((img, src))
-      image = requests.get(src)
+      image = requests.get(src, headers=DEFAULT_HEADERS)
       img['src'] = sha256(image.content).hexdigest()
     def revert():
       for img, src in replacements:
