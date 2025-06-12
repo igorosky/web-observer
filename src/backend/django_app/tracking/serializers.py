@@ -270,9 +270,11 @@ class SiteDetailSerializer(serializers.Serializer):
                         "siteId":site.siteId,
                         "siteName":site.siteName,
                         "siteUrl":site.siteUrl,
-                        "lastUpdatedAt":last_change,
+                        "lastUpdateAt":last_change,
                         "selector":elem.selector,
-                        "elementName":elem.elementName
+                        "elementName":elem.elementName,
+                        "siteType":site.siteType
+
                     },
                     "updates":get_all_updates(site_id),
                     "trackedSince":site.createdAt,
