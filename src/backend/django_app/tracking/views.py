@@ -12,7 +12,6 @@ from .serializers import RegisterSiteWithObserverSerializer, RemoveSiteSerialize
     RemoveGotifySerializer, GotifyInfoSerializer, CollectionSerializer
 from rest_framework.views import  APIView
 
-#TO DELETE
 class elementId(APIView):
     """
     GET /element-id/siteId=?
@@ -36,7 +35,6 @@ class elementId(APIView):
             "element_id":elemId
         })
 
-#TO DELETE (dont works)
 class TrackingElementChangeView(APIView):
     authentication_classes = [CustomSessionAuthentication]
     permission_classes = [CustomIsAuthenticated]
@@ -287,9 +285,8 @@ class GotifyView(APIView):
     def delete(self, request):
         """
         DELETE /gotify/
-        Odpowiedzi:
-        204 – sukces
-        404 – brak wpisu dla użytkownika
+        204 – success
+        404 – gotify don't configurate
         """
         serializer = RemoveGotifySerializer(data={}, context={'request': request})
         serializer.is_valid(raise_exception=True)

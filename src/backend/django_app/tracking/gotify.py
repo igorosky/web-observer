@@ -20,14 +20,12 @@ def send_gotify_message(url, token, title, message, priority=5):
         response = requests.post(endpoint, params=params, json=data)
 
         if response.status_code == 200:
-            logging.info(f"Wiadomość wysłana pomyślnie: {title}")
             return True
         else:
-            logging.info(f"Błąd wysyłania: {response.status_code} - {response.text}")
             return False
 
     except requests.exceptions.RequestException as e:
-        logging.info(f"Błąd połączenia: {e}")
+        logging.info(f"Connection error: {e}")
         return False
 
 

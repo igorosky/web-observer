@@ -72,7 +72,7 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
                 if site.siteType == "image":
                     take_text = False
                     observeImages = True
-                elif site.siteType == "json": # json didnt catch the photos?
+                elif site.siteType == "json": # json didnt catch the photos
                     take_text = True
                     observeImages = False
                 else:
@@ -114,7 +114,7 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
 
 
 def _get_site_by_id(data):
-    site_id = data.get('siteId')  # we know that this exsits because of checkign query params
+    site_id = data.get('siteId')
     try:
         site = TrackedWebsite.objects.get(siteId=site_id)
         data["site"] = site
@@ -137,7 +137,6 @@ class RemoveSiteSerializer(serializers.Serializer):
         except Observer.DoesNotExist:
             raise serializers.ValidationError("Observer does not exist")
         return _get_site_by_id(data)
-    #remove observer
 
 class PatchSiteSerializer(serializers.Serializer):
     siteId = serializers.UUIDField()  # need for auth inpiut from param

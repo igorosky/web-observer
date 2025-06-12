@@ -61,11 +61,13 @@ class ImageObserver(WebObserver):
     digest = sha256(response.content).hexdigest()
     if self.current_digest is None or self.current_digest != digest:
       self.current_digest = digest
+      do_notify=True
       if self.options.observe_images:
         img_path = os.path.join(self.path_to_images, f"{uuid4().hex}.{content_type.split('/')[-1]}")
         with open(img_path, 'wb') as img_file:
           img_file.write(response.content)
         notification.image_path = img_path
+        notification.image = img_path
 
     if do_notify:
       self.notify(notification)

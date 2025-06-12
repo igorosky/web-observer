@@ -11,19 +11,15 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os,sys
 from pathlib import Path
-
 from django.conf.global_settings import CSRF_COOKIE_SAMESITE, SESSION_COOKIE_SAMESITE, CSRF_COOKIE_HTTPONLY, \
     SESSION_COOKIE_HTTPONLY, SESSION_COOKIE_AGE, SESSION_SAVE_EVERY_REQUEST, SESSION_COOKIE_SECURE
-from dotenv import load_dotenv  # <--- dodaj to
 MEDIA_URL='/imgs/'
 BASE_DIR = Path(__file__).resolve().parent.parent
 if os.environ.get('DOCKER_ENV'):
     MEDIA_ROOT = '/app/imgs'
 else:
-    # Lokalnie
     MEDIA_ROOT = os.path.join(BASE_DIR, 'imgs')
 DOMAIN='http://localhost:8000'
-#maybe delete this
 sys.path.insert(0, str(BASE_DIR.parent.parent))
 sys.path.insert(0, str(BASE_DIR.parent.parent / "observing"))
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -60,12 +56,10 @@ SESSION_COOKIE_SAMESITE='Lax'
 CSRF_COOKIE_HTTPONLY=False
 SESSION_COOKIE_HTTPONLY=True
 ROOT_URLCONF = "django_app.urls"
-#change this to longer time
 SESSION_COOKIE_AGE=2*60*60
 SESSION_SAVE_EVERY_REQUEST=True
-#!!!!! delete on production
 SESSION_COOKIE_SECURE=False
-SESSION_SAVE_EVERY_REQUEST = True  # Odświeża sesję przy każdym żądaniu
+SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 REST_FRAMEWORK ={
     'DEFAULT_RENDERER_CLASSES':[
