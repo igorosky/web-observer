@@ -1,13 +1,8 @@
-from django.db import transaction
-from django.core.exceptions import ObjectDoesNotExist
-import requests
 from django_app.exception_handler import CustomAPIException
 from observing.web_observer_api import Notification
 from .gotify import send_gotify_message
 from .models import TrackedElement, ElementChange, UserElementUpdate, Observer, GotifyInfo
-from rest_framework.response import Response
 from .models import UserTrackedWebsites
-from .serializers import ElementIDSerializer
 from django_app.utils import validate_or_raise
 from django_app.exception_handler import CustomAPIException
 

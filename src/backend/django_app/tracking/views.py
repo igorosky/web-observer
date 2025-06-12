@@ -3,7 +3,6 @@ from django_app.exception_handler import CustomAPIException
 from django_app.custom_session import CustomSessionAuthentication
 from django_app.custom_authentication import CustomIsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import  authentication_classes, permission_classes
 
 from .models import UserTrackedWebsites, TrackedElement, GotifyInfo
 from .serializers import RegisterSiteWithObserverSerializer, RemoveSiteSerializer, ElementIDSerializer, \
@@ -99,7 +98,6 @@ class SiteView(APIView):
             "siteUrl": serializer.validated_data['siteUrl'],
             "siteDescription":serializer.validated_data['siteDescription'],
             "siteType":serializer.validated_data['siteType']
-            #observer_id
         })
 
 
@@ -179,7 +177,7 @@ class SiteView(APIView):
             raise CustomAPIException(status_code=400, message="Missing site id",detail={})
         if not UserTrackedWebsites.exists_site_for_user(site_id,request.user.id):
             raise CustomAPIException(status_code=401,message="Can't permission to patch this site",detail={})
-        data = request.data.copy()  # Tworzy modyfikowalną kopię
+        data = request.data.copy()
         data["siteId"] = site_id
         serializer = PatchSiteSerializer(data=data)
         serializer = validate_or_raise(serializer,status_code=404,message="Patch this site failed")

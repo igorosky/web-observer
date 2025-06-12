@@ -1,11 +1,8 @@
 import requests
-from django.contrib.auth.hashers import make_password
-from django.core.validators import validate_unicode_slug
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import TrackedWebsite, UserTrackedWebsites, ElementChange, TrackedElement, UserElementUpdate, Observer, \
     ObserverInfo, GotifyInfo
-import uuid
 from django.db import transaction, connection, IntegrityError
 from django_app.utils import validate_or_raise
 import os
@@ -164,9 +161,9 @@ class PatchSiteSerializer(serializers.Serializer):
 
 
 class ElementIDSerializer(serializers.Serializer):
-    siteId = serializers.UUIDField()  # need for auth inpiut from param
+    siteId = serializers.UUIDField()  # need for auth input from param
     def validate(self, data):
-        site_id = data.get('siteId')  # we know that this exsits because of checkign query params
+        site_id = data.get('siteId')  # we know that this exists because of checking query params
         try:
             site = TrackedWebsite.objects.get(siteId=site_id)
             element_id = TrackedElement.get_elemId_by_siteId(site.siteId)
@@ -249,10 +246,10 @@ def get_all_updates(id):
         return entries
 
 class SiteDetailSerializer(serializers.Serializer):
-    siteId = serializers.UUIDField()  # need for auth inpiut from param
+    siteId = serializers.UUIDField()  # need for auth input from param
     onlyUpdates = serializers.CharField(required=False,allow_null=True)
     def validate(self, data):
-        site_id = data.get('siteId')  # we know that this exsits because of checkign query params
+        site_id = data.get('siteId')  # we know that this exists because of checking query params
         onlyUpdates = data.get('onlyUpdates')
         try:
             site = TrackedWebsite.objects.get(siteId=site_id)

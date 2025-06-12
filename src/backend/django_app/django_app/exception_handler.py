@@ -1,5 +1,4 @@
 from rest_framework.exceptions import  AuthenticationFailed, PermissionDenied
-from rest_framework.response import Response
 from rest_framework.exceptions import APIException
 from rest_framework import views
 
@@ -53,8 +52,6 @@ def custom_exception_handler(exc, context):
         }
         response.status_code=403
         return response
-    print(type(exc))  # <class 'rest_framework.exceptions.NotAuthenticated'>
-    print(type(exc).__name__)
     if response is not None and isinstance(exc, APIException):
         if isinstance(getattr(exc, 'detail', None), dict) and "message" in exc.detail:
             return response

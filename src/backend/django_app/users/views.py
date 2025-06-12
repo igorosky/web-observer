@@ -1,15 +1,11 @@
 from django.utils import timezone
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import  login,logout
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.views import APIView
-from datetime import timedelta
 from .serializers import UserRegistrationSerializer, EmailLoginSerializer
 from django_app.utils import validate_or_raise
-from .models import  User
 from django_app.exception_handler import CustomAPIException
 from django_app.custom_session import CustomSessionAuthentication
 from django_app.custom_authentication import CustomIsAuthenticated
@@ -47,8 +43,6 @@ class RegisterUserView(APIView):
             "email":serializer.validated_data["email"],
             "username":serializer.validated_data["username"],
         })
-#validated_data -> to co przyszlo od usera i zostalo sprawdzone/dodane w validate
-#data -> ma wszystkie pola z fields
 
 class LoginUserView(APIView):
     authentication_classes = []
