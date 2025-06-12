@@ -26,7 +26,6 @@ DOMAIN='http://localhost:8000'
 #maybe delete this
 sys.path.insert(0, str(BASE_DIR.parent.parent))
 sys.path.insert(0, str(BASE_DIR.parent.parent / "observing"))
-load_dotenv(dotenv_path=BASE_DIR.parent / ".env")  # <--- to dodaj
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = bool(int(os.getenv("DEBUG", default=1)))  # poprawna konwersja na bool
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
