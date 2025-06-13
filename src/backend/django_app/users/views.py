@@ -17,23 +17,6 @@ class RegisterUserView(APIView):
     def post(self,request):
         """
         POST /register/
-        Request:
-        {
-        "email": "user@example.com",
-        "username": "user123",
-        "password": "strongpassword"
-        }
-        Response when no errors:
-        {
-        "userId":""
-        "email": "",
-        "username": "",
-        }
-        Errors:
-        405 - bad http method
-        400 - errors in input data
-        "message": "",
-        "errors": {}
         """
         serializer = UserRegistrationSerializer(data=request.data)
         serializer = validate_or_raise(serializer,status_code=400,message="Register failed")
@@ -50,24 +33,6 @@ class LoginUserView(APIView):
     def post(self,request):
         """
         POST /login/
-        Request:
-        {
-        "email": "user@example.com",
-        "password": "strongpassword"
-        }
-
-        Response when no errors:
-        {
-            "userId":" "
-            "email": " ",
-            "lastLoginAt": " "
-        }
-
-        Errors:
-        405 - bad http method
-        401 - unauthorized:
-        "message": "",
-        "errors": {}
         """
         if request.user.is_authenticated:
             raise CustomAPIException(status_code=401,message="You are currently logged in",detail={})
@@ -92,6 +57,9 @@ class LoginUserView(APIView):
 
 
 class LogoutUserView(APIView):
+    """
+      POST /logout/
+    """
     authentication_classes = []
     permission_classes = []
 

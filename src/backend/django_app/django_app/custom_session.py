@@ -4,6 +4,15 @@ from django.utils.timezone import now
 
 
 class CustomSessionAuthentication(SessionAuthentication):
+    """
+    Custom session-based authentication class that adds more precise error handling.
+
+    Exceptions raised:
+    - NotAuthenticatedError: no session key present.
+    - InvalidSessionError: session key does not exist in the database.
+    - SessionExpiredError: session exists but has expired.
+    - UserInactiveError: user is inactive or could not be authenticated.
+    """
     def authenticate(self, request):
         from django_app.exception_handler import NotAuthenticatedError, InvalidSessionError, SessionExpiredError, \
             UserInactiveError

@@ -3,12 +3,16 @@ from rest_framework.exceptions import APIException
 from rest_framework import views
 
 class NotAuthenticatedError(AuthenticationFailed):
+    """Raised when session cookie is missing."""
     pass
 class InvalidSessionError(AuthenticationFailed):
+    """Raised when session cookie is invalid."""
     pass
 class SessionExpiredError(PermissionDenied):
+    """Raised when session is expired."""
     pass
 class UserInactiveError(PermissionDenied):
+    """Raised when user is inactive after session resolution."""
     pass
 
 class CustomAPIException(APIException):
@@ -22,6 +26,10 @@ class CustomAPIException(APIException):
 
 
 def custom_exception_handler(exc, context):
+    """
+     Global exception handler for DRF.
+     Replaces default error format with structured responses.
+     """
     response = views.exception_handler(exc, context)
     if isinstance(exc,NotAuthenticatedError):
         response.data = {

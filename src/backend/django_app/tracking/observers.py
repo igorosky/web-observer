@@ -7,11 +7,14 @@ from observing.web_observer_scheduler import WebObserverScheduler
 
 from .models import UserTrackedWebsites, TrackedElement, ObserverInfo, Observer, TrackedWebsite
 
-# importing state of observers
-# run the observer state
+
 
 
 def make_settings_from_info(info,site_type):
+    """
+    Prepare observer settings dict from info.
+    """
+
     return {
         "id": int(info["id"]),
         "url": str(info["url"]),
@@ -26,6 +29,10 @@ def make_settings_from_info(info,site_type):
 
 
 def create_observer(site_type,settings):
+    """
+    Create observer instance by type.
+    """
+
     from .change_api import register_change
     if site_type == "html":
         obs = HtmlObserver(WebObserverOptions(**settings), notify=lambda notification: register_change(notification),path_to_images="imgs")
@@ -37,6 +44,10 @@ def create_observer(site_type,settings):
 
 
 def load_observers_from_db():
+    """
+    Load and create observers from DB.
+    Returns list of observers.
+    """
     obs_lst = []
     observers_with_elements = ObserverInfo.objects.select_related(
         'observer__site'
@@ -64,6 +75,9 @@ def load_observers_from_db():
 web_observer = WebObserverScheduler(cores=10)
 
 def load_observers():
+    """
+    Add loaded observers to scheduler singleton.
+    """
     observers = load_observers_from_db()
     for obs in observers:
         web_observer.add_observer(obs)

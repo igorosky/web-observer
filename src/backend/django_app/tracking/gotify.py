@@ -4,6 +4,15 @@ import requests
 
 
 def send_gotify_message(url, token, title, message, priority=5):
+    """
+    Send notification via Gotify.
+    Args:
+      url (str): Gotify server URL
+      token (str): Gotify app token
+      title (str): Notification title
+      message (str): Notification body
+      priority (int): Notification priority (default=5)
+    """
     endpoint = f"{url}/message"
 
     params = {

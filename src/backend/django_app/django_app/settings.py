@@ -23,7 +23,7 @@ DOMAIN='http://localhost:8000'
 sys.path.insert(0, str(BASE_DIR.parent.parent))
 sys.path.insert(0, str(BASE_DIR.parent.parent / "observing"))
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = bool(int(os.getenv("DEBUG", default=1)))  # poprawna konwersja na bool
+DEBUG = bool(int(os.getenv("DEBUG", default=1)))
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 AUTH_USER_MODEL = 'users.User'
 

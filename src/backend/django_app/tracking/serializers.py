@@ -14,6 +14,9 @@ User = get_user_model()
 
 
 class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
+    """
+    Handles full site registration along with element and observer setup.
+    """
     elementName = serializers.CharField(write_only=True)
     selector = serializers.CharField(write_only=True)
 
@@ -69,7 +72,7 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
                 if site.siteType == "image":
                     take_text = False
                     observeImages = True
-                elif site.siteType == "json": # json didnt catch the photos
+                elif site.siteType == "json": # json dont catch the photos
                     take_text = True
                     observeImages = False
                 else:
@@ -111,6 +114,9 @@ class RegisterSiteWithObserverSerializer(serializers.ModelSerializer):
 
 
 def _get_site_by_id(data):
+    """
+    Fetches a tracked website instance based on siteId.
+    """
     site_id = data.get('siteId')
     try:
         site = TrackedWebsite.objects.get(siteId=site_id)
@@ -124,6 +130,9 @@ def _get_site_by_id(data):
 
 
 class RemoveSiteSerializer(serializers.Serializer):
+    """
+    Removes the observer and detaches it from the active scheduler.
+    """
     siteId = serializers.UUIDField()
     def validate(self, data):
         site = _get_site_by_id(data)
@@ -136,12 +145,15 @@ class RemoveSiteSerializer(serializers.Serializer):
         return _get_site_by_id(data)
 
 class PatchSiteSerializer(serializers.Serializer):
-    siteId = serializers.UUIDField()  # need for auth inpiut from param
+    """
+    Updates site name, description, or tracked element name.
+    """
+    siteId = serializers.UUIDField()  # need for auth input from param
     siteName = serializers.CharField(required=False,max_length=30)
     siteDescription = serializers.CharField(required=False,max_length=900)
     elementName = serializers.CharField(required=False,max_length=255)
     def validate(self, data):
-        site_id = data.get('siteId')  # we know that this exsits because of checkign query params
+        site_id = data.get('siteId')  # we know that this exists because of checking query params
         siteName = data.get('siteName')
         siteDescription = data.get('siteDescription')
         elementName = data.get('elementName')
@@ -161,6 +173,9 @@ class PatchSiteSerializer(serializers.Serializer):
 
 
 class ElementIDSerializer(serializers.Serializer):
+    """
+    Retrieves the ID of the element associated with the given site.
+    """
     siteId = serializers.UUIDField()  # need for auth input from param
     def validate(self, data):
         site_id = data.get('siteId')  # we know that this exists because of checking query params
@@ -174,6 +189,10 @@ class ElementIDSerializer(serializers.Serializer):
 
 
 class RegisterElementChangeSerializer(serializers.ModelSerializer):
+    """
+     Registers a manual change for a tracked element.
+     Also creates a corresponding user update entry.
+    """
     element_id = serializers.UUIDField()
     change = serializers.CharField(allow_blank=True,allow_null=True) #can be null
     class Meta:
@@ -216,6 +235,9 @@ class RegisterElementChangeSerializer(serializers.ModelSerializer):
 
 
 def get_all_updates(id):
+    """
+    Retrieves the full change/update history for a given website.
+    """
     query = '''
     SELECT
         u.updateTime AS update_time,
@@ -246,6 +268,10 @@ def get_all_updates(id):
         return entries
 
 class SiteDetailSerializer(serializers.Serializer):
+    """
+     Returns full site details including last update and all changes.
+     If `onlyUpdates=true` is passed, only the update list is returned.
+    """
     siteId = serializers.UUIDField()  # need for auth input from param
     onlyUpdates = serializers.CharField(required=False,allow_null=True)
     def validate(self, data):
@@ -283,6 +309,9 @@ class SiteDetailSerializer(serializers.Serializer):
 
 
 class KLastUpdatesSerializer(serializers.Serializer):
+    """
+    Fetches the last 10 updates for the authenticated user.
+    """
     def validate(self, data):
         user = self.context['request'].user
 
@@ -305,6 +334,9 @@ class KLastUpdatesSerializer(serializers.Serializer):
 
 
 class SearchSuggestionSerializer(serializers.Serializer):
+    """
+    Returns up to 10 matching site suggestions for the user based on query string.
+    """
     query = serializers.CharField(required=False,allow_null=True)
     def validate(self, data):
         user = self.context['request'].user
@@ -340,6 +372,9 @@ class SearchSuggestionSerializer(serializers.Serializer):
 #        return data
 
 class GotifyRegisterSerializer(serializers.ModelSerializer):
+    """
+    Registers or updates Gotify notification configuration for the user.
+    """
     url = serializers.CharField(allow_blank=True, allow_null=True, required=False, write_only=True)
     token = serializers.CharField(allow_blank=True, allow_null=True, required=False, write_only=True)
 
@@ -375,11 +410,17 @@ class GotifyRegisterSerializer(serializers.ModelSerializer):
 
 
 class GotifyInfoSerializer(serializers.Serializer):
+    """
+    Data structure used to return Gotify configuration.
+    """
     url = serializers.URLField()
     token = serializers.CharField()
 
 
 class RemoveGotifySerializer(serializers.Serializer):
+    """
+    Removes the user's Gotify integration entry.
+    """
     def validate(self, data):
         user = self.context['request'].user
         try:
@@ -391,6 +432,9 @@ class RemoveGotifySerializer(serializers.Serializer):
 
 
 class CollectionSerializer(serializers.Serializer):
+    """
+    Returns a list of all websites tracked by the authenticated user.
+    """
     def validate(self, data):
         user = self.context['request'].user
         websites = TrackedWebsite.objects.filter(usertrackedwebsites__user=user)

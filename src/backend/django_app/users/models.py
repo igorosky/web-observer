@@ -5,7 +5,13 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 
 class CustomUserManager(BaseUserManager):
+    """
+    Custom manager for the User model using email as the unique identifier.
+    """
     def create_user(self, email, username, password=None, **extra_fields):
+        """
+           Creates and saves a regular user with the given email, username, and password.
+        """
         if not email:
             raise ValueError("The Email field must be set.")
         if not username:
@@ -18,6 +24,9 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, username, password=None, **extra_fields):
+        """
+        Creates and saves a superuser with the given email, username, and password.
+        """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
@@ -31,6 +40,11 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """
+    Custom user model that uses email as the unique identifier instead of username.
+    Includes basic authentication fields and timestamps.
+    """
+
     class Meta:
         db_table = "users"
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

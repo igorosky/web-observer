@@ -13,6 +13,14 @@ from django.db import transaction
 import requests
 
 def register_change(notification: Notification):
+    """
+    Process observer change notification.
+
+    - Skip if no new change
+    - Save change and update
+    - Send Gotify notification
+
+    """
     site_id = Observer.objects.get(id=notification.observer_id).site.siteId
     text_change = notification.new_value
     image_change_url = notification.image
